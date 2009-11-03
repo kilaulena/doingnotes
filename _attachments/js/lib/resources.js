@@ -7,7 +7,7 @@ function pluralize(text) {
   }
 }
 
-function template_file_for(resource_path, template){  
+function template_file_for(resource_path, template){ 
  return 'templates/' + pluralize(resource_from_path(resource_path)) + '/' + template + '.mustache';
 }
 
@@ -31,7 +31,6 @@ var Resources = function(app, couchapp) {
       var context = this;
       var _prototype = eval(name);
       var object = new _prototype(params);
-      console.log(object);
       if(object.valid()) {
         couchapp.db.saveDoc(object.to_json(), {
           success: function(res) {
@@ -57,15 +56,14 @@ var Resources = function(app, couchapp) {
       var collection = pluralize(type);
       var view = {};
       couchapp.design.view(view_name, {
-         include_docs: true,
          success: function(json) { 
-           if (json['rows'].length > 0) {
+           if (json['rows'].length > 0) {   
+             view[collection] = json['rows'].map(function(row) {return row.value});                       
              if (options['sort'] == 'byText') {
-               objects = json['rows'].sort(byText);
+               view[collection].sort(byText);
              } else {
-               objects = json['rows'].sort(byDate);
+               view[collection].sort(byDate);
              }
-             view[collection] = objects.map(function(row) {return row.doc});
            } else {                   
              view[collection] = [];
            }

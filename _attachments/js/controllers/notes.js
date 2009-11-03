@@ -10,6 +10,9 @@ Notes = function(sammy) { with(sammy) {
       partial('templates/notes/new.mustache', function(html) {
         $('ul#notes').append(html);
         $('textarea.expanding').autogrow();
+        $('textarea.expanding').bind('blur', function(e) {
+          $(e.target).parent('form').submit();
+        });
         $('#spinner').hide(); 
         $('ul#notes li:first').focus(); //doesn't work
       });
@@ -25,7 +28,7 @@ Notes = function(sammy) { with(sammy) {
   get(/^#\/notes\/(byText|byDate)$/, function() { with(this) {
     var options = [];
     options['sort'] = params.splat[0];
-    list_objects('Note', 'notes', options, function(notes){      
+    list_objects('Note', 'notes', options, function(notes){  
       render('index', notes);
       $('#spinner').hide(); 
     });

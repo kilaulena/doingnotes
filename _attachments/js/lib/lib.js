@@ -1,12 +1,12 @@
 function byText(a, b) {
-  var x = a.doc.text.toLowerCase();
-  var y = b.doc.text.toLowerCase();
+  var x = a.text.toLowerCase();
+  var y = b.text.toLowerCase();
   return ((x < y) ? -1 : ((x > y) ? 1 : 0));
 }
 
 function byDate(a, b) {
-  var x = a.doc.created_at;
-  var y = b.doc.created_at;
+  var x = a.created_at;
+  var y = b.created_at;
   return ((x < y) ? -1 : ((x > y) ? 1 : 0));
 }
 
