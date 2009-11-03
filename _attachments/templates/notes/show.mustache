@@ -1,0 +1,13 @@
+<div id="note">
+  <p>{{ text }}</p> 
+  <p>Created: {{created_at}}</p>
+  {{#not_new_record}}
+    <p>Updated: {{updated_at}}</p>
+  {{/not_new_record}}
+  <p>_ID: {{_id}}</p>
+  <form action="#/notes/{{_id}}" method="delete" accept-charset="utf-8">
+    <input type="hidden" name="rev" value="{{_rev}}"/>
+    <p><input type="submit" value="Delete"></p>
+  </form>
+</div>
+

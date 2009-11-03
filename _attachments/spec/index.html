@@ -1,0 +1,24 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="jspec/jspec.css" type="text/css"/>
+    <script src="../../vendor/jquery/_attachments/jquery.js"></script>
+    <script src="jspec/jspec.js"></script>
+    <script src="jspec/jspec.jquery.js"></script>
+    <script src="../js/lib/lib.js"></script>
+    <script src="../js/lib/resources.js"></script>
+    <script src="../js/models/note.js"></script>
+    <script>
+      function runSuites() {
+        JSpec
+        .exec('note_spec.js')
+        .run() //{ failuresOnly : true })
+        .report();
+      }
+    </script>
+  </head>
+	<body class="jspec" onLoad="runSuites();">
+		<div id="jspec-top"><h2 id="jspec-title">JSpec <em><script>document.write(JSpec.version)</script></em></h2></div>
+		<div id="jspec"></div>
+		<div id="jspec-bottom"></div>
+	</body>
+</html>

@@ -1,0 +1,102 @@
+/* general */
+
+body {
+  color:#2e0571;
+}
+
+.container {width:950px;margin:0 auto;}
+
+#flash.error {
+  border: 1px solid white;
+  background: red;
+  padding: 2px;
+}
+
+#flash.notice {
+  border: 1px solid white;
+  background: green;
+  padding: 2px;
+}
+
+#header {
+  background: #7c45d6;
+  clear: both;
+  height: 68px;
+  border-bottom: 2px solid #503AAE;
+}
+
+#content {
+  padding: 20px;
+  background: #946bd6;
+  min-height:300px;
+}
+
+#spinner {
+  float: right;
+  background: url(../images/spinner.gif) no-repeat;
+  height: 20px;
+  padding: 40px 35px 0 0;
+  margin-top: 5px;
+}
+
+/* forms */
+
+input.error {
+  border: 1px red solid;
+}
+
+
+/* navigation */
+
+#nav {
+  float: left;
+  margin-left: 20px;
+  margin-top: 10px;
+}
+
+#nav ul {
+  margin-left: 0px;
+}
+
+#nav li {
+  display: inline-block;
+}
+
+#nav li a {
+  padding: 10px;
+  padding-bottom: 5px;
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  display: block;
+  font-size: 1.5em;
+}
+
+#nav li a.active {
+  background: #000;
+}
+
+/* writeboard */
+
+#writeboard ul#notes li {
+  list-style-type: none;
+  margin: 3px 0;
+  padding: 1px;
+  
+}
+
+ul#notes li textarea{
+  width: 400px;
+}
+
+ul#notes li#new-note textarea {
+}
+
+ul#notes li#new-note  {
+  width: 408px;
+}
+
+textarea.expanding {
+	height: 28px;
+	margin: 0;
+}
