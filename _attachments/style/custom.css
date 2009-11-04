@@ -26,9 +26,9 @@ body {
 }
 
 #content {
-  padding: 20px;
+  padding: 35px 24px 16px 16px;
   background: #946bd6;
-  min-height:300px;
+  min-height:600px;
 }
 
 #spinner {
@@ -80,23 +80,22 @@ input.error {
 
 #writeboard ul#notes li {
   list-style-type: none;
-  margin: 3px 0;
-  padding: 1px;
-  
+  margin: 0;  
 }
 
 ul#notes li textarea{
-  width: 400px;
+  width: 100%;
 }
 
 ul#notes li#new-note textarea {
 }
 
 ul#notes li#new-note  {
-  width: 408px;
+  width: 100%;
 }
 
 textarea.expanding {
-	height: 28px;
-	margin: 0;
+	height: 14px;
+	min-height: 14px;
+	margin: -2px;
 }

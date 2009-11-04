@@ -121,7 +121,7 @@
 					this.textarea.css('overflow-y', 'hidden');
 					if (this.textarea.height() < this.dummy.height() + this.line_height || (this.dummy.height() < this.textarea.height()))
 					{	
-						this.textarea.animate({height: (this.dummy.height() + this.line_height) + 'px'}, 100);	
+						this.textarea.animate({height: (this.dummy.height()) + 'px'}, 100);	
 					}
 				}
 			}
