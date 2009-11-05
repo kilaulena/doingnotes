@@ -156,6 +156,9 @@
           // I wish this was shared with path.js...
           return '/'+[dbname, '_design', dname, '_show', funcname, docid].join('/')
         },
+        listPath : function(funcname, viewname) {
+          return '/'+[dbname, '_design', dname, '_list', funcname, viewname].join('/')
+        },
         slugifyString : function(string) {
           return string.replace(/\W/g,'-').
             replace(/\-*$/,'').replace(/^\-*/,'').
@@ -185,6 +188,7 @@
         },
         db : db,
         design : design,
+        view : design.view,
         docForm : docForm,
         prettyDate : prettyDate
       });
