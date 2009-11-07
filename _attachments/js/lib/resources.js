@@ -110,12 +110,12 @@ var Resources = function(app, couchapp) {
         if(object.valid()) {
           couchapp.db.saveDoc(object.to_json(), {
             success: function(res) {
-              if(options.message) {
-                context.trigger('notice', {message: options.message});
+              if(options.message) {     
+                context.trigger('notice', {message: options.message});                
               }
               if(options.success) {
                 options.success(object);
-              }            
+              }                          
               callback(res);
             },
             error: function(response_code, res) {
@@ -140,7 +140,7 @@ var Resources = function(app, couchapp) {
           callback();
         },
         error: function(response_code, json) {
-          context.trigger('error', {message: 'Error deleting note: ' + json});
+          context.flash = {message: 'Error deleting note: ' + json};
         }
       }); 
       return false;

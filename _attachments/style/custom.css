@@ -6,22 +6,17 @@ body {
 
 .container {width:950px;margin:0 auto;}
 
-#flash.error {
-  border: 1px solid white;
-  background: red;
-  padding: 2px;
+#notice, #error {
+  display: none;
 }
 
-#flash.notice {
-  border: 1px solid white;
-  background: green;
-  padding: 2px;
-}
+.notice {background:#E6EFC2;color:#264409;border-color:#C6D880;}
+.notice a {color:#264409;}
 
 #header {
   background: #7c45d6;
   clear: both;
-  height: 68px;
+  height: 83px;
   border-bottom: 2px solid #503AAE;
 }
 
@@ -63,8 +58,7 @@ input.error {
 }
 
 #nav li a {
-  padding: 10px;
-  padding-bottom: 5px;
+  padding: 30px 10px 0px;
   color: white;
   text-decoration: none;
   font-weight: bold;

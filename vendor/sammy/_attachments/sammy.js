@@ -874,7 +874,8 @@
       if (args.length > 1) {
         var last = (args[args.length-1]);
         if (last.message && last.type){
-          flash = args.pop(); 
+          flash = {message: last.message, type: last.type};
+          args.pop();    
         }
         args.unshift('/');
         to = this.join.apply(this, args);

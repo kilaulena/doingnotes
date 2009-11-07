@@ -58,7 +58,6 @@ Notes = function(sammy) { with(sammy) {
   }});
   
   put('#/notes/:id', function()  { with(this) {   
-    // alert('put');
     update_object('Note', params, {}, function(note){
       $('#spinner').hide(); 
     });

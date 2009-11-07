@@ -14,13 +14,6 @@ $(function() {
 
     Notes(this);
 
-    before(function() {
-      $('#flash').html(flash.message);
-      $('#flash').attr('class', flash.type);
-      flash = {type: '', message: ''};
-      $('#spinner').show();
-    });
-    
     bind('init', function() { with(this) {
        $(window).bind("keydown", function(e) {
          if(e.target.tagName == 'TEXTAREA' && $(e.target).attr('class', 'expanding')){
@@ -31,10 +24,19 @@ $(function() {
              e.preventDefault();
              switch(e.keyCode) {
                case ENTER:
-                  if($(e.target).attr('id') != 'new-text') {
-                   console.log('new note partial');
+                  if($(e.target).parent().parent().attr('class') == 'edit-note') {
+                   // console.log('new note partial');
+                   // partial('templates/notes/new.mustache', function(html) {
+                   //   $(e.target).parent().parent().parent().append(html);
+                   //   $('textarea.expanding').autogrow();
+                   //   $('textarea.expanding').bind('blur', function(e) {
+                   //     $(e.target).parent('form').submit();
+                   //   });
+                   //   $('#spinner').hide(); 
+                   // });
                    $(e.target).parent().parent().next().find('textarea').focus();
-                  } 
+                  } else { 
+                  }
                  break;
                case UP:
                  console.log('arrow up pressed');
@@ -48,28 +50,55 @@ $(function() {
              $(e.target).parent('form').submit();
            }
          }
+         // alert('nach if');
        });
+       // alert('end of init');
      }});
  
-     bind('error', function(e, message) { with(this) {
-       flash = {type : 'error', message: message};
+ 
+     before(function() {
+       $('#flash').html(flash.message);
+       $('#flash').attr('class', flash.type);
+       flash = {type: '', message: ''};
+       $('#spinner').show();
+     });
+ 
+     bind('error', function(e, flash) { with(this) {
+       $('#flash').html(flash.message);
+       $('#flash').attr('class', 'error');
      }});
  
-     bind('notice', function(e, message) { with(this) {
-       flash = {type : 'notice', message: message};
+     bind('notice', function(e, flash) { with(this) {
+       $('#flash').html(flash.message);
+       $('#flash').attr('class', 'notice');
      }});
+     
+     
+     // before(function() {
+     //   $('#error').html('').hide();
+     //   $('#notice').html('').hide();
+     //   $('#spinner').show();
+     // });
+     // 
+     // bind('error', function(e, data) { with(this) {
+     //   $('#error').html(data.message).show();
+     // }});
+     // 
+     // bind('notice', function(e, data) { with(this) {
+     //   $('#notice').html(data.message).show();
+     // }});
   }});
 
   sammy.run('#/notes/write');
   sammy.trigger('init');
   
-  // without this hack cucumber/culerity doesn't recognize the changed hash
-  $('a').live('click', function() {
-    var hash = $(this).attr('href').match(/#.+/)[0];
-    if(hash) {
-      sammy.runRoute('get', hash);
-      // window.location.href = hash;
-    };
-    return false;
-  });
+  // // without this hack cucumber/culerity doesn't recognize the changed hash
+  // $('a').live('click', function() {
+  //   var hash = $(this).attr('href').match(/#.+/)[0];
+  //   if(hash) {
+  //     sammy.runRoute('get', hash);
+  //     // window.location.href = hash;
+  //   };
+  //   return false;
+  // });
 });
