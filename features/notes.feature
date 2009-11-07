@@ -3,69 +3,52 @@ Feature: CRUD for notes
   As a user
   I want to create, read, update and delete notes
   
-  Scenario: create a note
-    When I go to the start page
-    And I fill in "text" with "This is a note."
-    And I hit enter
-    And I should see "This is a note."
-    And I should see "Created:"
-    
-    When I follow "Notes by Date"
-    Then I should not see "Note successfully created!"
+  Scenario: write a note
+    When I go to the start page    
+    Then I should see a blank li with id "new-note" 
+    When I fill in "new-text" with "No Ceiling"
+      And I hit "enter" in a text_field with id "new-text"
+    Then I should see "No Ceiling" in a li with class "edit-note" 
+      And I should see a blank li with id "new-note" 
       
   Scenario: edit a note
-     Given a note with the text "This is a basic note."
-     And a note with the text "Another note."
-     
-     When I go to the start page
-     And I follow "Notes by Date"
-     And I follow "This is a basic note."
-     And I follow "Edit"
-     And I fill in "text" with "This is an updated note."
-     And I press "Save"
-     And I wait for the AJAX call to finish
-     
-     # Then I should see "Note successfully updated!"
-     And I update the text of the note "This is a basic note." with "This is an updated note."
-     
-     And I follow "Notes by Date"
-     And I follow "This is an updated note."
-     Then I should see "Created:"
-     And I should see "Updated:"
-     
-     # When I follow "Notes by Date"
-     # Then I should not see "Note successfully updated!"
+    Given a note with the text "Ten Thousand Miles" and the id "1234"
+      And a note with the text "So Long" and the id "5678"
+      And I save
+    When I go to the start page
+      And I fill in "edit_text_5678" with "Waiting"      
+      And I hit "enter" in a text_field with id "edit_text_5678"
+    Then I should see "Ten Thousand Miles" in a li with class "edit-note" 
+    Then I should see "Waiting" in a li with class "edit-note" 
+      And I should see a blank li with id "new-note"  
   
-   Scenario: delete a note
-     Given a note with the text "This is a basic note."
-     And a note with the text "Second note."
-     
-     When I go to the start page
-     And I follow "Notes by Date"
-     And I follow "This is a basic note."
-     And I press "Delete"
-     Then I should see "Note deleted."
-     And I should see "Second note."
-     And I should not see "This is a basic note."
+  Scenario: delete a note
+    Given a note with the text "Jolene"
+      And a note with the text "Rambling"
+      And I save
+    When I go to the start page
+      And I follow "Notes by Date"
+      And I follow "Jolene"
+      And I press "Delete"
+    Then I should see "Rambling"
+      And I should not see "Jolene"
+      And I should see "Note deleted."    
+    When I follow "Notes by Text"
+      Then I should not see "Note deleted."
        
-     When I follow "Notes by Date"
-     Then I should not see "Note deleted."
-       
-   Scenario: sort notes
-     Given a note with the text "Alpha" created "3" minutes ago
-     And a note with the text "Beta" created "1" minutes ago
-     And a note with the text "Gamma" created "2" minutes ago
-     And I save
-     When I go to the start page
-     
-     When I follow "Notes by Text"
-     Then I should see "Alpha" before "Beta"
-     And I should see "Beta" before "Gamma"
-     And I should see "Alpha" before "Gamma"
-     
-     And I follow "Notes by Date"
-     Then I should see "Beta" before "Alpha"
-     And I should see "Gamma" before "Alpha"
-     And I should see "Beta" before "Gamma"
+  Scenario: sort notes
+    Given a note with the text "Alpha" created "1" minutes ago
+      And a note with the text "Beta" created "3" minutes ago
+      And a note with the text "Gamma" created "2" minutes ago
+      And I save
+    When I go to the start page
+    And I follow "Notes by Text"
+      Then I should see "Alpha" before "Beta"
+      And I should see "Beta" before "Gamma"
+      And I should see "Alpha" before "Gamma"
+    When I follow "Notes by Date"
+    Then I should see "Beta" before "Alpha"
+      And I should see "Gamma" before "Alpha"
+      And I should see "Beta" before "Gamma"
        
   

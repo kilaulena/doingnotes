@@ -92,13 +92,13 @@ $(function() {
   sammy.run('#/notes/write');
   sammy.trigger('init');
   
-  // // without this hack cucumber/culerity doesn't recognize the changed hash
-  // $('a').live('click', function() {
-  //   var hash = $(this).attr('href').match(/#.+/)[0];
-  //   if(hash) {
-  //     sammy.runRoute('get', hash);
-  //     // window.location.href = hash;
-  //   };
-  //   return false;
-  // });
+  // without this hack cucumber/culerity doesn't recognize the changed hash
+  $('a').live('click', function() {
+    var hash = $(this).attr('href').match(/#.+/)[0];
+    if(hash) {
+      sammy.runRoute('get', hash);
+      // window.location.href = hash;
+    };
+    return false;
+  });
 });

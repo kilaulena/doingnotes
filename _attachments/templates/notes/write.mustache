@@ -1,9 +1,9 @@
 <div id="writeboard">
   <ul id="notes">
     {{#notes}}
-      <li>
+      <li class="edit-note" id="edit_note_{{_id}}">
         <form action="#/notes/{{_id}}" method="put" accept-charset="utf-8">
-          <textarea class="expanding" id="text_{{_id}}" name="text">{{text}}</textarea>
+          <textarea class="expanding" id="edit_text_{{_id}}" name="text">{{text}}</textarea>
           <input type="submit" value="Save" style="display:none;"/>
         </form>
       </li>

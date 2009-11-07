@@ -9,5 +9,6 @@ require 'json'
 Before do
   RestClient.delete "#{host}/#{database}" rescue nil
   RestClient.put "#{host}/#{database}", ""
-  system "couchapp push doingnotes_test"
+  system "couchapp push #{database}"
+  # $browser.execute_script('')
 end

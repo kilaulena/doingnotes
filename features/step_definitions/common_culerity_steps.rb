@@ -17,11 +17,11 @@ def host
 end
 
 def database
-  'jsdoodle_test'
+  'doingnotes_test'
 end
 
 def app
-  'jsdoodle'
+  'doingnotes'
 end
 
 at_exit do
@@ -82,7 +82,7 @@ When /^I select "([^"]+)" from "([^"]+)"$/ do |value, field|
   find_by_label_or_id(:select_list, field).select value
 end
 
-When /^I select "([^"]+)"$/ do |value|
+When /^I select "([^\"]*)"$/ do |value|
   $browser.option(:text => value).select
 end
 
@@ -102,7 +102,7 @@ When /I wait for the AJAX call to finish/ do
   $browser.wait_while { $browser.div(:id, 'spinner').visible?} 
 end
 
-When /^I visit "([^"]+)"$/ do |url|
+When /^I visit "([^\"]+)"$/ do |url|
   $browser.goto host + url
 end
 
@@ -116,11 +116,21 @@ Then /^I should see \/(.*)\/$/ do |text|
   begin
     div.html
   rescue
-    #puts $browser.html
     raise("div with '#{text}' not found")
   end
 end
 
+Then /I should not see "(.*)"/ do |text|  
+  div_nil = false 
+  if ($browser.div(:text, /#{text}/) rescue nil)
+    div_nil = true 
+  else 
+    if $browser.div(:text, /#{text}/).style.match(/-9999px/)
+      div_nil = true
+    end
+  end
+  div_nil.should be_true
+end
 
 Then /I should see the text "(.*)"/ do |text|
   $browser.html.should include(text)
@@ -130,16 +140,11 @@ Then /I should not see the text "(.*)"/ do |text|
   $browser.html.should_not include(text)
 end
 
-Then /I should not see "(.*)"/ do |text|
-  div = $browser.div(:text, /#{text}/).html rescue nil
-  div.should be_nil
-end
-
-Then /I should see no link "([^"]+)"/ do |text|
+Then /I should see no link "([^\"]+)"/ do |text|
   $browser.link(:text => text).should_not exist
 end
 
-Then /I should not find the page "([^"]+)"/ do |url|
+Then /I should not find the page "([^\"]+)"/ do |url|
   no_exception = false
   begin
     $browser.goto host + url
@@ -180,7 +185,7 @@ def open_response_in_browser
   tmp_file = '/tmp/culerity_results.html'
   FileUtils.rm_f tmp_file
   File.open(tmp_file, 'w') do |f|
-    f << $browser.div(:id, 'content').html
+    f << $browser.div(:id, 'container').html
   end
   `open #{tmp_file}`
 end
