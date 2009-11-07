@@ -35,7 +35,7 @@ var Resources = function(app, couchapp) {
         couchapp.db.saveDoc(object.to_json(), {
           success: function(res) {
             if(options.message) {
-              trigger('notice', {message: options.message});
+              context.trigger('notice', {message: options.message});
             }
             if(options.success) {
               options.success(object);
@@ -43,11 +43,11 @@ var Resources = function(app, couchapp) {
             callback(res);
           },
           error: function(response_code, res) {
-            trigger('error', {message: 'Error saving ' + name + ': ' + res});
+            context.trigger('error', {message: 'Error saving ' + name + ': ' + res});
           }
         });
       } else {
-        trigger('error', {message: object.errors.join(", ")});
+        context.trigger('error', {message: object.errors.join(", ")});
       };
     },
   
@@ -82,7 +82,7 @@ var Resources = function(app, couchapp) {
           if(doc) {
             callback(view);
           } else {
-            trigger('error', type + ' with ID "' + id + '" not found.');
+            context.trigger('error', type + ' with ID "' + id + '" not found.');
           }
         },
         error: function() {
@@ -111,7 +111,7 @@ var Resources = function(app, couchapp) {
           couchapp.db.saveDoc(object.to_json(), {
             success: function(res) {
               if(options.message) {
-                trigger('notice', {message: options.message});
+                context.trigger('notice', {message: options.message});
               }
               if(options.success) {
                 options.success(object);
@@ -119,13 +119,31 @@ var Resources = function(app, couchapp) {
               callback(res);
             },
             error: function(response_code, res) {
-              trigger('error', {message: 'Error saving ' + name + ': ' + res});
+              context.trigger('error', {message: 'Error saving ' + name + ': ' + res});
             }
           });
         } else {
-          trigger('error', {message: object.errors.join(", ")});
+          context.trigger('error', {message: object.errors.join(", ")});
         };
       });
-    } 
+    },
+    
+    delete_object: function(params, options, callback) {
+      options = options || {};
+      var context = this;
+      var doc = {_id : params.id, _rev : params.rev};
+      couchapp.db.removeDoc(doc, {
+        success: function() {
+          if(options.message) {
+            context.flash = {message: options.message, type: 'notice'};
+          }
+          callback();
+        },
+        error: function(response_code, json) {
+          context.trigger('error', {message: 'Error deleting note: ' + json});
+        }
+      }); 
+      return false;
+    }
   });
 };

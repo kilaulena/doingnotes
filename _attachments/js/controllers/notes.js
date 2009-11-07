@@ -50,7 +50,7 @@ Notes = function(sammy) { with(sammy) {
       partial('templates/notes/edit.mustache', {_id: note.id, text: params['text']}, function(html) {
         $('#new-note').before(html);
         $('textarea.expanding').autogrow();
-        $.scrollTo($('#new-note'));
+        // $.scrollTo($('#new-note'));
         $('#spinner').hide(); 
       });
     });
@@ -58,6 +58,7 @@ Notes = function(sammy) { with(sammy) {
   }});
   
   put('#/notes/:id', function()  { with(this) {   
+    // alert('put');
     update_object('Note', params, {}, function(note){
       $('#spinner').hide(); 
     });
@@ -65,17 +66,9 @@ Notes = function(sammy) { with(sammy) {
   }});
 
   route('delete', '#/notes/:id', function() { with(this) {
-    var doc = {_id : params.id, _rev : params.rev};
-    couchapp.db.removeDoc(doc, {
-      success: function() {
-        trigger('notice', 'Note deleted.');
-        redirect('#/notes/byDate');
-        $('#spinner').hide(); 
-      },
-      error: function(response_code, json) {
-        trigger('error', 'Error deleting note: ' + json);
-      }
-    }); 
+    delete_object(params, {message: 'Note deleted.'}, function(note){
+      redirect('#/notes/byDate', flash);
+    });
     return false;
   }});
 }};

@@ -275,6 +275,12 @@
       var param_names = [];
       // if path is a string turn it into a regex
       if (path.constructor == String) {
+        
+        // Needs to be explicitly set because IE will maintain the index unless NULL is returned,
+        // which means that with two consecutive routes that contain params, the second set of params will not be found and end up in splat instead of params
+        // https://developer.mozilla.org/en/Core_JavaScript_1.5_Reference/Global_Objects/RegExp/lastIndex        
+        PATH_NAME_MATCHER.lastIndex = 0;
+        
         // find the names
         while ((path_match = PATH_NAME_MATCHER.exec(path)) != null) {
           param_names.push(path_match[1]);
@@ -863,15 +869,20 @@
     //      redirect('#', 'other', 'route');
     //
     redirect: function() {
+      var context = this;
       var to, args = $.makeArray(arguments);
       if (args.length > 1) {
+        var last = (args[args.length-1]);
+        if (last.message && last.type){
+          flash = args.pop(); 
+        }
         args.unshift('/');
         to = this.join.apply(this, args);
       } else {
         to = args[0];
       }
       this.trigger('redirect', {to: to});
-      this.app.last_location = this.path;
+      this.app.last_location = this.path;      
       return this.app.setLocation(to);
     },
     
