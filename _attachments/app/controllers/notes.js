@@ -7,7 +7,7 @@ Notes = function(sammy) { with(sammy) {
       render('write', note_view, function(template){
         context.app.swap(template);
       });
-      partial('templates/notes/new.mustache', function(html) {
+      partial('app/templates/notes/new.mustache', function(html) {
         $('ul#notes').append(html);
         $('textarea.expanding').autogrow();
         $('textarea.expanding').bind('blur', function(e) {
@@ -47,7 +47,7 @@ Notes = function(sammy) { with(sammy) {
   post('#/notes', function() { with(this) {
     $('#new-note form textarea#new-text').attr('value','');
     create_object('Note', params, {}, function(note){
-      partial('templates/notes/edit.mustache', {_id: note.id, text: params['text']}, function(html) {
+      partial('app/templates/notes/edit.mustache', {_id: note.id, text: params['text']}, function(html) {
         $('#new-note').before(html);
         $('textarea.expanding').autogrow();
         // $.scrollTo($('#new-note'));

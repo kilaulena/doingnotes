@@ -8,7 +8,7 @@ function pluralize(text) {
 }
 
 function template_file_for(resource_path, template){ 
- return 'templates/' + pluralize(resource_from_path(resource_path)) + '/' + template + '.mustache';
+ return 'app/templates/' + pluralize(resource_from_path(resource_path)) + '/' + template + '.mustache';
 }
 
 function resource_from_path(path){
@@ -23,7 +23,7 @@ var Resources = function(app, couchapp) {
   
     new_object: function(name) {
       var plural_name = name.toLowerCase() + 's';
-      this.partial('./templates/' + plural_name + '/new.mustache');
+      this.partial(template_file_for(name, 'new'));
     },
   
     create_object: function(name, params, options, callback) {

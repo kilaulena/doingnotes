@@ -1,6 +1,3 @@
-if (typeof console == "undefined") var console = { log: function() {} };
-else if (typeof console.log == "undefined") console.log = function() {};
-
 $(function() {
   var couchapp = null;
   $.CouchApp(function(app) {
@@ -11,7 +8,6 @@ $(function() {
     element_selector = '#content';
     use(Sammy.Mustache);
     use(Resources, couchapp);
-    use(TestEnvironment, this);
     flash = {};
     Notes(this);
     
@@ -45,11 +41,11 @@ $(function() {
                   }
                  break;
                case UP:
-                 console.log('arrow up pressed');
+                 Sammy.log('arrow up pressed');
                  $(e.target).parent().parent().prev().find('textarea').focus();
                  break;
                case DOWN:
-                 console.log('arrow down pressed');
+                 Sammy.log('arrow down pressed');
                  $(e.target).parent().parent().next().find('textarea').focus();
                  break;
              }
@@ -80,13 +76,6 @@ $(function() {
     }});
   }});
 
-
   sammy.run('#/');
   sammy.trigger('init');
 });
-
-function setTestEnv(){
-  (function(){
-    sammy.trigger('setTestEnvironment');
-  })();
-};
