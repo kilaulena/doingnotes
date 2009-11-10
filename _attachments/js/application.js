@@ -1,4 +1,5 @@
-// console = console || { log:function(){} };
+if (typeof console == "undefined") var console = { log: function() {} };
+else if (typeof console.log == "undefined") console.log = function() {};
 
 $(function() {
   var couchapp = null;
