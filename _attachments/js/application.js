@@ -1,20 +1,26 @@
-$(function() {
+// console = console || { log:function(){} };
 
+$(function() {
   var couchapp = null;
   $.CouchApp(function(app) {
     couchapp = app;
   });
-  // var content = $('#content');
 
-  var sammy = $.sammy(function() { with(this) {
+  sammy = new Sammy.Application(function() { with(this) {
     element_selector = '#content';
     use(Sammy.Mustache);
     use(Resources, couchapp);
-    use(TestEnvironment, sammy);
+    use(TestEnvironment, this);
     flash = {};
     Notes(this);
+    
+    get('#/', function(){with(this) {
+      redirect('#/notes/write');
+      return false;
+    }});
+    
     bind('init', function() { with(this) {
-       $(window).bind("keydown", function(e) {
+      $(window).bind("keydown", function(e) {
          if(e.target.tagName == 'TEXTAREA' && $(e.target).attr('class', 'expanding')){
            var ENTER = 13;
            var UP = 38;
@@ -52,29 +58,34 @@ $(function() {
          // alert('nach if');
        });
        // alert('end of init');
-     }});
+    }});
  
  
-     before(function() {
-       $('#flash').html(flash.message);
-       $('#flash').attr('class', flash.type);
-       flash = {type: '', message: ''};
-       $('#spinner').show();
-     });
- 
-     bind('error', function(e, flash) { with(this) {
-       $('#flash').html(flash.message);
-       $('#flash').attr('class', 'error');
-     }});
- 
-     bind('notice', function(e, flash) { with(this) {
-       $('#flash').html(flash.message);
-       $('#flash').attr('class', 'notice');
-     }});
+    before(function() {
+      $('#flash').html(flash.message);
+      $('#flash').attr('class', flash.type);
+      flash = {type: '', message: ''};
+      $('#spinner').show();
+    });
+
+    bind('error', function(e, flash) { with(this) {
+      $('#flash').html(flash.message);
+      $('#flash').attr('class', 'error');
+    }});
+
+    bind('notice', function(e, flash) { with(this) {
+      $('#flash').html(flash.message);
+      $('#flash').attr('class', 'notice');
+    }});
   }});
 
 
-  sammy.run('#/notes/write');
+  sammy.run('#/');
   sammy.trigger('init');
-  // sammy.trigger('setTestEnvironment');
 });
+
+function setTestEnv(){
+  (function(){
+    sammy.trigger('setTestEnvironment');
+  })();
+};

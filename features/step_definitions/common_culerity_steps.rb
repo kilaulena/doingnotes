@@ -10,7 +10,6 @@ When /I click "(.*)"/ do |link|
 end
 
 When /I follow "(.*)"/ do |link|
-  # $browser.execute_script("sammy.trigger('setTestEnvironment');")
   _link = [[:text, /^#{Regexp.escape(link)}$/], [:id, link], [:title, link]].map{|args| $browser.link(*args)}.find{|__link| __link.exist?}
   raise "link \"#{link}\" not found" unless _link
   _link.click
@@ -62,8 +61,8 @@ end
 
 When /I go to the (.+)/ do |path|
   $browser.goto host + path_to(path)
-  # puts 'go to '
   When 'I wait for the AJAX call to finish'
+  $browser.execute_script("setTestEnv();")
 end
 
 When /I wait for the AJAX call to finish/ do
