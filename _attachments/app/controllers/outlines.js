@@ -17,25 +17,16 @@ Outlines = function(sammy, couchapp) { with(sammy) {
 
   get('#/outlines/:id', function() { with(this) {
     var view = {};
-    console.log("['" + params['id'] + "']");
-    console.log("['" + params['id'] + "',{}]");
-    
-    // http://localhost:5984/doingnotes/_design/doingnotes/_view/notes_by_outline?startkey=[%22fa9f44e7318030086d5760f46abb54db%22]&endkey=[%22fa9f44e7318030086d5760f46abb54db%22,%20{}]
     couchapp.design.view('notes_by_outline', {
-      startkey: "[\"" + params['id'] + "\"]",
-      endkey: "[\"" + params['id'] + "\",{}]",
+      startkey: [params['id']],
+      endkey: [params['id'], {}],
       success: function(json) { 
-        console.log(json['rows']);
         if (json['rows'].length > 0) {   
           view['notes'] = json['rows'].map(function(row) {return row.value});  
         } else {                   
           view['notes'] = [];
-        }
-        // console.log(view);
-        
-        render('show', view, function(template){
-          this.app.swap(template);
-        });
+        }        
+        render('show', view);
         partial('app/templates/notes/new.mustache', {outline_id: params['id']}, function(html) {
           $('ul#notes').append(html);
           $('textarea.expanding').autogrow();
@@ -51,11 +42,8 @@ Outlines = function(sammy, couchapp) { with(sammy) {
   }});
   
   post('#/outlines', function() { with(this) {
-    create_object('Outline', params, {}, function(outline){
-      partial('app/templates/outlines/edit.mustache', {_id: outline.id, title: params['title']}, function(html) {
-        render('show', html);
-        $('#spinner').hide(); 
-      });
+    create_object('Outline', params, {message: "Here is your new outline"}, function(outline){
+      redirect('#/outlines/' + outline.id, flash);
     });
     return false;
   }});

@@ -1,25 +1,4 @@
 Notes = function(sammy) { with(sammy) {
-  get('#/notes/write', function(){with(this) {
-    var options = [];
-    options['sort'] = 'byDate';
-    var context = this;
-    list_objects('Note', 'notes', options, function(note_view){
-      render('write', note_view, function(template){
-        context.app.swap(template);
-      });
-      partial('app/templates/notes/new.mustache', function(html) {
-        $('ul#notes').append(html);
-        $('textarea.expanding').autogrow();
-        $('textarea.expanding').bind('blur', function(e) {
-          $(e.target).parent('form').submit();
-        });
-        $('#spinner').hide(); 
-        $('ul#notes li:first').focus(); //doesn't work
-      });
-    });
-    return false;
-  }});
-
   get('#/notes', function() { with(this) {
     redirect('#/notes/byDate');
     return false;
