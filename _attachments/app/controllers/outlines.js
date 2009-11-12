@@ -21,6 +21,8 @@ Outlines = function(sammy, couchapp) { with(sammy) {
       startkey: [params['id']],
       endkey: [params['id'], {}],
       success: function(json) { 
+        view.title = json.rows[0].value.title;
+        json.rows.splice(0,1);        
         if (json['rows'].length > 0) {   
           view['notes'] = json['rows'].map(function(row) {return row.value});  
         } else {                   

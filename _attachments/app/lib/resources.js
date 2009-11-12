@@ -51,6 +51,7 @@ var Resources = function(app, couchapp) {
         });
       } else {
         context.flash = {message: object.errors.join(", ")};
+        context.trigger('error', context.flash);                
       };
     },
   
@@ -114,7 +115,7 @@ var Resources = function(app, couchapp) {
           couchapp.db.saveDoc(object.to_json(), {
             success: function(res) {
               if(options.message) {     
-                context.trigger('notice', {message: options.message});                
+                context.flash = {message: options.message, type: 'notice'};
               }
               if(options.success) {
                 options.success(object);
@@ -127,6 +128,7 @@ var Resources = function(app, couchapp) {
           });
         } else {
           context.flash = {message: object.errors.join(", ")};
+          context.trigger('error', context.flash);                
         };
       });
     },

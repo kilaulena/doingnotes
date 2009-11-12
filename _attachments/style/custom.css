@@ -80,6 +80,12 @@ input.error {
 
 /* writeboard */
 
+h2 {
+  color: white;
+  padding-left: 17px;
+  font-size: 1.8em;
+}
+
 #writeboard ul#notes li {
   list-style-type: none;
   margin: 0;  
