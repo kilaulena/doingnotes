@@ -10,48 +10,56 @@ $(function() {
     use(Resources, couchapp);
     flash = {};
     Notes(this);
+    Outlines(this, couchapp);
     
     get('#/', function(){with(this) {
       redirect('#/notes/write');
       return false;
     }});
     
+    function enterPressed(event) {
+      return (event.keyCode == 13 && event.shiftKey == false);
+    };
+    
+    function keyUpPressed(event) {
+      return (event.keyCode == 38 && event.shiftKey == false);
+    };
+    
+    function keyDownPressed(event) {
+      return (event.keyCode == 40 && event.shiftKey == false);
+    };
+    
     bind('init', function() { with(this) {
       $(window).bind("keydown", function(e) {
-         if(e.target.tagName == 'TEXTAREA' && $(e.target).attr('class', 'expanding')){
-           var ENTER = 13;
-           var UP = 38;
-           var DOWN = 40;
-           if (e.keyCode == ENTER || e.keyCode == UP || e.keyCode == DOWN) {
-             e.preventDefault();
-             switch(e.keyCode) {
-               case ENTER:
-                  if($(e.target).parent().parent().attr('class') == 'edit-note') {
-                   // console.log('new note partial');
-                   // partial('templates/notes/new.mustache', function(html) {
-                   //   $(e.target).parent().parent().parent().append(html);
-                   //   $('textarea.expanding').autogrow();
-                   //   $('textarea.expanding').bind('blur', function(e) {
-                   //     $(e.target).parent('form').submit();
-                   //   });
-                   //   $('#spinner').hide(); 
-                   // });
-                   $(e.target).parent().parent().next().find('textarea').focus();
-                  } else { 
-                  }
-                 break;
-               case UP:
-                 Sammy.log('arrow up pressed');
-                 $(e.target).parent().parent().prev().find('textarea').focus();
-                 break;
-               case DOWN:
-                 Sammy.log('arrow down pressed');
-                 $(e.target).parent().parent().next().find('textarea').focus();
-                 break;
-             }
-             $(e.target).parent('form').submit();
-           }
-         }
+        if(e.target.tagName == 'TEXTAREA' && $(e.target).attr('class', 'expanding')){
+          if (enterPressed(e)) {
+            e.preventDefault();
+            if($(e.target).parent().parent().attr('class') == 'edit-note') {
+              Sammy.log('new note partial');
+              // partial('templates/notes/new.mustache', function(html) {
+              //   $(e.target).parent().parent().parent().append(html);
+              //   $('textarea.expanding').autogrow();
+              //   $('textarea.expanding').bind('blur', function(e) {
+              //     $(e.target).parent('form').submit();
+              //   });
+              //   $('#spinner').hide(); 
+              // });
+              $(e.target).parent().parent().next().find('textarea').focus();
+              $(e.target).parent('form').submit();
+            } else if($(e.target).parent().parent().attr('class') == 'new-note')  {
+              $(e.target).parent().parent().next().find('textarea').focus();
+              $(e.target).parent('form').submit();
+            }
+          } else if(keyUpPressed(e)){
+            Sammy.log('arrow up pressed');
+            $(e.target).parent().parent().prev().find('textarea').focus();
+            $(e.target).parent('form').submit();
+          }  else if(keyDownPressed(e)){
+            Sammy.log('arrow down pressed');
+            $(e.target).parent().parent().next().find('textarea').focus();
+            $(e.target).parent('form').submit();
+          }
+        }
          // alert('nach if');
        });
        // alert('end of init');
@@ -68,6 +76,7 @@ $(function() {
     bind('error', function(e, flash) { with(this) {
       $('#flash').html(flash.message);
       $('#flash').attr('class', 'error');
+      $('#spinner').hide();
     }});
 
     bind('notice', function(e, flash) { with(this) {

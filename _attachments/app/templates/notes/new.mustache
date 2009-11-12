@@ -1,6 +1,7 @@
-<li id="new-note">
+<li id="new-note" class="new-note">
   <form action="#/notes" method="post" accept-charset="utf-8">
     <textarea class="expanding" id="new-text" name="text"/>
+    <input type="hidden" name="outline_id" value="{{outline_id}}">
     <input type="submit" value="Save" style="display:none;"/>
   </form>
 </li>

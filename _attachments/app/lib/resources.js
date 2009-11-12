@@ -8,11 +8,15 @@ function pluralize(text) {
 }
 
 function template_file_for(resource_path, template){ 
- return 'app/templates/' + pluralize(resource_from_path(resource_path)) + '/' + template + '.mustache';
+  return 'app/templates/' + pluralize(resource_from_path(resource_path)) + '/' + template + '.mustache';
 }
 
 function resource_from_path(path){
- return /^#\/(\w+)(\/|)/.exec(path)[1];;
+  if (/^#\/(\w+)(\/|)/.exec(path)) {
+    return /^#\/(\w+)(\/|)/.exec(path)[1];
+  } else {
+    return path;
+  }
 }
 
 var Resources = function(app, couchapp) {
@@ -21,9 +25,8 @@ var Resources = function(app, couchapp) {
       this.partial(template_file_for(this.path, template), data, callback);
     },
   
-    new_object: function(name) {
-      var plural_name = name.toLowerCase() + 's';
-      this.partial(template_file_for(name, 'new'));
+    new_object: function(name, callback) {
+      this.partial(template_file_for(name, 'new'), callback);
     },
   
     create_object: function(name, params, options, callback) {

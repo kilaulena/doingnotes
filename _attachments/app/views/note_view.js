@@ -23,5 +23,8 @@ NoteView.prototype = {
   },
   not_new_record: function() {
     return this.note.updated_at || false;
+  },
+  outline_id: function() {
+    return this.note.outline_id;
   }
 }

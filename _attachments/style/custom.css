@@ -1,10 +1,14 @@
 /* general */
 
 body {
+  background: #C1AFFA;
   color:#2e0571;
 }
 
-#container {width:950px;margin:0 auto;}
+#container {
+  width:950px;
+  margin:0 auto;
+}
 
 #notice, #error {
   display: none;
@@ -18,12 +22,16 @@ body {
   clear: both;
   height: 83px;
   border-bottom: 2px solid #503AAE;
+  border-left: 2px solid #503AAE;
+  border-right: 2px solid #503AAE;
 }
 
 #content {
-  padding: 35px 24px 16px 16px;
+  padding: 35px 21px 16px 15px;
   background: #946bd6;
   min-height:600px;
+  border-left: 2px solid #503AAE;
+  border-right: 2px solid #503AAE;
 }
 
 #spinner {

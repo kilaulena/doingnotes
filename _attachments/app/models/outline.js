@@ -1,15 +1,18 @@
-Note = function(attributes) {
+Outline = function(attributes) {
   this._id = attributes._id;
   this._rev = attributes._rev;
   this.created_at = attributes.created_at || new Date().toJSON();
   this.updated_at = attributes.updated_at;
-  this.text = attributes.text;
-  this.outline_id = attributes.outline_id;
+  this.title = attributes.title;
 }
 
-Note.prototype = {
+Outline.prototype = {
   valid: function() {
-    return true;
+    this.errors = [];
+    if(!this.title) {
+      this.errors.push("You need to enter a title");
+    };
+    return this.errors.length === 0;
   },
   to_json: function() {
     return {
@@ -17,9 +20,8 @@ Note.prototype = {
       _rev: this._rev,
       created_at: this.created_at,
       updated_at: this.updated_at,
-      type: 'Note',
-      text: this.text,
-      outline_id: this.outline_id
+      type: 'Outline',
+      title: this.title
     };
   }
 };

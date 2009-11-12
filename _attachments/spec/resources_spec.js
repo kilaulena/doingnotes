@@ -19,5 +19,15 @@ describe 'Resources helper'
       pluralize('Notes').should.eql 'notes'
     end
   end
+  
+  describe 'resource_from_path'
+    it 'should return the name of the resource when a path is given'
+      resource_from_path('#/outlines/edit').should.eql "outlines"
+    end
+    
+    it 'should return the name when only the name is given'
+      resource_from_path('outline').should.eql "outline"
+    end
+  end
 end
     
