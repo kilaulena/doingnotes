@@ -38,7 +38,7 @@ var Resources = function(app, couchapp) {
         couchapp.db.saveDoc(object.to_json(), {
           success: function(res) {
             if(options.message) {
-              context.trigger('notice', {message: options.message});
+              context.flash = {message: options.message, type: 'notice'};
             }
             if(options.success) {
               options.success(object);
@@ -46,11 +46,11 @@ var Resources = function(app, couchapp) {
             callback(res);
           },
           error: function(response_code, res) {
-            context.trigger('error', {message: 'Error saving ' + name + ': ' + res});
+            context.flash = {message: 'Error saving ' + name + ': ' + res, type: 'error'};
           }
         });
       } else {
-        context.trigger('error', {message: object.errors.join(", ")});
+        context.flash = {message: object.errors.join(", ")};
       };
     },
   
@@ -85,7 +85,7 @@ var Resources = function(app, couchapp) {
           if(doc) {
             callback(view);
           } else {
-            context.trigger('error', type + ' with ID "' + id + '" not found.');
+            context.flash = {message: type + ' with ID "' + id + '" not found.', type: 'error'};
           }
         },
         error: function() {
@@ -122,11 +122,11 @@ var Resources = function(app, couchapp) {
               callback(res);
             },
             error: function(response_code, res) {
-              context.trigger('error', {message: 'Error saving ' + name + ': ' + res});
+              context.flash = {message: 'Error saving ' + name + ': ' + res, type: 'error'};
             }
           });
         } else {
-          context.trigger('error', {message: object.errors.join(", ")});
+          context.flash = {message: object.errors.join(", ")};
         };
       });
     },
@@ -143,7 +143,7 @@ var Resources = function(app, couchapp) {
           callback();
         },
         error: function(response_code, json) {
-          context.flash = {message: 'Error deleting note: ' + json};
+          context.flash = {message: 'Error deleting note: ' + json, type: 'error'};
         }
       }); 
       return false;
