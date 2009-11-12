@@ -1,5 +1,5 @@
 
-// JSpec - Mock Timers - Copyright TJ Holowaychuk <tj@vision-media.ca> (MIT Licensed)
+// Mock Timers - Copyright TJ Holowaychuk <tj@vision-media.ca> (MIT Licensed)
 
 ;(function(){
   
@@ -7,7 +7,7 @@
    * Version.
    */
    
-  mockTimersVersion = '1.0.1'
+  mockTimersVersion = '1.0.2'
   
   /**
    * Localized timer stack.
@@ -54,7 +54,7 @@
    * @api public
    */
 
-  clearInterval = function(id) {
+  clearInterval = clearTimeout = function(id) {
     return delete timers[--id]
   }
   

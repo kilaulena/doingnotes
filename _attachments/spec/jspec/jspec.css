@@ -95,6 +95,8 @@ body.jspec {
   display: block;
 }
 #jspec-report tr td:first-child em {
+	display: block;
+	clear: both;
   font-style: normal;
   font-weight: normal;
   color: #7B8D9B;

@@ -5,7 +5,7 @@
 
   JSpec = {
 
-    version   : '2.11.6',
+    version   : '2.11.12',
     cache     : {},
     suites    : [],
     modules   : [],
@@ -160,7 +160,9 @@
                       (spec.passed() && !failuresOnly) ?
                         '<td class="pass">' + escape(spec.description)+ '</td><td>' + spec.assertionsGraph() + '</td>' :
                           !spec.passed() ?
-                            '<td class="fail">' + escape(spec.description) + ' <em>' + escape(spec.failure().message) + '</em>' + '</td><td>' + spec.assertionsGraph() + '</td>' :
+                            '<td class="fail">' + escape(spec.description) + 
+  													map(spec.failures(), function(a){ return '<em>' + escape(a.message) + '</em>' }).join('') +
+ 														'</td><td>' + spec.assertionsGraph() + '</td>' :
                               '') +
                   '<tr class="body"><td colspan="2"><pre>' + bodyContents(spec.body) + '</pre></td></tr>'
               }).join('') + '</tr>'
@@ -196,11 +198,13 @@
                   print(color('  ' + spec.description, 'green') + assertionsGraph)
                 else if (!spec.passed())
                   print(color('  ' + spec.description, 'red') + assertionsGraph + 
-                        "\n" + indent(spec.failure().message) + "\n")
+                        "\n" + indent(map(spec.failures(), function(a){ return a.message }).join("\n")) + "\n")
               })
               print("")
             }
          })
+         
+         quit(results.stats.failures)
        },
 
       /**
@@ -397,7 +401,7 @@
             this.message = methodString + ' to be called with ' + puts.apply(this, this.expectedArgs) +
              ' but was' + (negate ? '' : ' called with ' + puts.apply(this, this.failingArgs()))
 
-          if (negate ? !this.expectedResult && !this.expectedArgs && this.calls.length == this.times : this.calls.length != this.times)
+          if (negate ? !this.expectedResult && !this.expectedArgs && this.calls.length >= this.times : this.calls.length != this.times)
             this.message = methodString + ' to be called ' + times(this.times) + 
             ', but ' +  (this.calls.length == 0 ? ' was not called' : ' was called ' + times(this.calls.length))
                 
@@ -964,7 +968,7 @@
       if (object === false) return 'false'
       if (object.an_instance_of) return 'an instance of ' + object.an_instance_of.name
       if (object.jquery && object.selector.length > 0) return 'selector ' + puts(object.selector) + ''
-      if (object.jquery) return object.html()
+      if (object.jquery) return object.get(0).outerHTML
       if (object.nodeName) return object.outerHTML
       switch (object.constructor) {
         case String: return "'" + object + "'"
@@ -1338,18 +1342,20 @@
       if (typeof input != 'string') return
       input = hookImmutable('preprocessing', input)
       return input.
+        replace(/\t/g, '  ').
+        replace(/\r\n|\n|\r/g, '\n').
+        replace(/__END__[^]*/, '').
         replace(/([\w\.]+)\.(stub|destub)\((.*?)\)$/gm, '$2($1, $3)').
         replace(/describe\s+(.*?)$/gm, 'describe($1, function(){').
         replace(/^\s+it\s+(.*?)$/gm, ' it($1, function(){').
-        replace(/^(?: *)(before_each|after_each|before|after)(?= |\n|$)/gm, 'JSpec.currentSuite.addHook("$1", function(){').
+        replace(/^ *(before_each|after_each|before|after)(?= |\n|$)/gm, 'JSpec.currentSuite.addHook("$1", function(){').
         replace(/^\s*end(?=\s|$)/gm, '});').
         replace(/-\{/g, 'function(){').
         replace(/(\d+)\.\.(\d+)/g, function(_, a, b){ return range(a, b) }).
         replace(/\.should([_\.]not)?[_\.](\w+)(?: |;|$)(.*)$/gm, '.should$1_$2($3)').
         replace(/([\/\s]*)(.+?)\.(should(?:[_\.]not)?)[_\.](\w+)\((.*)\)\s*;?$/gm, '$1 expect($2).$3($4, $5)').
-        replace(/, \)/gm, ')').
-        replace(/should\.not/gm, 'should_not').
-        replace(/__END__.*/m, '')
+        replace(/, \)/g, ')').
+        replace(/should\.not/g, 'should_not')
     },
 
     /**
@@ -1598,7 +1604,7 @@
     load : function(file, callback) {
       if (any(hook('loading', file), haveStopped)) return
       if ('readFile' in main)
-        return callback ? readFile(file, callback) : readFile(file)
+        return readFile(file)
       else if (this.hasXhr()) {
         var request = this.xhr()
         request.open('GET', file, false)
@@ -1622,12 +1628,7 @@
 
     exec : function(file) {
       if (any(hook('executing', file), haveStopped)) return this
-      if ('node' in main)
-        this.load(file, function(contents){
-          eval('with (JSpec){ ' + JSpec.preprocess(contents) + ' }')
-        })
-      else
-        eval('with (JSpec){' + this.preprocess(this.load(file)) + '}')
+      eval('with (JSpec){' + this.preprocess(this.load(file)) + '}')
       return this
     }
   }
