@@ -96,6 +96,11 @@ ul#notes li textarea{
 }
 
 ul#notes li#new-note textarea {
+  background: red;
+}
+
+#new-outline {
+  margin-left: 20px;
 }
 
 ul#notes li#new-note  {

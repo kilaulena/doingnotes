@@ -42,7 +42,7 @@ var Resources = function(app, couchapp) {
             }
             if(options.success) {
               options.success(object);
-            }            
+            }          
             callback(res);
           },
           error: function(response_code, res) {
