@@ -35,26 +35,6 @@ end
 #   response.body.should contain(regexp)
 # end
 
-Then /^I should see "([^\"]+)" in a li with class "([^\"]+)"$/ do |text, css_class|  
-  li = $browser.li(:class, css_class)
-  # puts li.html
-  unless li.html.match(/text/im) 
-    raise("#{text} can't be found in li #{css_class}") 
-  end
- # puts  find_element(type.to_sym, name).html
- #  find_element(type.to_sym, name).html should include(text)
-end
-
-Then /^I should see a li with id "([^\"]*)"$/ do |id|
-  $browser.li(:id, id).attribute_value(:id).should include(id)
-end
-
-Then /^I should see a blank li with id "([^\"]+)"$/ do |id|
-  li = $browser.li(:id, id)
-  unless li.html.match(/>\s*<\/textarea>/) 
-    raise("li #{id} is not blank") 
-  end  
-end
 
 # Then /^"([^\"]*)" should have the class "([^\"]*)"$/ do |element_id, css_class|
 #   find_element(:text_field, element_id).attribute_value(:class).should include(css_class)

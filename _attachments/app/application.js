@@ -13,7 +13,7 @@ $(function() {
     Outlines(this, couchapp);
     
     get('#/', function(){with(this) {
-      redirect('#/notes/write');
+      redirect('#/outlines');
       return false;
     }});
     
@@ -83,6 +83,8 @@ $(function() {
       $('#flash').html(flash.message);
       $('#flash').attr('class', 'notice');
     }});
+    
+
   }});
 
   sammy.run('#/');

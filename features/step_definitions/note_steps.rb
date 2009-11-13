@@ -45,3 +45,25 @@ When /^I update the text of the note "([^\"]*)" with "([^\"]*)"$/ do |old_text, 
     :updated_at => Time.now.to_json
   }.to_json
 end 
+
+
+Then /^I should see "([^\"]+)" in a li with class "([^\"]+)"$/ do |text, css_class|  
+  li = $browser.li(:class, css_class)
+  # puts li.html
+  unless li.html.match(/text/im) 
+    raise("#{text} can't be found in li #{css_class}") 
+  end
+ # puts  find_element(type.to_sym, name).html
+ #  find_element(type.to_sym, name).html should include(text)
+end
+
+Then /^I should see a li with id "([^\"]*)"$/ do |id|
+  $browser.li(:id, id).attribute_value(:id).should include(id)
+end
+
+Then /^I should see a blank li with id "([^\"]+)"$/ do |id|
+  li = $browser.li(:id, id)
+  unless li.html.match(/>\s*<\/textarea>/) 
+    raise("li #{id} is not blank") 
+  end  
+end

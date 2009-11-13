@@ -61,8 +61,8 @@ end
 
 When /I go to the (.+)/ do |path|
   $browser.goto host + path_to(path)
-  When 'I wait for the AJAX call to finish'
   $browser.execute_script("setTestEnv();")
+  When 'I wait for the AJAX call to finish'
 end
 
 When /I wait for the AJAX call to finish/ do
