@@ -5,7 +5,7 @@ require 'rake/rdoctask'
 require 'restclient'
 
 def host
-  'http://localhost:5984'
+  'http://lenalena:flgzu11nn@localhost:5984'
 end
 
 def database
@@ -19,7 +19,7 @@ namespace :couch do
     RestClient.delete "#{host}/#{database}" rescue nil
     RestClient.put "#{host}/#{database}", ""
     puts '... pushing app ...'
-    system "couchapp push #{database}"
+    system "couchapp push #{host}/#{database}"
     puts '... ready.'
   end
 end
