@@ -15,8 +15,19 @@ Outlines = function(sammy, couchapp) { with(sammy) {
     return false;
   }});
 
+  function renderShowOutline(context, view){
+    context.render('show', view, function(response){
+      context.app.swap(response);
+      $('ul#notes li:first').find('textarea').focus();
+      context.bindSubmitOnBlurAndAutogrow();
+      $('#spinner').hide(); 
+      return false;
+    }); 
+  }
+
   get('#/outlines/:id', function() { with(this) {
     var view = {};
+    var context = this;
     couchapp.design.view('notes_by_outline', {
       startkey: [params['id']],
       endkey: [params['id'], {}],
@@ -27,22 +38,12 @@ Outlines = function(sammy, couchapp) { with(sammy) {
           json.rows.splice(0,1);        
           if (json['rows'].length > 0) {   
             view['notes'] = json['rows'].map(function(row) {return row.value}); 
-            render('show', view, function(response){
-              app.swap(response);
-              $('ul#notes li:first').find('textarea').focus();
-              bindSubmitOnBlurAndAutogrow();
-              $('#spinner').hide(); 
-            }); 
+            renderShowOutline(context, view);
           } else {
-            view['notes'] = [];
-            render('show', view, function(response){
-              app.swap(response);
-              partial('app/templates/notes/new.mustache', {outline_id: params['id']}, function(html) {
-                $(html).appendTo($('ul#notes')).find('textarea').focus();              
-                bindSubmitOnBlurAndAutogrow();
-                $('#spinner').hide(); 
-              });
-            });      
+            create_object('Note', {text: '', outline_id: view.id}, {}, function(note){
+              view['notes'] = [note];
+              renderShowOutline(context, view);
+            })     
           } 
         } else {
           flash = {message: 'Outline does not exist.', type: 'error'};

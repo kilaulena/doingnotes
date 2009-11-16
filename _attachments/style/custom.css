@@ -95,16 +95,8 @@ ul#notes li textarea{
   width: 100%;
 }
 
-ul#notes li#new-note textarea {
-  background: red;
-}
-
 #new-outline {
   margin-left: 20px;
-}
-
-ul#notes li#new-note  {
-  width: 100%;
 }
 
 textarea.expanding {

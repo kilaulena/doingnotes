@@ -22,24 +22,7 @@ Notes = function(sammy) { with(sammy) {
     });
     return false;
   }});
-  
-  post('#/notes', function() { with(this) {
-    $('#new-note form textarea#new-text').attr('value','');
-    create_object('Note', params, {}, function(note){      
-      partial('app/templates/notes/edit.mustache', {_id: note.id, text: params['text']}, function(html) { 
-        bindSubmitOnBlurAndAutogrow();
-        //NEXT: wenn textarea gepostet wurde, das temp edit feld mit der id ueberschreiben
-        // $.scrollTo($('#new-note'));
-        $('#spinner').hide(); 
-      });
-    });
-    return false;
-  }});
-  
-  put('#/notes/temp-edit', function()  {
-    return false;
-  });
-  
+
   put('#/notes/:id', function()  { with(this) {   
     update_object('Note', params, {}, function(note){
       $('#spinner').hide(); 
