@@ -47,6 +47,7 @@ var Resources = function(app, couchapp) {
           },
           error: function(response_code, res) {
             context.flash = {message: 'Error saving ' + name + ': ' + res, type: 'error'};
+            context.trigger('error', context.flash);                
           }
         });
       } else {
@@ -148,7 +149,6 @@ var Resources = function(app, couchapp) {
           context.flash = {message: 'Error deleting note: ' + json, type: 'error'};
         }
       }); 
-      return false;
     }
   });
 };

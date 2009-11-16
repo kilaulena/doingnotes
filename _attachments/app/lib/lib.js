@@ -10,6 +10,14 @@ function byDate(a, b) {
   return ((x < y) ? -1 : ((x > y) ? 1 : 0));
 }
 
+function slugize(string) {
+  return string.toLowerCase().replace(/\s/g, "-");
+}
+
+function strip(string) {
+  return (string.replace(/^\W+/,'')).replace(/\W+$/,'');
+}
+
 Array.prototype.flatten = function() {
   return this.reduce(function(res, el) {
     if(el.constructor == Array) {

@@ -1,7 +1,7 @@
 Outlines = function(sammy, couchapp) { with(sammy) {
   get('#/outlines', function() { with(this) {
-    list_objects('Outline', 'outlines', [], function(outlines){  
-      render('index', outlines);
+    list_objects('Outline', 'outlines', [], function(view){  
+      render('index', view);
       $('#spinner').hide(); 
     });
     return false;
@@ -21,8 +21,7 @@ Outlines = function(sammy, couchapp) { with(sammy) {
       $('ul#notes li:first').find('textarea').focus();
       context.bindSubmitOnBlurAndAutogrow();
       $('#spinner').hide(); 
-      return false;
-    }); 
+    });     
   }
 
   get('#/outlines/:id', function() { with(this) {
@@ -43,7 +42,7 @@ Outlines = function(sammy, couchapp) { with(sammy) {
             create_object('Note', {text: '', outline_id: view.id}, {}, function(note){
               view['notes'] = [note];
               renderShowOutline(context, view);
-            })     
+            })            
           } 
         } else {
           flash = {message: 'Outline does not exist.', type: 'error'};

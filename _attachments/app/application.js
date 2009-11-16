@@ -82,7 +82,6 @@ $(function() {
        });
     }});
  
- 
     before(function() {
       $('#flash').html(flash.message);
       $('#flash').attr('class', flash.type);
@@ -100,8 +99,6 @@ $(function() {
       $('#flash').html(flash.message);
       $('#flash').attr('class', 'notice');
     }});
-    
-
   }});
 
   sammy.run('#/');

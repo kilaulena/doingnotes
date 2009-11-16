@@ -5,6 +5,8 @@ Note = function(attributes) {
   this.updated_at = attributes.updated_at;
   this.text = attributes.text;
   this.outline_id = attributes.outline_id;
+  this.previous_id = attributes.previous_id;
+  this.next_id = attributes.next_id;
 }
 
 Note.prototype = {
@@ -19,7 +21,9 @@ Note.prototype = {
       updated_at: this.updated_at,
       type: 'Note',
       text: this.text,
-      outline_id: this.outline_id
+      outline_id: this.outline_id,
+      previous_id: this.previous_id,
+      next_id: this.next_id
     };
   }
 };

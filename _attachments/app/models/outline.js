@@ -1,16 +1,19 @@
 Outline = function(attributes) {
-  this._id = attributes._id;
+  this._id = attributes._id || slugize(strip(attributes.title));
   this._rev = attributes._rev;
   this.created_at = attributes.created_at || new Date().toJSON();
   this.updated_at = attributes.updated_at;
-  this.title = attributes.title;
+  this.title = strip(attributes.title);
 }
 
 Outline.prototype = {
   valid: function() {
     this.errors = [];
-    if(!this.title) {
-      this.errors.push("You need to enter a title");
+    if(!this._id) {
+      this.errors.push("You need to enter a title.");
+    };
+    if(this.title.match(/[^\w ]/)){
+      this.errors.push("Only letters, numbers and blanks are allowed.");
     };
     return this.errors.length === 0;
   },
