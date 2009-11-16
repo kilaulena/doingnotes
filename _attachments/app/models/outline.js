@@ -1,9 +1,9 @@
 Outline = function(attributes) {
-  this._id = attributes._id || slugize(strip(attributes.title));
+  this._id = attributes._id || slugize(stripBlanks(attributes.title));
   this._rev = attributes._rev;
   this.created_at = attributes.created_at || new Date().toJSON();
   this.updated_at = attributes.updated_at;
-  this.title = strip(attributes.title);
+  this.title = stripBlanks(attributes.title);
 }
 
 Outline.prototype = {

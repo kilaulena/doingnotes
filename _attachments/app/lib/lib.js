@@ -14,8 +14,8 @@ function slugize(string) {
   return string.toLowerCase().replace(/\s/g, "-");
 }
 
-function strip(string) {
-  return (string.replace(/^\W+/,'')).replace(/\W+$/,'');
+function stripBlanks(string) {
+  return (string.replace(/^ +/,'')).replace(/ +$/,'');
 }
 
 Array.prototype.flatten = function() {

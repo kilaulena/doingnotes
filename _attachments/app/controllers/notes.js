@@ -14,7 +14,6 @@ Notes = function(sammy) { with(sammy) {
     return false;
   }});
 
-
   get('#/notes/:id', function() { with(this) {
     load_object('Note', params['id'], function(note_view){
       render('show', note_view);

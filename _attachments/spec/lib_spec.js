@@ -9,13 +9,17 @@ describe 'lib'
     end
   end
   
-  describe 'strip'
+  describe 'stripBlanks'
     it 'should remove leading blanks'
-      strip(" hello a test string").should.equal 'hello a test string'
+      stripBlanks(" hello a test string").should.equal 'hello a test string'
     end
     
     it 'should remove trailing blanks'
-      strip("hello a test string ").should.equal 'hello a test string'
+      stripBlanks("hello a test string ").should.equal 'hello a test string'
+    end
+    
+    it 'should not remove non-word characters'
+      stripBlanks("hello a test string!").should.equal 'hello a test string!' 
     end
   end
 end
