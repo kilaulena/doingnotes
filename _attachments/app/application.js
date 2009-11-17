@@ -79,7 +79,7 @@ $(function() {
             submitIfChanged(target);
           }
         }
-       });
+      });
     }});
  
     before(function() {
