@@ -36,7 +36,8 @@ Outlines = function(sammy, couchapp) { with(sammy) {
           view.id    = json.rows[0].value._id;
           json.rows.splice(0,1);        
           if (json['rows'].length > 0) {   
-            view['notes'] = json['rows'].map(function(row) {return row.value});             
+            notes = json['rows'].map(function(row) {return row.value});             
+            view.notes = sortByPreviousAndNext(notes);
             renderShowOutline(context, view);
           } else {
             create_object('Note', {outline_id: view.id}, {}, function(note){

@@ -29,8 +29,5 @@ NoteView.prototype = {
   },
   previous_id: function() {
     return this.note.previous_id;
-  },
-  next_id: function() {
-    return this.note.next_id;
   }
 }

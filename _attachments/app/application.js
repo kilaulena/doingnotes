@@ -47,9 +47,12 @@ $(function() {
           submitIfChanged($(e.target));
         });
       },
+      getNoteId: function(element){
+        return element.attr('id').match(/edit_text_(\w*)/)[1];
+      },
       insertAndFocusNewNote: function(target) { 
         var context = this;  
-        this.create_object('Note', {text: '', outline_id: $('h2#outline-id').html()}, {}, function(note){      
+        this.create_object('Note', {text: '', outline_id: $('h2#outline-id').html(), previous_id: context.getNoteId(target)}, {}, function(note){      
           context.partial('app/templates/notes/edit.mustache', {_id: note.id}, function(html) { 
             $(html).insertAfter(target.parent().parent()).find('textarea').focus();
             context.bindSubmitOnBlurAndAutogrow();
