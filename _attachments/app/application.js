@@ -52,7 +52,15 @@ $(function() {
       },
       insertAndFocusNewNote: function(target) { 
         var context = this;  
-        this.create_object('Note', {text: '', outline_id: $('h2#outline-id').html(), previous_id: context.getNoteId(target)}, {}, function(note){      
+        var target_id = context.getNoteId(target);
+        if(target.parent().parent().next().length > 0){
+          var next_id = context.getNoteId(target.parent().parent().next().find('textarea'));
+        };
+        this.create_object('Note', {text: '', outline_id: $('h2#outline-id').html(), previous_id: target_id}, {}, function(note){      
+          if(next_id){
+            // console.log('set previous_id of '+ next_id +' to ' + note.id);            
+            context.update_object('Note', {id: next_id, previous_id: note.id}, {}, function(note){});
+          }
           context.partial('app/templates/notes/edit.mustache', {_id: note.id}, function(html) { 
             $(html).insertAfter(target.parent().parent()).find('textarea').focus();
             context.bindSubmitOnBlurAndAutogrow();
@@ -65,11 +73,11 @@ $(function() {
 
     bind('init', function() { with(this) {
       $(window).bind("keydown", function(e) {
-        var target = $(e.target);
-        if (!target.attr("data-text")) { 
-          target.attr("data-text", target.val()); 
-        };
         if(happenedOnNote(e)){
+          var target = $(e.target);
+          if (typeof(target.attr("data-text"))=="undefined") { 
+            target.attr("data-text", target.val()); 
+          };
           if (enterPressed(e)) {
             e.preventDefault();
             insertAndFocusNewNote(target);
