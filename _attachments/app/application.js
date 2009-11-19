@@ -58,7 +58,6 @@ $(function() {
         };
         this.create_object('Note', {text: '', outline_id: $('h2#outline-id').html(), previous_id: target_id}, {}, function(note){      
           if(next_id){
-            // console.log('set previous_id of '+ next_id +' to ' + note.id);            
             context.update_object('Note', {id: next_id, previous_id: note.id}, {}, function(note){});
           }
           context.partial('app/templates/notes/edit.mustache', {_id: note.id}, function(html) { 

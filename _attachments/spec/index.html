@@ -13,7 +13,9 @@
         .exec('note_spec.js')
         .exec('resources_spec.js')
         .exec('lib_spec.js')
-        .run() //{ failuresOnly : true })
+        // .run({failuresOnly: true})
+        // .run({formatter: JSpec.formatters.Console})
+        .run()
         .report();
       }
     </script>

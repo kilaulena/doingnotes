@@ -25,43 +25,39 @@ Note.prototype = {
     };
   },
   findNextNote: function(unsorted_notes){
-    // console.log(unsorted_notes);
     var this_note = this;
-    // console.log('es geht jetzt um ' +this_note._id);
     var next_notes = unsorted_notes.select(function(note){
-      // if(this_note._id == note.previous_id) console.log('found the next note: ');
-      // console.log(this_note._id);
-      // console.log(note.previous_id);
-      // console.log('---');
       return this_note._id == note.previous_id;
     });
-    // console.log(next_notes);
     if(next_notes.length > 1){
-      throw 'There is more than one note with previous id "' + next_notes[0].previous_id +'"';
+      throw 'There is more than one note with previous_id "' + next_notes[0].previous_id +'"';
     };
-    // if(next_note != undefined) console.log('next node for it is ' +next_note._id);
     return next_notes[0];
   }
 };
 
-function sortByPreviousId(unsorted_notes) {
+function firstNote(unsorted_notes){
   var sorted_notes = unsorted_notes.reject(function(note){
     return note.previous_id != undefined;
   });
   if (sorted_notes.length > 1) {
     throw 'There is more than one note without a previous_id';
   };
-  
-  $.each(unsorted_notes, function(i, note_values){
-    var note = new Note(note_values);
-    var next_note = note.findNextNote(unsorted_notes);
-    // console.log('the next note should be:');
-    // console.log(next_note);
-    if(next_note){
+  return sorted_notes[0];  
+};
+
+function sortByPreviousId(unsorted_notes) {
+  var sorted_notes = [firstNote(unsorted_notes)];
+  var note_looking_for_next_note = sorted_notes[0];
+  unsorted_notes = unsorted_notes.remove(note_looking_for_next_note);
+
+  while(unsorted_notes.length > 0){
+    var next_note = note_looking_for_next_note.findNextNote(unsorted_notes);
+    if(typeof(next_note)!="undefined"){
       sorted_notes.push(next_note);
+      note_looking_for_next_note = next_note;
       unsorted_notes = unsorted_notes.remove(next_note);
     }
-  });
-  // console.log(notes);
+  };
   return sorted_notes;
 }
