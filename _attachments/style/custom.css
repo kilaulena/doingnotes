@@ -5,6 +5,11 @@ body {
   color:#2e0571;
 }
 
+ul {
+  margin 0;
+  padding 0;
+}
+
 #container {
   width:950px;
   margin:0 auto;
@@ -95,12 +100,18 @@ ul#notes li textarea{
   width: 100%;
 }
 
-#new-outline {
-  margin-left: 20px;
+ul#notes ul.indent{
+  width: 100%;
+}
+
+ul#notes ul.indent li textarea {
+  padding-left: 50px;
+  margin-left: -20px;
+  max-width: 886px;
 }
 
 textarea.expanding {
-	height: 14px;
+  height: 14px;
 	min-height: 14px;
 	margin: -2px;
 }

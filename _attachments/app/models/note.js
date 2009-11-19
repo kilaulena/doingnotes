@@ -6,6 +6,7 @@ Note = function(attributes) {
   this.text = attributes.text;
   this.outline_id = attributes.outline_id;
   this.previous_id = attributes.previous_id;
+  this.parent_id = attributes.parent_id;
 }
 
 Note.prototype = {
@@ -21,7 +22,8 @@ Note.prototype = {
       type: 'Note',
       text: this.text,
       outline_id: this.outline_id,
-      previous_id: this.previous_id
+      previous_id: this.previous_id,
+      parent_id: this.parent_id
     };
   },
   findNextNote: function(unsorted_notes){
@@ -53,11 +55,16 @@ function sortByPreviousId(unsorted_notes) {
 
   while(unsorted_notes.length > 0){
     var next_note = note_looking_for_next_note.findNextNote(unsorted_notes);
-    if(typeof(next_note)!="undefined"){
+    if(typeof(next_note)=="undefined"){
+      break;
+    } else {
       sorted_notes.push(next_note);
       note_looking_for_next_note = next_note;
       unsorted_notes = unsorted_notes.remove(next_note);
+      // console.log('unsorted notes at the end of while loop:');
+      // console.log(unsorted_notes);
     }
   };
+  console.log('its empty!');
   return sorted_notes;
 }
