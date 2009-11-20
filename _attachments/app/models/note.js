@@ -44,7 +44,9 @@ Note.prototype = {
   checkForOtherNotesPointingTo: function(unsorted_notes){
     var this_note = this;
     var notes_with_next_id = unsorted_notes.select(function(note){
-      return note.next_id == this_note.next_id;
+      if(typeof(note.next_id)!="undefined"){
+        return note.next_id == this_note.next_id; 
+      }
     });
     if(notes_with_next_id.length > 1){
       throw 'There is more than one note with next_id "' + this_note.next_id +'"';
@@ -68,9 +70,9 @@ function notFirstNotes(notes){
 function firstNote(unsorted_notes){
   var not_first_notes = notFirstNotes(unsorted_notes);
   var first_notes = unsorted_notes.subtract(not_first_notes);
-  if (first_notes.length > 1) {
-    throw 'There is more than one note that could be the first one';
-  };
+  // if (first_notes.length > 1) {
+  //   throw 'There is more than one note that could be the first one';
+  // };
   return first_notes[0];
 };
 

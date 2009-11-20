@@ -42,6 +42,7 @@ $(function() {
     };
     
     function submitIfChanged(target) {
+      // console.log('submit if changed: data-text ' + target.attr("data-text") + ' vs ' + target.val());
       if(target.attr("data-text") != target.val()) {
         target.removeAttr("data-text");
         target.parent('form').submit();
@@ -98,7 +99,12 @@ $(function() {
         }
         //set my next_id to null, my parent is my former previous note
         context.update_object('Note', {id: target_id, next_id: '', parent_id: previous_id}, {}, function(note){});
-        target.parent().parent().wrap('<li><ul class="indent"></ul></li>');
+
+        if(target.parent().parent().prev().children().is('ul.indent')){
+          target.parent().parent().prev().children().append(target.parent().parent());
+        } else if(target.parent().parent().prev().children().is('form')) {
+          target.parent().parent().wrap('<li><ul class="indent"></ul></li>');
+        }
       },
       unindent: function(target){
         
