@@ -68,14 +68,18 @@ $(function() {
           return context.getNoteId(element.parent().parent().prev().find('textarea'));
         };
       },
-      insertAndFocusNewNote: function(target) { 
+      insertAndFocusNewNoteAndSubmit: function(target) { 
         var context = this;  
         var target_id = context.getNoteId(target);
         var next_id = context.getNextNoteId(context, target);
-        context.create_object('Note', {text: '', outline_id: $('h2#outline-id').html(), previous_id: target_id}, {}, function(note){      
-          if(typeof(next_id)!="undefined"){
-            context.update_object('Note', {id: next_id, previous_id: note.id}, {}, function(note){});
-          }
+        var attributes = {text: '', outline_id: $('h2#outline-id').html()};
+        if(typeof(next_id)!="undefined"){
+          attributes.next_id = next_id;
+        }
+        context.create_object('Note', attributes, {}, function(note){ 
+          context.update_object('Note', {id: target_id, next_id: note.id}, {}, function(note){
+            submitIfChanged(target);
+          });
           context.partial('app/templates/notes/edit.mustache', {_id: note.id}, function(html) { 
             $(html).insertAfter(target.parent().parent()).find('textarea').focus();
             context.bindSubmitOnBlurAndAutogrow();
@@ -88,10 +92,12 @@ $(function() {
         var target_id = context.getNoteId(target);
         var previous_id = context.getPreviousNoteId(context, target);
         var next_id = context.getNextNoteId(context, target);
-        if(typeof(next_id)!="undefined"){
-           context.update_object('Note', {id: next_id, previous_id: previous_id}, {}, function(note){});
+        if(typeof(previous_id)!="undefined"){
+          //if this is not the first note, set the previous note's pointer to the note after myself
+          context.update_object('Note', {id: previous_id, next_id: next_id}, {}, function(note){});
         }
-        context.update_object('Note', {id: target_id, previous_id: '', parent_id: previous_id}, {}, function(note){});
+        //set my next_id to null, my parent is my former previous note
+        context.update_object('Note', {id: target_id, next_id: '', parent_id: previous_id}, {}, function(note){});
         target.parent().parent().wrap('<li><ul class="indent"></ul></li>');
       },
       unindent: function(target){
@@ -108,8 +114,7 @@ $(function() {
           };
           if (enterPressed(e)) {
             e.preventDefault();
-            insertAndFocusNewNote(target);
-            submitIfChanged(target);
+            insertAndFocusNewNoteAndSubmit(target);
           } else if(keyUpPressed(e)){
             target.parent().parent().prev().find('textarea').focus();
             submitIfChanged(target);

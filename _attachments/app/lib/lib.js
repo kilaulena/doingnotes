@@ -18,6 +18,23 @@ function stripBlanks(string) {
   return (string.replace(/^ +/,'')).replace(/ +$/,'');
 }
 
+Array.prototype.contains = function(element) {
+  for (var i = 0; i < this.length; i++) {
+    if (this[i] == element) {
+      return true;
+    }
+  }
+  return false;
+}
+
+Array.prototype.subtract = function(array) {
+  return this.reject(function(element){
+    if(array.contains(element)){
+      return element;
+    }
+  });
+}
+
 Array.prototype.remove = function(obj) {
   var a = [];
   for (var i=0; i<this.length; i++) {
@@ -58,7 +75,6 @@ Array.prototype.select = function(fun) {
     return res;
   }, []);
 }
-
 
 Array.prototype.compact = function() {
   return this.reduce(function(res, el) {
