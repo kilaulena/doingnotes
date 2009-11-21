@@ -46,14 +46,17 @@ Array.prototype.remove = function(obj) {
 }
 
 Array.prototype.flatten = function() {
-  return this.reduce(function(res, el) {
-    if(el.constructor == Array) {
+  function makeFlat(el, res){
+    if(el.constructor == Array){
       el.forEach(function(sub_el) {
-        res.push(sub_el);
-      })
+        makeFlat(sub_el, res);
+      }) 
     } else {
       res.push(el);
     }
+  }
+  return this.reduce(function(res, el) {
+    makeFlat(el, res);
     return res;
   }, []);
 }

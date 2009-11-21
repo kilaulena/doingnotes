@@ -47,19 +47,23 @@ OutlineBehaviour = function(sammy) {
         context.submitIfChanged($(e.target));
       });
     },
+    
     getNoteId: function(element){
       return element.attr('id').match(/edit_text_(\w*)/)[1];
     },
+    
     getNextNoteId: function(context, element){
       if(element.parent().parent().next().length > 0){
         return context.getNoteId(element.parent().parent().next().find('textarea'));
       };
     },
+    
     getPreviousNoteId: function(context, element){
       if(element.parent().parent().prev().length > 0){
         return context.getNoteId(element.parent().parent().prev().find('textarea'));
       };
     },
+    
     focusPreviousTextarea: function(target){
       if (target.parent().parent().prev().find('textarea').length > 0){
         var element = target.parent().parent().prev().find('textarea');
@@ -68,6 +72,7 @@ OutlineBehaviour = function(sammy) {
       }
       element.focus();
     },
+    
     focusNextTextarea: function(target){
       if (target.parent().parent().next().find('textarea').length > 0){
         var element = target.parent().parent().next().find('textarea:first');
@@ -76,6 +81,7 @@ OutlineBehaviour = function(sammy) {
       }
       element.focus();
     },
+    
     insertAndFocusNewNoteAndSubmit: function(target) { 
       var context = this;  
       var target_id = context.getNoteId(target);
@@ -95,6 +101,7 @@ OutlineBehaviour = function(sammy) {
         });
       });
     },
+    
     indent: function(target){
       var context = this;  
       var target_id = context.getNoteId(target);
@@ -117,6 +124,7 @@ OutlineBehaviour = function(sammy) {
         target.parent().parent().find('textarea').focus();
       }
     },
+    
     unindent: function(target){
       
     }
