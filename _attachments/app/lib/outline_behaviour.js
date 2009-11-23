@@ -31,15 +31,6 @@ OutlineBehaviour = function(sammy) {
       }
     },
 
-    updateNotePointers: function(context, target_id, previous_id, next_id){
-      if(typeof(previous_id)!="undefined"){
-        //if this is not the first note, set the previous note's pointer to the note after myself
-        context.update_object('Note', {id: previous_id, next_id: next_id}, {}, function(note){});
-      }
-      //set my next_id to null, my parent is my former previous note
-      context.update_object('Note', {id: target_id, next_id: '', parent_id: previous_id}, {}, function(note){});
-    },
-    
     bindSubmitOnBlurAndAutogrow: function(){
       var context = this;
       $('textarea.expanding').autogrow();
@@ -53,31 +44,43 @@ OutlineBehaviour = function(sammy) {
     },
     
     getNextNoteId: function(context, element){
-      if(element.parents('li').next().length > 0){
-        return context.getNoteId(element.parents('li').next().find('textarea'));
+      if(element.closest('li').next().length > 0){
+        return context.getNoteId(element.closest('li').next().find('textarea'));
       };
     },
     
     getPreviousNoteId: function(context, element){
-      if(element.parents('li').prev().length > 0){
-        return context.getNoteId(element.parents('li').prev().find('textarea'));
+      if(element.closest('li').prev().length > 0){
+        return context.getNoteId(element.closest('li').prev().find('textarea'));
       };
     },
     
+    getParentNoteId: function(context, element){
+      if(element.closest('ul.indent').length > 0){
+        return context.getNoteId(element.closest('ul.indent').parent().find('textarea'));
+      }
+    },
+    
     focusPreviousTextarea: function(target){
-      if (target.parents('li').prev().find('textarea').length > 0){
-        var element = target.parents('li').prev().find('textarea');
+      if (target.parent().parent().prev().find('textarea').length > 0){
+        var element = target.parent().parent().prev().find('textarea');
       } else {
-        var element = target.parents('ul').prev().find('textarea');
+        var element = target.parent().parent().parent().parent().prev().find('textarea');
       }
       element.focus();
     },
     
     focusNextTextarea: function(target){
-      if (target.parents('li').next().find('textarea').length > 0){
-        var element = target.parents('li').next().find('textarea:first');
+      var context = this;
+      if (target.parent().parent().next().find('textarea').length > 0){
+        var element = target.parent().parent().next().find('textarea:first');
+        console.log(element);
       } else {
-        var element = target.parents('ul').next().find('textarea');
+        console.log('rewrite with parent id')
+        var parent_id = context.getParentNoteId(context, target);
+        
+        var element = target.parent().parent().parent().parent().next().find('textarea');
+        console.log(target.closest('ul'));
       }
       element.focus();
     },
@@ -95,35 +98,50 @@ OutlineBehaviour = function(sammy) {
           context.submitIfChanged(target);
         });
         context.partial('app/templates/notes/edit.mustache', {_id: note.id}, function(html) { 
-          $(html).insertAfter(target.parents('li')).find('textarea').focus();
+          $(html).insertAfter(target.closest('li')).find('textarea').focus();
           context.bindSubmitOnBlurAndAutogrow();
           $('#spinner').hide(); 
         });
       });
     },
     
+    updateNotePointers: function(context, target_id, previous_id, next_id){
+      if(typeof(previous_id)!="undefined"){
+        //if this is not the first note, set the previous note's pointer to the note after myself
+        context.update_object('Note', {id: previous_id, next_id: next_id}, {}, function(note){});
+      }
+      //set my next_id to null, my parent is my former previous note
+      context.update_object('Note', {id: target_id, next_id: '', parent_id: previous_id}, {}, function(note){});
+    },
+    
     indent: function(target){
       var context = this;  
+      
       var target_id = context.getNoteId(target);
       var previous_id = context.getPreviousNoteId(context, target);
       var next_id = context.getNextNoteId(context, target);
-      var next_li = target.parents('li').next();
-      var previous_li = target.parents('li').prev();
+      var parent_id = context.getParentNoteId(context, target);
+      
+      console.log('PARENT ID:')
+      console.log(parent_id)
+      var next_li = target.closest('li').next();
+      var previous_li = target.closest('li').prev();
+
 
       if(previous_li.children().is('ul.indent')){
         context.updateNotePointers(context, target_id, previous_id, next_id);
-        previous_li.children().append(target.parents('li'));
+        previous_li.children().append(target.closest('li'));
         target.parent().parent().prev().next().find('textarea').focus();
         
       } else if(next_li.children().is('ul.indent')){
         context.updateNotePointers(context, target_id, previous_id, next_id);
-        next_li.children().prepend(target.parents('li'));   
+        next_li.children().prepend(target.closest('li'));   
         target.parent().parent().next().prev().find('textarea').focus();
                
       } else if(previous_li.children().is('form')) {
         context.updateNotePointers(context, target_id, previous_id, next_id);
-        target.parents('li').wrap('<li><ul class="indent"></ul></li>');
-        target.parents('li').find('textarea').focus();
+        target.closest('li').wrap('<li><ul class="indent"></ul></li>');
+        target.closest('li').find('textarea').focus();
       }
     },
     
@@ -132,8 +150,8 @@ OutlineBehaviour = function(sammy) {
       var target_id = context.getNoteId(target);
       var previous_id = context.getPreviousNoteId(context, target);
       var next_id = context.getNextNoteId(context, target);
-      var next_li = target.parents('li').next();
-      var previous_li = target.parents('li').prev();
+      var next_li = target.closest('li').next();
+      var previous_li = target.closest('li').prev();
     }
   });
 };
