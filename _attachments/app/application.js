@@ -29,9 +29,11 @@ $(function() {
             e.preventDefault();
             insertAndFocusNewNoteAndSubmit(target);
           } else if(keyUpPressed(e)){
+            e.preventDefault();
             focusPreviousTextarea(target);
             submitIfChanged(target);
           } else if(keyDownPressed(e)){
+            e.preventDefault();
             focusNextTextarea(target);
             submitIfChanged(target);
           } else if(tabPressed(e)){
