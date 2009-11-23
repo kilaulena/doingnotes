@@ -53,31 +53,31 @@ OutlineBehaviour = function(sammy) {
     },
     
     getNextNoteId: function(context, element){
-      if(element.parent().parent().next().length > 0){
-        return context.getNoteId(element.parent().parent().next().find('textarea'));
+      if(element.parents('li').next().length > 0){
+        return context.getNoteId(element.parents('li').next().find('textarea'));
       };
     },
     
     getPreviousNoteId: function(context, element){
-      if(element.parent().parent().prev().length > 0){
-        return context.getNoteId(element.parent().parent().prev().find('textarea'));
+      if(element.parents('li').prev().length > 0){
+        return context.getNoteId(element.parents('li').prev().find('textarea'));
       };
     },
     
     focusPreviousTextarea: function(target){
-      if (target.parent().parent().prev().find('textarea').length > 0){
-        var element = target.parent().parent().prev().find('textarea');
+      if (target.parents('li').prev().find('textarea').length > 0){
+        var element = target.parents('li').prev().find('textarea');
       } else {
-        var element = target.parent().parent().parent().parent().prev().find('textarea');
+        var element = target.parents('ul').prev().find('textarea');
       }
       element.focus();
     },
     
     focusNextTextarea: function(target){
-      if (target.parent().parent().next().find('textarea').length > 0){
-        var element = target.parent().parent().next().find('textarea:first');
+      if (target.parents('li').next().find('textarea').length > 0){
+        var element = target.parents('li').next().find('textarea:first');
       } else {
-        var element = target.parent().parent().parent().parent().next().find('textarea');
+        var element = target.parents('ul').next().find('textarea');
       }
       element.focus();
     },
@@ -95,7 +95,7 @@ OutlineBehaviour = function(sammy) {
           context.submitIfChanged(target);
         });
         context.partial('app/templates/notes/edit.mustache', {_id: note.id}, function(html) { 
-          $(html).insertAfter(target.parent().parent()).find('textarea').focus();
+          $(html).insertAfter(target.parents('li')).find('textarea').focus();
           context.bindSubmitOnBlurAndAutogrow();
           $('#spinner').hide(); 
         });
@@ -107,26 +107,33 @@ OutlineBehaviour = function(sammy) {
       var target_id = context.getNoteId(target);
       var previous_id = context.getPreviousNoteId(context, target);
       var next_id = context.getNextNoteId(context, target);
+      var next_li = target.parents('li').next();
+      var previous_li = target.parents('li').prev();
 
-      if(target.parent().parent().prev().children().is('ul.indent')){
+      if(previous_li.children().is('ul.indent')){
         context.updateNotePointers(context, target_id, previous_id, next_id);
-        target.parent().parent().prev().children().append(target.parent().parent());
+        previous_li.children().append(target.parents('li'));
         target.parent().parent().prev().next().find('textarea').focus();
         
-      } else if(target.parent().parent().next().children().is('ul.indent')){
+      } else if(next_li.children().is('ul.indent')){
         context.updateNotePointers(context, target_id, previous_id, next_id);
-        target.parent().parent().next().children().prepend(target.parent().parent());   
+        next_li.children().prepend(target.parents('li'));   
         target.parent().parent().next().prev().find('textarea').focus();
                
-      } else if(target.parent().parent().prev().children().is('form')) {
+      } else if(previous_li.children().is('form')) {
         context.updateNotePointers(context, target_id, previous_id, next_id);
-        target.parent().parent().wrap('<li><ul class="indent"></ul></li>');
-        target.parent().parent().find('textarea').focus();
+        target.parents('li').wrap('<li><ul class="indent"></ul></li>');
+        target.parents('li').find('textarea').focus();
       }
     },
     
     unindent: function(target){
-      
+      var context = this;  
+      var target_id = context.getNoteId(target);
+      var previous_id = context.getPreviousNoteId(context, target);
+      var next_id = context.getNextNoteId(context, target);
+      var next_li = target.parents('li').next();
+      var previous_li = target.parents('li').prev();
     }
   });
 };
