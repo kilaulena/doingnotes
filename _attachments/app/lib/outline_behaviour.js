@@ -57,8 +57,8 @@ OutlineBehaviour = function(sammy) {
     
     getParentNoteId: function(context, element){
       if(element.closest('ul.indent').length > 0){
-        return context.getNoteId(element.closest('ul.indent').parent().find('textarea'));
-      }
+        return context.getNoteId(element.closest('li').find('textarea'));
+      };
     },
     
     focusPreviousTextarea: function(target){
@@ -122,36 +122,40 @@ OutlineBehaviour = function(sammy) {
       var next_id = context.getNextNoteId(context, target);
       var parent_id = context.getParentNoteId(context, target);
       
-      console.log('PARENT ID:')
-      console.log(parent_id)
       var next_li = target.closest('li').next();
       var previous_li = target.closest('li').prev();
+      if(target.parent().parent().parent().parent().is('li')){
+        var parent_li = target.parent().parent().parent().parent();
+      };
 
+      // console.log(parent_li);
+      // console.log(previous_li);
+      // console.log(next_li);
 
       if(previous_li.children().is('ul.indent')){
-        context.updateNotePointers(context, target_id, previous_id, next_id);
-        previous_li.children().append(target.closest('li'));
+        //li before me is indented already
+        context.updateNotePointers(context, target_id, previous_id, next_id, parent_id);
+        previous_li.children('ul').append(target.closest('li'));
         target.parent().parent().prev().next().find('textarea').focus();
         
       } else if(next_li.children().is('ul.indent')){
-        context.updateNotePointers(context, target_id, previous_id, next_id);
-        next_li.children().prepend(target.closest('li'));   
+        //li after me is indented already
+        console.log('after me indented already')
+        context.updateNotePointers(context, target_id, previous_id, next_id, parent_id);
+        next_li.children('ul').prepend(target.closest('li'));   
         target.parent().parent().next().prev().find('textarea').focus();
                
-      } else if(previous_li.children().is('form')) {
-        context.updateNotePointers(context, target_id, previous_id, next_id);
-        target.closest('li').wrap('<li><ul class="indent"></ul></li>');
+      } else if(previous_li.children().is('form')) {        
+        //lis before and after target are not indented yet
+        context.updateNotePointers(context, target_id, previous_id, next_id, parent_id);
+        previous_li.append(target.closest('li'));
+        target.closest('li').wrap('<ul class="indent"></ul>');
         target.closest('li').find('textarea').focus();
       }
     },
     
     unindent: function(target){
-      var context = this;  
-      var target_id = context.getNoteId(target);
-      var previous_id = context.getPreviousNoteId(context, target);
-      var next_id = context.getNextNoteId(context, target);
-      var next_li = target.closest('li').next();
-      var previous_li = target.closest('li').prev();
+
     }
   });
 };

@@ -106,7 +106,7 @@ ul#notes ul.indent{
 
 ul#notes ul.indent li textarea {
   padding-left: 50px;
-  margin-left: -20px;
+/*  margin-left: -20px;*/
   max-width: 886px;
 }
 
