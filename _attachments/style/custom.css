@@ -5,9 +5,13 @@ body {
   color:#2e0571;
 }
 
+ul, li ul {
+  margin: 0;
+  padding: 0;
+}
+
 ul {
-  margin 0;
-  padding 0;
+  margin-left: 16px;
 }
 
 #container {
@@ -96,22 +100,53 @@ h2 {
   margin: 0;  
 }
 
-ul#notes li textarea{
-  width: 100%;
-}
-
 ul#notes ul.indent{
   width: 100%;
-}
-
-ul#notes ul.indent li textarea {
-  padding-left: 50px;
-/*  margin-left: -20px;*/
-  max-width: 886px;
 }
 
 textarea.expanding {
   height: 14px;
 	min-height: 14px;
 	margin: -2px;
+}
+
+ul#notes li textarea{
+  max-width: 886px;
+  width: 100%;
+  font-weight:bold;
+  font-size: 13px;
+}
+
+ul#notes li ul li textarea {
+  padding-left: 30px;
+  font-weight:normal;
+}
+
+ul#notes li ul li ul li textarea {
+  padding-left: 60px;
+  font-size: 12px;
+}
+
+ul#notes li ul li ul li ul li textarea {
+  padding-left: 90px;
+}
+
+ul#notes li ul li ul li ul li ul li textarea {
+  padding-left: 120px;
+}
+
+ul#notes li ul li ul li ul li ul li textarea {
+  padding-left: 150px;
+}
+
+ul#notes li ul li ul li ul li ul li textarea {
+  padding-left: 170px;
+}
+
+ul#notes li ul li ul li ul li ul li textarea {
+  padding-left: 190px;
+}
+
+ul#notes li ul li ul li ul li ul li textarea {
+  padding-left: 210px;
 }
