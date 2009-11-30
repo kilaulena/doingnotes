@@ -110,6 +110,8 @@ textarea.expanding {
 	margin: -2px;
 }
 
+/* textarea:focus {border: 1px solid red} */
+
 ul#notes li textarea{
   max-width: 886px;
   width: 100%;

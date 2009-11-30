@@ -6,15 +6,18 @@
     <script src="jspec/jspec.jquery.js"></script>
     <script src="../app/lib/lib.js"></script>
     <script src="../app/lib/resources.js"></script>
-    <script src="../app/lib/outline_behaviour.js"></script>
-    <script src="../app/models/note.js"></script>
+    <script src="../app/controllers/outline_behaviour/outline_dom_helpers.js"></script>
+    <script src="../app/controllers/outline_behaviour/indenting.js"></script>
+    <script src="../app/controllers/outline_behaviour/inserting.js"></script>
+    <script src="../app/controllers/outline_behaviour/key_events.js"></script>
+    <script src="../app/controllers/outline_behaviour/focusing.js"></script>    <script src="../app/models/note.js"></script>
     <script>
       function runSuites() {
         JSpec
-        .exec('outline_spec.js')
-        .exec('note_spec.js')
-        .exec('resources_spec.js')
-        .exec('lib_spec.js')
+        .exec('outline_dom_helpers_spec.js')
+        // .exec('note_spec.js')
+        // .exec('resources_spec.js')
+        // .exec('lib_spec.js')
         // .run({failuresOnly: true})
         // .run({formatter: JSpec.formatters.Console})
         .run()

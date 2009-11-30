@@ -9,8 +9,12 @@ $(function() {
     use(Resources, couchapp);
     flash = {};
     Notes(this);
-    Outlines(this, couchapp);
-    OutlineBehaviour(this);
+    Outlines(this, couchapp);    
+    helpers(OutlineHelpers);
+    helpers(KeyEvents);
+    helpers(Focusing);
+    helpers(Indenting);
+    helpers(Inserting);
     
     get('#/', function(){with(this) {
       redirect('#/outlines');
