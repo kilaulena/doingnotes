@@ -10,7 +10,7 @@ $(function() {
     flash = {};
     Notes(this);
     Outlines(this, couchapp);    
-    helpers(OutlineHelpers);
+    helpers(OutlineDomHelpers);
     helpers(KeyEvents);
     helpers(Focusing);
     helpers(Indenting);

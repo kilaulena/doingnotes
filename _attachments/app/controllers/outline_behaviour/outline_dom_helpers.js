@@ -1,4 +1,4 @@
-var OutlineHelpers = {
+var OutlineDomHelpers = {
   submitIfChanged: function(target) {
     if(target.attr("data-text") != target.val()) {
       target.removeAttr("data-text");
@@ -12,6 +12,10 @@ var OutlineHelpers = {
     $('textarea.expanding').bind('blur', function(e) {
       context.submitIfChanged($(e.target));
     });
+  },
+  
+  getOutlineId: function(context){
+    return context.$element().find('h2#outline-id').html();
   },
   
   getNoteId: function(element){

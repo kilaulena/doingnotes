@@ -1,4 +1,5 @@
 var Indenting = {
+  //split in dom manipulation and pointer updating
   indent: function(target){
     var context = this;  
     

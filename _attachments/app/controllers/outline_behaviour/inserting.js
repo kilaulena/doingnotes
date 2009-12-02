@@ -1,10 +1,9 @@
 var Inserting = {
-  //split in dom manipulation and pointer updating
   insertAndFocusNewNoteAndSubmit: function(target) { 
     var context = this;  
     var target_id = context.getNoteId(target);
     var next_id = context.getNextNoteId(context, target);
-    var attributes = {text: '', outline_id: $('h2#outline-id').html()};
+    var attributes = {text: '', outline_id: context.getOutlineId(context)};
     if(typeof(next_id)!="undefined"){
       attributes.next_id = next_id;
     }
