@@ -1,12 +1,31 @@
-describe 'indenting'
+describe 'NoteElement'
+  before_each
+    outline = elements(fixture('outline'))
+    notes = outline.find('li')
+    // storyboard
+    // * 1: first_note
+    // * 2: second_note
+    //   ** 2a: child_note
+    //   ** 2b: second_child_note
+    //     *** 2bI: grandchild_note
+    // * 3: last_note
+    first_note_element        = $(notes.get(0))
+    second_note_element       = $(notes.get(1))
+    child_note_element        = $(notes.get(2))
+    second_child_note_element = $(notes.get(3))
+    grandchild_note_element   = $(notes.get(4))
+    last_note_element         = $(notes.get(5))
   
+    first_note        = new NoteElement(first_note_element.find('textarea:first'))
+    second_note       = new NoteElement(second_note_element.find('textarea:first'))
+    child_note        = new NoteElement(child_note_element.find('textarea:first'))
+    second_child_note = new NoteElement(second_child_note_element.find('textarea:first'))
+    grandchild_note   = new NoteElement(grandchild_note_element.find('textarea:first'))
+    last_note         = new NoteElement(last_note_element.find('textarea:first'))
+  end
+  
+  describe 'indent'  
+  
+  end  
 end
-
-updateNotePointers: function(context, target_id, previous_id, next_id){
-  if(typeof(previous_id)!="undefined"){
-    //if this is not the first note, set the previous note's pointer to the note after myself
-    context.update_object('Note', {id: previous_id, next_id: next_id}, {}, function(note){});
-  }
-  //set my next_id to null, my parent is my former previous note
-  context.update_object('Note', {id: target_id, next_id: '', parent_id: previous_id}, {}, function(note){});
-}
+  

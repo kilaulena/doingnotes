@@ -11,8 +11,7 @@ describe 'NoteElement'
     it 'should call create_object whent there is no next node'
       var context = {
         getOutlineId: function(){return 'storyboard'},
-        nextNoteLi: function(){return null},
-        getIdFromDom: function(){return null},
+        nextNote: function(){return null},
         create_object: function(Type, attributes, callback){
           this.create_objects_attributes = attributes;
         }
@@ -24,8 +23,8 @@ describe 'NoteElement'
     it 'should call create_object with the next_id when there is a next node'
       var context = {
         getOutlineId: function(){return 'storyboard'},
-        nextNoteLi: function(){return second_note},
-        getIdFromDom: function(){return '2'},
+        nextNote: function(){return second_note},
+        id: function(){return '2'},
         create_object: function(Type, attributes, callback){
           this.create_objects_attributes = attributes;
         }
