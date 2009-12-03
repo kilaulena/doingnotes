@@ -10,7 +10,7 @@ $(function() {
     flash = {};
     Notes(this);
     Outlines(this, couchapp);    
-    helpers(OutlineDomHelpers);
+    helpers(OutlineHelpers);
     helpers(KeyEvents);
     helpers(Focusing);
     helpers(Indenting);
@@ -25,12 +25,13 @@ $(function() {
       $(window).bind("keydown", function(e) {
         if(happenedOnNote(e)){
           var target = $(e.target);
+          var note = new NoteElement(target);
           if (typeof(target.attr("data-text"))=="undefined") { 
             target.attr("data-text", target.val()); 
           };
           if (enterPressed(e)) {
             e.preventDefault();
-            insertAndFocusNewNoteAndSubmit(target);
+            note.insertAndFocusNewNoteAndSubmit();
           } else if(keyUpPressed(e)){
             e.preventDefault();
             focusPreviousTextarea(target);

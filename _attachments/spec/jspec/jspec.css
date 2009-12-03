@@ -1,6 +1,6 @@
 body.jspec {
   margin: 45px 0;
-  font: 12px "Helvetica Neue Light", "Lucida Grande", "Calibri", "Arial", sans-serif;
+  font: 13px "Helvetica Neue Light", "Lucida Grande", "Calibri", "Arial", sans-serif;
   background: #efefef url(images/bg.png) top left repeat-x;
   text-align: center;
 }
@@ -41,7 +41,7 @@ body.jspec {
   text-align: center;
 }
 #jspec-title em {
-  font-size: 10px;
+  font-size: 11px;
   font-style: normal;
   color: #BCC8D1;
 }
@@ -75,7 +75,7 @@ body.jspec {
   color: #FA1616;
 }
 #jspec-report table {
-  font-size: 11px;
+  font-size: 12px;
   border-collapse: collapse;
 }
 #jspec-report td {
