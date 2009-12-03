@@ -1,9 +1,9 @@
 var OutlineHelpers = {
   bindSubmitOnBlurAndAutogrow: function(){
-    var context = this;
     $('textarea.expanding').autogrow();
     $('textarea.expanding').bind('blur', function(e) {
-      context.submitIfChanged($(e.target));
+      note = new NoteElement($(e.target));
+      note.submitIfChanged();
     });
   },
   

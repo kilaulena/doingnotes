@@ -12,9 +12,6 @@ $(function() {
     Outlines(this, couchapp);    
     helpers(OutlineHelpers);
     helpers(KeyEvents);
-    helpers(Focusing);
-    helpers(Indenting);
-    helpers(Inserting);
     
     get('#/', function(){with(this) {
       redirect('#/outlines');
@@ -22,30 +19,31 @@ $(function() {
     }});
 
     bind('init', function() { with(this) {
+      var context = this;
       $(window).bind("keydown", function(e) {
         if(happenedOnNote(e)){
           var target = $(e.target);
           var note = new NoteElement(target);
           if (typeof(target.attr("data-text"))=="undefined") { 
-            target.attr("data-text", target.val()); 
+            target.attr("data-text", target.val());  
           };
           if (enterPressed(e)) {
             e.preventDefault();
-            note.insertAndFocusNewNoteAndSubmit();
+            note.insertNewNote(context);
           } else if(keyUpPressed(e)){
             e.preventDefault();
-            focusPreviousTextarea(target);
-            submitIfChanged(target);
+            note.focusPreviousTextarea();
+            note.submitIfChanged();
           } else if(keyDownPressed(e)){
             e.preventDefault();
-            focusNextTextarea(target);
-            submitIfChanged(target);
+            note.focusNextTextarea();
+            note.submitIfChanged();
           } else if(tabPressed(e)){
             e.preventDefault();
-            indent(target);
+            note.indent(context);
           } else if(tabShiftPressed(e)){
             e.preventDefault();
-            unindent(target);
+            note.unindent(context);
           }
         }
       });

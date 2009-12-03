@@ -15,7 +15,8 @@ Outlines = function(sammy, couchapp) { with(sammy) {
     return false;
   }});
 
-  function renderShowOutline(context, view){
+  function renderOutline(view){
+    var context = this;
     context.render('show', view, function(response){
       context.app.swap(response);
       $('ul#notes li:first').find('textarea').focus();
@@ -38,12 +39,12 @@ Outlines = function(sammy, couchapp) { with(sammy) {
           if (json['rows'].length > 0) {   
             notes = json['rows'].map(function(row) {return new Note(row.value)}); 
             view.notes = sortByNextId(notes);            
-            renderShowOutline(context, view);
+            renderOutline.call(context, view);
           } else {
             create_object('Note', {outline_id: view.id}, {}, function(note){
               view['notes'] = [note];
               view.notes[0]._id = note.id;
-              renderShowOutline(context, view);
+              renderOutline.call(context, view);
             })            
           } 
         } else {
