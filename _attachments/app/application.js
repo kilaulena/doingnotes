@@ -20,13 +20,16 @@ $(function() {
 
     bind('init', function() { with(this) {
       var context = this;
+      $(window).bind("click", function(e) {
+        if(happenedOnNote(e)){
+          var note = new NoteElement($(e.target));
+          note.setDataText();
+        }
+      });
       $(window).bind("keydown", function(e) {
         if(happenedOnNote(e)){
-          var target = $(e.target);
-          var note = new NoteElement(target);
-          if (typeof(target.attr("data-text"))=="undefined") { 
-            target.attr("data-text", target.val());  
-          };
+          var note = new NoteElement($(e.target));
+          note.setDataText();
           if (enterPressed(e)) {
             e.preventDefault();
             note.insertNewNote(context);

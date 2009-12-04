@@ -152,8 +152,7 @@ describe 'NoteElement'
         last_note.parentNoteLi().should.be_undefined
       end
     end
-  end
-  
+  end 
   
   describe 'submitIfChanged'
     before_each 
@@ -171,6 +170,39 @@ describe 'NoteElement'
       note.note_target.attr("data-text", 'something')
       note.note_target.val('something')
       note.submitIfChanged()
+      note.note_target.should.have_attr("data-text", 'something')
+    end
+    
+    it 'should also work when the textarea is made blank'
+      note.note_target.attr("data-text", 'something')
+      note.note_target.val('')
+      note.submitIfChanged()
+      note.note_target.should.not.have_attr("data-text")
+    end
+    
+    it 'should also work when the textarea is already blank'
+      note.note_target.attr("data-text", '')
+      note.note_target.val('whatever')
+      note.submitIfChanged()
+      note.note_target.should.not.have_attr("data-text")
+    end
+  end
+  
+  describe 'setDataText'
+    before_each 
+      note = new NoteElement($(notes.get(0)).find('textarea:first'))
+    end
+    
+    it 'should set the data attribute if it is undefined'
+      note.note_target.val('something')
+      note.setDataText()
+      note.note_target.should.have_attr("data-text", 'something')
+    end
+    
+    it 'should do nothing when data attribute already set'
+      note.note_target.attr("data-text", 'something')
+      note.note_target.val('something else')
+      note.setDataText()
       note.note_target.should.have_attr("data-text", 'something')
     end
   end

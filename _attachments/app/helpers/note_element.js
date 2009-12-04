@@ -42,11 +42,16 @@ NoteElement.prototype = {
     }
   },
   
+  setDataText: function(){
+    var target = this.note_target;
+    if (typeof(target.attr("data-text"))=="undefined") { 
+      target.attr("data-text", target.val());  
+    };
+  },
+  
   submitIfChanged: function() {
     var target = this.note_target;
-    console.log('submit if changed')
     if(target.attr("data-text") != target.val()) {
-      console.log('data text != target.val')
       target.removeAttr("data-text");
       target.parent('form').submit();
     }
@@ -59,7 +64,7 @@ NoteElement.prototype = {
       attributes.next_id = this.nextNote().id();
     }
     context.create_object('Note', attributes, {}, function(note){ 
-      context.update_object('Note', {id: this_note.id(), next_id: note.id}, {}, function(note){
+      context.update_object('Note', {id: this_note.id(), next_id: note.id}, {}, function(json){
         this_note.submitIfChanged();
       });
       context.partial('app/templates/notes/edit.mustache', {_id: note.id}, function(html) { 
@@ -71,7 +76,7 @@ NoteElement.prototype = {
   },
   
   focusPreviousTextarea: function(){
-    console.log('previous')
+    // console.log('previous')
     if (target.parent().parent().prev().find('textarea').length > 0){
       var element = target.parent().parent().prev().find('textarea');
     } else {
