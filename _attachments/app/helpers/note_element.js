@@ -22,7 +22,28 @@ NoteElement.prototype = {
       return this.note_target.closest('li').parents('li:first');
     }
   },
-  
+  firstChildNoteLi: function(){
+    if(this.noteLi().children('ul.indent').length){
+      return this.noteLi().children('ul.indent').children('li:first')
+    }
+  },
+  nextNoteLiOfClosestAncestor: function(){
+    parents = this.noteLi().parents('li');
+    var note;
+    $.each(parents, function(i, parent_li){
+      if (!note && $(parent_li).next().length){
+        note = $(parent_li).next();
+      }
+    });
+    return note;
+  },
+  lastChildNoteLiOfPreviousNote: function(){
+    if(this.noteLi().prev() && this.noteLi().prev().find('li').length){
+      var previous = this.noteLi().prev();
+      return previous.find('li:last');
+    }
+  },
+
   id: function(){
     return this.note_target.attr('id').match(/edit_text_(\w*)/)[1];
   },
@@ -41,6 +62,22 @@ NoteElement.prototype = {
       return new NoteElement(this.parentNoteLi().find('textarea:first'));
     }
   },
+  firstChildNote: function(){
+    if(this.firstChildNoteLi()!= null){    
+      return new NoteElement(this.firstChildNoteLi().find('textarea:first'));
+    }
+  },
+  nextNoteOfClosestAncestor: function(){
+    if(this.nextNoteLiOfClosestAncestor()!= null){    
+      return new NoteElement(this.nextNoteLiOfClosestAncestor().find('textarea:first'));
+    }
+  },
+  lastChildNoteOfPreviousNote: function(){
+    if(this.lastChildNoteLiOfPreviousNote()!= null){    
+      return new NoteElement(this.lastChildNoteLiOfPreviousNote().find('textarea:first'));
+    }
+  },
+  
   
   setDataText: function(){
     var target = this.note_target;
@@ -75,35 +112,48 @@ NoteElement.prototype = {
     });
   },
   
+  focusTextarea: function(){
+    this.noteLi().attr("data-focus", true);
+    this.note_target.focus();
+    // console.log('setting focus of '+ this.id() +' to true ('+ this.noteLi().attr("data-focus") +'!) on ' + this.note_target.val())
+  },
+  
+  unfocusTextarea: function(){
+    this.noteLi().removeAttr("data-focus");
+    // console.log('removing focus of '+ this.id() +' (its now '+ this.noteLi().attr("data-focus") +'!) on ' + this.note_target.val())
+  },
+  
   focusPreviousTextarea: function(){
-    // console.log('previous')
-    if (target.parent().parent().prev().find('textarea').length > 0){
-      var element = target.parent().parent().prev().find('textarea');
+    var context = this;
+    var previous_note;
+    this.unfocusTextarea();
+    
+    if(this.previousNote() != null && this.previousNote().firstChildNote() == null){
+      previous_note = this.previousNote();
+    } else if(this.lastChildNoteLiOfPreviousNote() != null){
+      previous_note = this.lastChildNoteOfPreviousNote();
     } else {
-      var element = target.parent().parent().parent().parent().prev().find('textarea');
+      previous_note = this;
     }
-    // if (this.previousNoteLi().find('textarea').length > 0){
-    //   console.log('there is a previous')
-    //   var element = this.previousNoteLi().find('textarea');
-    // } else {
-    //   console.log('a parent maybe')
-    //   var element = this.parentNoteLi().find('textarea');
-    //   // var element = target.parent().parent().parent().parent().prev().find('textarea');
-    // }
-    element.focus();
+    previous_note.focusTextarea();
   },
 
   focusNextTextarea: function(){
     var context = this;
-    if (target.parent().parent().next().find('textarea').length > 0){
-      var element = target.parent().parent().next().find('textarea:first');
+    var next_note;
+    this.unfocusTextarea();
+    
+    if(this.firstChildNote() != null){
+      next_note = this.firstChildNote();
+    } else if(this.nextNote() != null){
+      next_note = this.nextNote(); 
+    } else if(this.nextNoteLiOfClosestAncestor() != null) {
+      next_note = this.nextNoteOfClosestAncestor();
     } else {
-      var parent_id = context.getParentNoteId(context, target);
-      var element = target.parent().parent().parent().parent().next().find('textarea');
+      next_note = this;
     }
-    element.focus();
+    next_note.focusTextarea();
   },
-  
   
   indent: function(context){
     this.updateNotePointers(context);

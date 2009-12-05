@@ -24,6 +24,7 @@ $(function() {
         if(happenedOnNote(e)){
           var note = new NoteElement($(e.target));
           note.setDataText();
+          note.focusTextarea()
         }
       });
       $(window).bind("keydown", function(e) {

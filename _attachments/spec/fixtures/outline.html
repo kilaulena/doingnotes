@@ -3,6 +3,7 @@
   * 1: Introduction
   * 2: Main Part
     ** 2a: Something happens
+      *** 2aI: Whatever
     ** 2b: It gets very exciting
       *** 2bI: Action action
   * 3: The End
@@ -32,6 +33,14 @@
               <textarea class="expanding" id="edit_text_2a" name="text">Something happens</textarea>
               <input type="submit" value="Save" style="display:none;"/>
             </form>
+            <ul class="indent">
+              <li class="edit-note" id="edit_note_2aI">
+                <form action="#/notes/2aI" method="put" accept-charset="utf-8">
+                  <textarea class="expanding" id="edit_text_2aI" name="text">Whatever</textarea>
+                  <input type="submit" value="Save" style="display:none;"/>
+                </form>
+              </li>
+            </ul>
           </li>
         
           <li class="edit-note" id="edit_note_2b">
@@ -42,7 +51,7 @@
             <ul class="indent">
               <li class="edit-note" id="edit_note_2bI">
                 <form action="#/notes/2bI" method="put" accept-charset="utf-8">
-                  <textarea class="expanding" id="edit_text_2bI" name="text">Action actions</textarea>
+                  <textarea class="expanding" id="edit_text_2bI" name="text">Action action</textarea>
                   <input type="submit" value="Save" style="display:none;"/>
                 </form>
               </li>
