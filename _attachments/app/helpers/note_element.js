@@ -107,6 +107,7 @@ NoteElement.prototype = {
       context.partial('app/templates/notes/edit.mustache', {_id: note.id}, function(html) { 
         $(html).insertAfter(this_note.note_target.closest('li'));
         note_object = new NoteElement(this_note.nextNote().note_target);
+        this_note.unfocusTextarea();
         note_object.focusTextarea();
         context.bindSubmitOnBlurAndAutogrow();
         $('#spinner').hide(); 

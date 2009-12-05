@@ -19,7 +19,8 @@ Outlines = function(sammy, couchapp) { with(sammy) {
     var context = this;
     context.render('show', view, function(response){
       context.app.swap(response);
-      $('ul#notes li:first').find('textarea').focus();
+      first_note = new NoteElement($('ul#notes li:first').find('textarea.expanding'));
+      first_note.focusTextarea();
       context.bindSubmitOnBlurAndAutogrow();
       $('#spinner').hide(); 
     });     
