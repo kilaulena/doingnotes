@@ -105,7 +105,9 @@ NoteElement.prototype = {
         this_note.submitIfChanged();
       });
       context.partial('app/templates/notes/edit.mustache', {_id: note.id}, function(html) { 
-        $(html).insertAfter(this_note.note_target).focus();
+        $(html).insertAfter(this_note.note_target.closest('li'));
+        note_object = new NoteElement(this_note.nextNote().note_target);
+        note_object.focusTextarea();
         context.bindSubmitOnBlurAndAutogrow();
         $('#spinner').hide(); 
       });
