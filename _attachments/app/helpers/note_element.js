@@ -181,7 +181,6 @@ NoteElement.prototype = {
    },
    
    indentUpdateNotePointers: function(context){
-     //this block is untested
      if(this.previousNote().hasChildren()) {
        this.setNextToNull(context);
        this.setLastChildOfPreviousNoteNextPointerToMyself(context);

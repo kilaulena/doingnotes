@@ -83,6 +83,66 @@ describe 'NoteElement'
         }
       end
       
+      describe 'previous note has children'
+        it 'should call setNextToNull'
+          second_child_note.should.receive('setNextToNull', 'once')
+          second_child_note.indentUpdateNotePointers(outer_context);
+        end
+
+        it 'should call setLastChildOfPreviousNoteNextPointerToMyself'
+          second_child_note.should.receive('setLastChildOfPreviousNoteNextPointerToMyself', 'once')
+          second_child_note.indentUpdateNotePointers(outer_context);
+        end
+        
+        it 'should not call setNextToNullAndParentToFormerPreviousNote'
+          second_child_note.should.not.receive('setNextToNullAndParentToFormerPreviousNote')
+          second_child_note.indentUpdateNotePointers(outer_context);
+        end
+      end
+
+
+      describe 'previous note has no children'
+        it 'should not call setNextToNull'
+          second_note.should.not.receive('setNextToNull')
+          second_note.indentUpdateNotePointers(outer_context);
+        end
+
+        it 'should not call setLastChildOfPreviousNoteNextPointerToMyself'
+          second_note.should.not.receive('setLastChildOfPreviousNoteNextPointerToMyself')
+          second_note.indentUpdateNotePointers(outer_context);
+        end
+        
+        it 'should call setNextToNullAndParentToFormerPreviousNote'
+          second_note.should.receive('setNextToNullAndParentToFormerPreviousNote', 'once')
+          second_note.indentUpdateNotePointers(outer_context);
+        end
+      end
+      
+      
+      describe 'there is a next note'
+        it 'should call setPreviousNextPointerToNextNote'
+          second_note.should.receive('setPreviousNextPointerToNextNote', 'once')
+          second_note.indentUpdateNotePointers(outer_context);
+        end
+        
+        it 'should not call setPreviousNextPointerToNull'
+          second_note.should.not.receive('setPreviousNextPointerToNull')
+          second_note.indentUpdateNotePointers(outer_context);
+        end
+      end
+      
+      describe 'there is no next note'
+        it 'should not call setPreviousNextPointerToNextNote'
+          last_note.should.not.receive('setPreviousNextPointerToNextNote')
+          last_note.indentUpdateNotePointers(outer_context);
+        end
+        
+        it 'should call setPreviousNextPointerToNull'
+          last_note.should.receive('setPreviousNextPointerToNull', 'once')
+          last_note.indentUpdateNotePointers(outer_context);
+        end
+      end
+      
       describe 'setNextToNull'
         it 'should set my next pointer to null'
           second_note.setNextToNull(outer_context);
@@ -154,35 +214,5 @@ describe 'NoteElement'
       end
     end
   end 
-  
-  // describe 'unindent'
-  //   describe 'setParentNextPointerToMyself'
-  //     it 'should set the next pointer of my parent note to myself'       
-  //       // second_note.setPreviousNextPointerToNextNote(outer_context);
-  //       // outer_context.update_object_attributes.should.eql {id: '1', next_id: '3'}
-  //     end
-  //   end
-  //   
-  //   describe 'setParentToNull'
-  //     it 'should my parent pointer to null'
-  //       // second_note.setNextToNullAndParentToFormerPreviousNote(outer_context);
-  //       // outer_context.update_object_attributes.should.eql {id: '2', next_id: '', parent_id: '1'}
-  //     end
-  //   end
-  //   
-  //   describe 'setNextTo...'
-  //     it 'should set my next pointer to my '
-  //       //much more stuff
-  //     end
-  //   end
-  //   
-  //   describe 'unindentNoteInDom'
-  //     describe 'i have child notes and a next note'
-  //       it 'should set the next note after my last child note to my next note'
-  //         
-  //       end
-  //     end
-  //   end
-  // end
 end
   
