@@ -77,6 +77,12 @@ describe 'NoteElement'
       second_grandchild_note.noteLi().attr("data-focus").should.eql 'true'
     end
     
+    it 'should focus the parent when there is one and it has no child notes'
+      child_note.focusPreviousTextarea();
+      child_note.noteLi().should.not.have_attr("data-focus")
+      second_note.noteLi().attr("data-focus").should.eql 'true'
+    end
+    
     it 'should keep the focus when i dont have any previous note'
       first_note.focusPreviousTextarea();
       first_note.noteLi().attr("data-focus").should.eql 'true'

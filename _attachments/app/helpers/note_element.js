@@ -135,6 +135,8 @@ NoteElement.prototype = {
       previous_note = this.previousNote();
     } else if(this.lastChildNoteLiOfPreviousNote() != null){
       previous_note = this.lastChildNoteOfPreviousNote();
+    } else if(this.previousNote() == null && this.parentNote() != null){
+      previous_note = this.parentNote();
     } else {
       previous_note = this;
     }
@@ -159,60 +161,39 @@ NoteElement.prototype = {
   },
   
   indent: function(context){
-    this.updateNotePointers(context);
-
-
-
-     // // pointer updating
-     // var target_id = context.getNoteId(target);
-     // var previous_id = context.getPreviousNoteId(context, target);
-     // var next_id = context.getNextNoteId(context, target);
-     // var parent_id = context.getParentNoteId(context, target); 
-     // context.updateNotePointers(context, target_id, previous_id, next_id, parent_id);
-     // 
-     // var next_li = target.closest('li').next();
-     // var previous_li = target.closest('li').prev();
-     // // if(target.parent().parent().parent().parent().is('li')){
-     // //   var parent_li = target.parent().parent().parent().parent();
-     // // };
-     // var parent_li = target.parents('li:first')
-
-
-
-
-
-     // if(previous_li.children().is('ul.indent')){
-     //   //li before me is indented already
-     //   previous_li.children('ul').append(target.closest('li'));
-     //   target.parent().parent().prev().next().find('textarea').focus();
-     // 
-     // } else if(next_li.children().is('ul.indent')){
-     //   //li after me is indented already
-     //   console.log('after me indented already')
-     //   next_li.children('ul').prepend(target.closest('li'));   
-     //   target.parent().parent().next().prev().find('textarea').focus();
-     // 
-     // } else if(previous_li.children().is('form')) {        
-     //   //lis before and after target are not indented yet
-     //   previous_li.append(target.closest('li'));
-     //   target.closest('li').wrap('<ul class="indent"></ul>');
-     //   target.closest('li').find('textarea').focus();
-     // 
-     // } else {
-     //   throw "something unexpected happened during pointer update in indenting"
-     // }
+    this.indentUpdateNotePointers(context);
+    this.indentNoteInDom();
    },
-
-   unindent: function(target){
-
-   },
-
-   updateNotePointers: function(context){
-     if(!this.previousNote()){
-       //if this is not the first note, set the previous note's pointer to the note after myself
-       context.update_object('Note', {id: this.previousNote().id(), next_id: this.nextNote().id()}, {}, function(note){});
+   
+   indentNoteInDom: function(){
+     if(this.previousNoteLi().children().is('ul.indent')){
+       //li before me is indented already
+       this.previousNoteLi().children('ul').append(this.noteLi());
+     } else if(this.previousNoteLi().children().is('form')) {        
+       this.previousNoteLi().append(this.noteLi());
+       this.noteLi().wrap('<ul class="indent"></ul>');
      }
-     //set my next_id to null, my parent is my former previous note
+     this.focusTextarea();
+   },
+   
+   indentUpdateNotePointers: function(context){
+     if(this.previousNote()){
+       if(this.nextNote()){
+         this.setPreviousNextPointerToNextNote(context);
+       }
+       this.setNextToNullAndParentToFormerPreviousNote(context);
+     }
+   },
+   
+   setPreviousNextPointerToNextNote: function(context){
+     context.update_object('Note', {id: this.previousNote().id(), next_id: this.nextNote().id()}, {}, function(note){});
+   },
+
+   setNextToNullAndParentToFormerPreviousNote: function(context){
      context.update_object('Note', {id: this.id(), next_id: '', parent_id: this.previousNote().id()}, {}, function(note){});
+   },
+   
+   unindent: function(context){
+     
    }
 }
