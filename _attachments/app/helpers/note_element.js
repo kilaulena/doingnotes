@@ -6,6 +6,12 @@ NoteElement.prototype = {
   noteLi: function(){
     return this.note_target.closest('li');
   },
+  id: function(){
+    return this.note_target.attr('id').match(/edit_text_(\w*)/)[1];
+  },
+  hasChildren: function(){
+    return this.noteLi().children().is('ul.indent');
+  },
   
   nextNoteLi: function(){
     if(this.noteLi().next().length){
@@ -44,9 +50,6 @@ NoteElement.prototype = {
     }
   },
 
-  id: function(){
-    return this.note_target.attr('id').match(/edit_text_(\w*)/)[1];
-  },
   nextNote: function(){    
     if(this.nextNoteLi()!= null){    
       return new NoteElement(this.nextNoteLi().find('textarea:first'));
@@ -118,12 +121,12 @@ NoteElement.prototype = {
   focusTextarea: function(){
     this.noteLi().attr("data-focus", true);
     this.note_target.focus();
-    // console.log('setting focus of '+ this.id() +' to true ('+ this.noteLi().attr("data-focus") +'!) on ' + this.note_target.val())
+    // Sammy.log('setting focus of '+ this.id() +' to true ('+ this.noteLi().attr("data-focus") +'!) on ' + this.note_target.val())
   },
   
   unfocusTextarea: function(){
     this.noteLi().removeAttr("data-focus");
-    // console.log('removing focus of '+ this.id() +' (its now '+ this.noteLi().attr("data-focus") +'!) on ' + this.note_target.val())
+    // Sammy.log('removing focus of '+ this.id() +' (its now '+ this.noteLi().attr("data-focus") +'!) on ' + this.note_target.val())
   },
   
   focusPreviousTextarea: function(){
@@ -161,39 +164,68 @@ NoteElement.prototype = {
   },
   
   indent: function(context){
-    this.indentUpdateNotePointers(context);
-    this.indentNoteInDom();
+    if(this.previousNote()){    
+      this.indentUpdateNotePointers(context);
+      this.indentNoteInDom();
+      this.focusTextarea();
+    }
    },
    
    indentNoteInDom: function(){
-     if(this.previousNoteLi().children().is('ul.indent')){
-       //li before me is indented already
+     if(this.previousNote().hasChildren()){
        this.previousNoteLi().children('ul').append(this.noteLi());
-     } else if(this.previousNoteLi().children().is('form')) {        
+     } else {        
        this.previousNoteLi().append(this.noteLi());
        this.noteLi().wrap('<ul class="indent"></ul>');
      }
-     this.focusTextarea();
    },
    
    indentUpdateNotePointers: function(context){
-     if(this.previousNote()){
-       if(this.nextNote()){
-         this.setPreviousNextPointerToNextNote(context);
-       }
+     //this block is untested
+     if(this.previousNote().hasChildren()) {
+       this.setNextToNull(context);
+       this.setLastChildOfPreviousNoteNextPointerToMyself(context);
+     } else {
        this.setNextToNullAndParentToFormerPreviousNote(context);
      }
+     if(this.nextNote()){
+       this.setPreviousNextPointerToNextNote(context);
+     } else {
+       this.setPreviousNextPointerToNull(context);
+     }
+   },
+   
+   setNextToNull: function(context){
+     context.update_object('Note', {id: this.id(), next_id: ''}, {}, function(note){});
+   },
+   setLastChildOfPreviousNoteNextPointerToMyself: function(context){
+     context.update_object('Note', {id: this.lastChildNoteOfPreviousNote().id(), next_id: this.id()}, {}, function(note){});
+   },
+   setNextToNullAndParentToFormerPreviousNote: function(context){
+     context.update_object('Note', {id: this.id(), next_id: '', parent_id: this.previousNote().id()}, {}, function(note){});
    },
    
    setPreviousNextPointerToNextNote: function(context){
      context.update_object('Note', {id: this.previousNote().id(), next_id: this.nextNote().id()}, {}, function(note){});
    },
-
-   setNextToNullAndParentToFormerPreviousNote: function(context){
-     context.update_object('Note', {id: this.id(), next_id: '', parent_id: this.previousNote().id()}, {}, function(note){});
-   },
-   
-   unindent: function(context){
-     
+   setPreviousNextPointerToNull: function(context){
+     context.update_object('Note', {id: this.previousNote().id(), next_id: ''}, {}, function(note){});
    }
+
+
+    //   
+    // unindent: function(context){
+        // if(this.parentNote()){    
+        //   this.unIndentUpdateNotePointers(context);
+        //   this.unIndentNoteInDom();
+        //   this.focusTextarea();
+        // }
+    // },
+    // 
+    // unIndentNoteInDom: function(){
+    // },
+    // 
+    // unIndentUpdateNotePointers: function(context){
+    // 
+    // }
 }

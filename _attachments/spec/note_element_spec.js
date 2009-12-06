@@ -11,6 +11,20 @@ describe 'NoteElement'
     end
   end
   
+  describe 'hasChildren()'
+    it 'should return true if the note has children'
+      first_note = new NoteElement($(notes.get(0)).find('textarea:first'))
+      first_note.hasChildren().should.be_false
+    end
+    
+    it 'should return false if the note has no children'
+      second_note = new NoteElement($(notes.get(1)).find('textarea:first'))
+      child_note  = new NoteElement($(notes.get(2)).find('textarea:first'))
+      second_note.hasChildren().should.be_true
+      child_note.hasChildren().should.be_true
+    end
+  end
+  
   describe 'traversing dom'
     before_each
       // storyboard
