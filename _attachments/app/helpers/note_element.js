@@ -160,12 +160,10 @@ NoteElement.prototype = {
   focusTextarea: function(){
     this.noteLi().attr("data-focus", true);
     this.note_target.focus();
-    // Sammy.log('setting focus of '+ this.id() +' to true ('+ this.noteLi().attr("data-focus") +'!) on ' + this.note_target.val())
   },
   
   unfocusTextarea: function(){
     this.noteLi().removeAttr("data-focus");
-    // Sammy.log('removing focus of '+ this.id() +' (its now '+ this.noteLi().attr("data-focus") +'!) on ' + this.note_target.val())
   },
   
   focusPreviousTextarea: function(){

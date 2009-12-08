@@ -43,7 +43,7 @@ describe 'NoteElement'
         partial: function(Type, attributes, {}, callback){}
       };
       first_note.insertNewNote(outer_context);
-      outer_context.create_object_callback({id:'4'});
+      outer_context.create_object_callback({_id:'4', text: 'inserted!'});
       outer_context.update_object_attributes.should.eql {id: '1', next_id: '4'}
       outer_context.update_object_callback.should.eql function(json){this_note.submitIfChanged();}
     end
@@ -61,8 +61,8 @@ describe 'NoteElement'
         }
       };
       first_note.insertNewNote(outer_context);
-      outer_context.create_object_callback({id:'4'});
-      outer_context.partial_attributes.should.eql {_id: '4'}
+      outer_context.create_object_callback({_id:'4', text: 'inserted!'});
+      outer_context.partial_attributes.should.eql {_id: '4', text: 'inserted!'}
       outer_context.partial_callback.toString().should.match /bindSubmitOnBlurAndAutogrow()/
     end
   end

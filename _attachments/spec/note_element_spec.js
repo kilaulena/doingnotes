@@ -246,18 +246,6 @@ describe 'NoteElement'
     end 
   end
   
-  // describe 'noteObject'
-  //   it 'should return a Note'
-  //     note = new NoteElement(first_note_element.find('textarea:first'))
-  //     note.noteObject().should.be_an_instance_of Note
-  //   end
-  //   
-  //   it 'should return a note with the same id'
-  //     note = new NoteElement(first_note_element.find('textarea:first'))
-  //     note.noteObject()._id.should.eql '1'
-  //   end
-  // end
-  
   describe 'submitIfChanged'
      before_each 
        note = new NoteElement(first_note_element.find('textarea:first'))

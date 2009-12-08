@@ -96,18 +96,4 @@ describe 'Note Helpers'
       -{second.firstChildNoteObject(notes)}.should.throw_error 'More than one first child note for "ae9" found'
     end
   end
-  
-  describe 'noteElement'
-    before_each
-      note = new Note({_id: "8c8", text: 'first', next_id: "ae9"});
-    end
-    
-    it 'should return a NoteElement'
-      note.noteElement().should.be_an_instance_of NoteElement
-    end
-    
-    it 'should return a NoteElement with a note_target'
-      note.noteElement().note_target.should.not.be_undefined
-    end
-  end
 end
