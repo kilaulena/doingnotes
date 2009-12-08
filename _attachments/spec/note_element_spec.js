@@ -125,6 +125,12 @@ describe 'NoteElement'
           first_note.note_target.should.eql first_note_element.find('textarea:first')
           second_note.note_target.should.eql second_note_element.find('textarea:first')
         end
+        
+        it 'should throw an error when no valid selector has been given'
+          -{new NoteElement($('textarea'))}.should.throw_error
+          -{new NoteElement('bla')}.should.throw_error
+          -{new NoteElement(first_note_element.find('form'))}.should.throw_error
+        end
       end
 
       describe 'noteLi'
@@ -240,9 +246,21 @@ describe 'NoteElement'
     end 
   end
   
+  // describe 'noteObject'
+  //   it 'should return a Note'
+  //     note = new NoteElement(first_note_element.find('textarea:first'))
+  //     note.noteObject().should.be_an_instance_of Note
+  //   end
+  //   
+  //   it 'should return a note with the same id'
+  //     note = new NoteElement(first_note_element.find('textarea:first'))
+  //     note.noteObject()._id.should.eql '1'
+  //   end
+  // end
+  
   describe 'submitIfChanged'
      before_each 
-       note = new NoteElement($(notes.get(0)).find('textarea:first'))
+       note = new NoteElement(first_note_element.find('textarea:first'))
      end
      
      it 'should remove the data attribute if it is different form the textarea value'

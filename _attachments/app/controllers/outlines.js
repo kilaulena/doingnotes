@@ -15,17 +15,6 @@ Outlines = function(sammy, couchapp) { with(sammy) {
     return false;
   }});
 
-  function renderOutline(view){
-    var context = this;
-    context.render('show', view, function(response){
-      context.app.swap(response);
-      first_note = new NoteElement($('ul#notes li:first').find('textarea.expanding'));
-      first_note.focusTextarea();
-      context.bindSubmitOnBlurAndAutogrow();
-      $('#spinner').hide(); 
-    });     
-  }
-
   get('#/outlines/:id', function() { with(this) {
     var view = {};
     var context = this;
@@ -39,13 +28,12 @@ Outlines = function(sammy, couchapp) { with(sammy) {
           json.rows.splice(0,1);        
           if (json['rows'].length > 0) {   
             notes = json['rows'].map(function(row) {return new Note(row.value)}); 
-            view.notes = sortByNextId(notes);            
-            renderOutline.call(context, view);
+            view.notes = [(new NoteCollection(notes)).firstNote()];
+            renderOutline(context, view, (new NoteCollection(notes)));
           } else {
-            create_object('Note', {outline_id: view.id}, {}, function(note){
-              view['notes'] = [note];
-              view.notes[0]._id = note.id;
-              renderOutline.call(context, view);
+            create_object('Note', {outline_id: view.id, first_note: true, text:''}, {}, function(note){
+              view.notes = [note];
+              renderOutline(context, view, (new NoteCollection([])));
             })            
           } 
         } else {
@@ -59,7 +47,7 @@ Outlines = function(sammy, couchapp) { with(sammy) {
   
   post('#/outlines', function() { with(this) {
     create_object('Outline', params, {message: "Here is your new outline"}, function(outline){
-      redirect('#/outlines/' + outline.id, flash);
+      redirect('#/outlines/' + outline._id, flash);
     });
     return false;
   }});

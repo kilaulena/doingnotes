@@ -1,4 +1,5 @@
-NoteElement = function(target) {
+NoteElement = function NoteElement(target) {
+  // console.log('constructing note element with target: ', target)
   this.note_target = target;
 }
 
@@ -6,9 +7,11 @@ NoteElement.prototype = {
   noteLi: function(){
     return this.note_target.closest('li');
   },
+  
   id: function(){
     return this.note_target.attr('id').match(/edit_text_(\w*)/)[1];
   },
+  
   hasChildren: function(){
     return this.noteLi().children().is('ul.indent');
   },
@@ -104,17 +107,53 @@ NoteElement.prototype = {
       attributes.next_id = this.nextNote().id();
     }
     context.create_object('Note', attributes, {}, function(note){ 
-      context.update_object('Note', {id: this_note.id(), next_id: note.id}, {}, function(json){
+      context.update_object('Note', {id: this_note.id(), next_id: note._id}, {}, function(json){
         this_note.submitIfChanged();
       });
-      context.partial('app/templates/notes/edit.mustache', {_id: note.id}, function(html) { 
-        $(html).insertAfter(this_note.note_target.closest('li'));
-        note_object = new NoteElement(this_note.nextNote().note_target);
-        this_note.unfocusTextarea();
-        note_object.focusTextarea();
-        context.bindSubmitOnBlurAndAutogrow();
-        $('#spinner').hide(); 
+      this_note.renderNextNote(context, note, function(next){
+        next.previousNote().unfocusTextarea();
+        next.focusTextarea();
       });
+    });
+  },
+  
+  renderNotes: function(context, notes){
+    var note_object = notes.findById(this.id());
+    var child = note_object.firstChildNoteObject(notes.notes);
+    var next = note_object.nextNoteObject(notes.notes);
+    notes.notes = notes.notes.remove(note_object);
+    
+    if(typeof(child)!="undefined"){
+      this.renderChildNote(context, child, function(child){
+        child.renderNotes(context, notes);
+      });
+    } 
+    if(typeof(next)!="undefined"){
+      this.renderNextNote(context, next, function(next){
+        next.renderNotes(context, notes);
+      });
+    }
+  },
+  
+  renderNextNote: function(context, note_object, callback){
+    var this_note = this;
+    context.partial('app/templates/notes/edit.mustache', {_id: note_object._id, text: note_object.text}, function(html) {
+      $(html).insertAfter(this_note.note_target.closest('li'));
+      context.bindSubmitOnBlurAndAutogrow();
+      var appended_note = this_note.nextNote();
+      callback(appended_note);
+      $('#spinner').hide();       
+    });
+  },
+  
+  renderChildNote: function(context, note_object, callback){
+    var this_note = this;
+    context.partial('app/templates/notes/edit.mustache', {_id: note_object._id, text: note_object.text}, function(html) {
+      $(html).appendTo(this_note.note_target.closest('li')).wrap('<ul class="indent"></ul>');
+      context.bindSubmitOnBlurAndAutogrow();
+      var child_note = this_note.firstChildNote();
+      callback(child_note);
+      $('#spinner').hide();       
     });
   },
   

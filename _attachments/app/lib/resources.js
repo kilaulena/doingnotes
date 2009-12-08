@@ -37,13 +37,16 @@ var Resources = function(app, couchapp) {
       if(object.valid()) {
         couchapp.db.saveDoc(object.to_json(), {
           success: function(res) {
+            if(typeof(object._id)=="undefined"){
+              object._id = res.id;
+            }
             if(options.message) {
               context.flash = {message: options.message, type: 'notice'};
             }
             if(options.success) {
               options.success(object);
             }          
-            callback(res);
+            callback(object);
           },
           error: function(response_code, res) {
             context.flash = {message: 'Error saving ' + name + ': ' + res, type: 'error'};
