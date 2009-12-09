@@ -27,16 +27,67 @@ describe 'NoteElement'
       second_grandchild_note = new NoteElement(second_grandchild_note_element.find('textarea:first'))
       last_note              = new NoteElement(last_note_element.find('textarea:first'))
       
-      notes = new NoteCollection([first_note, second_grandchild_note, last_note, child_note, second_note, second_child_note, grandchild_note]);
+      first_note_object             = new Note({_id: '1', next_id: '2', first_note: true})
+      second_note_object            = new Note({_id: '2', next_id: '3', text: 'more text'})
+      child_note_object             = new Note({_id: '2a', next_id: '2b', parent_id: '2'})
+      grandchild_note_object        = new Note({_id: '2aI', parent_id: '2a'})
+      second_child_note_object      = new Note({_id: '2b'})
+      second_grandchild_note_object = new Note({_id: '2bI', parent_id: '2b', text: 'some text'})
+      last_note_object              = new Note({_id: '3'})
+      
+      notes = new NoteCollection([first_note_object, second_grandchild_note_object, last_note_object, 
+        child_note_object, second_note_object, second_child_note_object, grandchild_note_object]);
     end
-  
+    
     describe 'renderNotes'
-      it 'should '
-        notes.findById = function(){return second_child_note};
-        second_child_note.should.receive('renderChildNote', 'once')
-        second_child_note.renderNotes({}, notes);
+      before_each
+        outer_context = {
+          partial: function(Type, attributes, callback){
+            this.partial_attributes = attributes;
+          },
+          bindSubmitOnBlurAndAutogrow: function(){}
+        };
+      end  
+      
+      describe 'note has a child note' 
+        it 'should call renderFollowingNote with the child_note'
+          var second_grandchild_note_object = second_child_note_object.firstChildNoteObject(notes.notes)
+          second_child_note.should.receive('renderFollowingNote').with_args(outer_context, second_grandchild_note_object, function(child){child.renderNotes(context, notes)})
+          second_child_note.renderNotes(outer_context, notes);
+        end
+        
+        it 'should call the partial with the child note values'
+          second_child_note.renderNotes(outer_context, notes);
+          outer_context.partial_attributes.should.eql({_id: '2bI', text: 'some text'});
+        end
+      end
+
+      describe 'note has a next note'
+        it 'should call renderFollowingNote with the next_note'
+          var next_note_object = first_note_object.nextNoteObject(notes.notes)
+          first_note.should.receive('renderFollowingNote').with_args(outer_context, next_note_object, function(next){next.renderNotes(context, notes)})
+          first_note.renderNotes(outer_context, notes);
+        end
+        
+        it 'should call the partial with the next note values'
+          first_note.renderNotes(outer_context, notes);
+          outer_context.partial_attributes.should.eql({_id: '2', text: 'more text'});
+        end
       end
       
+      describe 'note has neither next note nor child note'
+        it 'should not call renderFollowingNote'
+          last_note.should.not.receive('renderFollowingNote')
+          last_note.renderNotes(outer_context, notes);
+        end
+      end
+      
+      describe 'note has both next note and child note'
+        it 'should call renderFollowingNote with the child_note'
+          child_note.should.receive('renderFollowingNote', 'twice')
+          child_note.renderNotes(outer_context, notes);
+        end
+      end
     end
   end
 end

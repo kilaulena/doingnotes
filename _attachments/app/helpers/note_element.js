@@ -115,7 +115,7 @@ NoteElement.prototype = {
     }
     context.create_object('Note', attributes, {}, function(note_object){ 
       this_note.insertUpdateNotePointers(context, note_object);
-      this_note.renderNextNote(context, note_object, function(next){
+      this_note.renderFollowingNote(context, note_object, function(next){
         this_note.noteLi().children('ul.indent:first').appendTo(next.noteLi());
         next.previousNote().unfocusTextarea();
         next.focusTextarea();
@@ -143,40 +143,33 @@ NoteElement.prototype = {
   
   renderNotes: function(context, notes){
     var note_object = notes.findById(this.id());
-    var child = note_object.firstChildNoteObject(notes.notes);
-    var next = note_object.nextNoteObject(notes.notes);
+    var child_object = note_object.firstChildNoteObject(notes.notes);
+    var next_object = note_object.nextNoteObject(notes.notes);
     notes.notes = notes.notes.remove(note_object);
     
-    if(typeof(child)!="undefined"){
-      this.renderChildNote(context, child, function(child){
+    if(typeof(child_object)!="undefined"){
+      this.renderFollowingNote(context, child_object, function(child){
         child.renderNotes(context, notes);
       });
     } 
-    if(typeof(next)!="undefined"){
-      this.renderNextNote(context, next, function(next){
+    if(typeof(next_object)!="undefined"){
+      this.renderFollowingNote(context, next_object, function(next){
         next.renderNotes(context, notes);
       });
     }
   },
   
-  renderNextNote: function(context, note_object, callback){
+  renderFollowingNote: function(context, note_object, callback){
     var this_note = this;
     context.partial('app/templates/notes/edit.mustache', {_id: note_object._id, text: note_object.text}, function(html) {
-      $(html).insertAfter(this_note.note_target.closest('li'));
+      if(typeof note_object.parent_id != "undefined"){
+        $(html).appendTo(this_note.note_target.closest('li')).wrap('<ul class="indent"></ul>');
+        callback(this_note.firstChildNote());
+      } else {
+        $(html).insertAfter(this_note.note_target.closest('li'));
+        callback(this_note.nextNote());        
+      }
       context.bindSubmitOnBlurAndAutogrow();
-      var appended_note = this_note.nextNote();
-      callback(appended_note);
-      $('#spinner').hide();       
-    });
-  },
-  
-  renderChildNote: function(context, note_object, callback){
-    var this_note = this;
-    context.partial('app/templates/notes/edit.mustache', {_id: note_object._id, text: note_object.text}, function(html) {
-      $(html).appendTo(this_note.note_target.closest('li')).wrap('<ul class="indent"></ul>');
-      context.bindSubmitOnBlurAndAutogrow();
-      var child_note = this_note.firstChildNote();
-      callback(child_note);
       $('#spinner').hide();       
     });
   },
