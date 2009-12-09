@@ -248,11 +248,12 @@ describe 'NoteElement'
        note = new NoteElement(first_note_element.find('textarea:first'))
      end
      
-     it 'should remove the data attribute if it is different form the textarea value'
+     it 'should submit the form if data attribute is different form the textarea value'
        note.note_target.attr("data-text", 'something')
        note.note_target.val('something completely different')
+       note.should.receive('submitForm')
+       note.should.receive('setDataText')
        note.submitIfChanged()
-       note.note_target.should.not.have_attr("data-text")
      end
      
      it 'should do nothing when data attribute is the same as textareas value'
@@ -272,8 +273,9 @@ describe 'NoteElement'
      it 'should also work when the textarea is already blank'
        note.note_target.attr("data-text", '')
        note.note_target.val('whatever')
+       note.should.receive('submitForm')
+       note.should.receive('setDataText')
        note.submitIfChanged()
-       note.note_target.should.not.have_attr("data-text")
      end
    end
    

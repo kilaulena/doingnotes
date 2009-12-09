@@ -98,25 +98,34 @@ NoteElement.prototype = {
     var target = this.note_target;
     if(target.attr("data-text") != target.val()) {
       target.removeAttr("data-text");
-      target.parent('form').submit();
+      this.submitForm();
+      this.setDataText();
     }
+  },
+  
+  submitForm: function(){
+    this.note_target.parent('form').submit();
   },
   
   insertNewNote: function(context) { 
     var this_note = this;
     var attributes = {text: '', outline_id: context.getOutlineId()};
-    if (this.nextNote() != null){
-      attributes.next_id = this.nextNote().id();
+    if (this_note.nextNote() != null){
+      attributes.next_id = this_note.nextNote().id();
     }
-    context.create_object('Note', attributes, {}, function(note){ 
-      context.update_object('Note', {id: this_note.id(), next_id: note._id}, {}, function(json){
+    context.create_object('Note', attributes, {}, function(note_object){ 
+      context.update_object('Note', {id: this_note.id(), next_id: note_object._id}, {}, function(json){
         this_note.submitIfChanged();
       });
-      this_note.renderNextNote(context, note, function(next){
+      if(this_note.hasChildren()){
+        context.update_object('Note', {id: this_note.firstChildNote().id(), parent_id: note_object._id}, {}, function(json){});
+      }
+      this_note.renderNextNote(context, note_object, function(next){
+        this_note.noteLi().children('ul.indent:first').appendTo(next.noteLi());
         next.previousNote().unfocusTextarea();
         next.focusTextarea();
       });
-    });
+    }); 
   },
   
   renderNotes: function(context, notes){
