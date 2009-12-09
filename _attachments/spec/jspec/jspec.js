@@ -1,20 +1,20 @@
 
 // JSpec - Core - Copyright TJ Holowaychuk <tj@vision-media.ca> (MIT Licensed)
 
-(function(){
+;(function(){
 
   JSpec = {
-
-    version   : '2.11.12',
+    version   : '2.11.0',
+    assert    : true,
     cache     : {},
     suites    : [],
     modules   : [],
     allSuites : [],
     matchers  : {},
     stubbed   : [],
+    options   : {},
     request   : 'XMLHttpRequest' in this ? XMLHttpRequest : null,
     stats     : { specs: 0, assertions: 0, failures: 0, passes: 0, specsFinished: 0, suitesFinished: 0 },
-    options   : { profile: false },
 
     /**
      * Default context in which bodies are evaluated.
@@ -51,15 +51,12 @@
       },
       
       /**
-       * Load fixture at _path_. This utility function
-       * supplies the means to resolve, and cache fixture contents
-       * via the DOM or Rhino.
+       * Load fixture at _path_.
        *
        * Fixtures are resolved as:
        *
        *  - <path>
-       *  - fixtures/<path>
-       *  - fixtures/<path>.html
+       *  - <path>.html
        *
        * @param  {string} path
        * @return {string}
@@ -69,18 +66,14 @@
       fixture : function(path) {
         if (JSpec.cache[path]) return JSpec.cache[path]
         return JSpec.cache[path] = 
-          JSpec.tryLoading(path) ||
-          JSpec.tryLoading('fixtures/' + path) ||
-          JSpec.tryLoading('fixtures/' + path + '.html') ||
-          JSpec.tryLoading('spec/' + path) ||
-          JSpec.tryLoading('spec/fixtures/' + path) ||
-          JSpec.tryLoading('spec/fixtures/' + path + '.html')
+          JSpec.tryLoading(JSpec.options.fixturePath + '/' + path) ||
+          JSpec.tryLoading(JSpec.options.fixturePath + '/' + path + '.html')
       }
     },
 
     // --- Objects
     
-    formatters : {
+    reporters : {
       
       /**
        * Report to server.
@@ -123,7 +116,7 @@
       },
 
       /**
-       * Default formatter, outputting to the DOM.
+       * Default reporter, outputting to the DOM.
        *
        * Options:
        *   - reportToId    id of element to output reports to, defaults to 'jspec'
@@ -149,6 +142,7 @@
         report.innerHTML = '<div id="jspec-report" class="' + classes + '"><div class="heading"> \
         <span class="passes">Passes: <em>' + results.stats.passes + '</em></span>                \
         <span class="failures">Failures: <em>' + results.stats.failures + '</em></span>          \
+        <span class="passes">Duration: <em>' + results.duration + '</em> ms</span>          \
         </div><table class="suites">' + map(results.allSuites, function(suite) {
           var displaySuite = failuresOnly ? suite.ran && !suite.passed() : suite.ran
           if (displaySuite && suite.hasSpecs())
@@ -170,7 +164,7 @@
       },
       
       /**
-       * Terminal formatter.
+       * Terminal reporter.
        *
        * @api public
        */
@@ -178,7 +172,8 @@
        Terminal : function(results, options) {
          failuresOnly = option('failuresOnly')
          print(color("\n Passes: ", 'bold') + color(results.stats.passes, 'green') + 
-              color(" Failures: ", 'bold') + color(results.stats.failures, 'red') + "\n")
+               color(" Failures: ", 'bold') + color(results.stats.failures, 'red') +
+               color(" Duration: ", 'bold') + color(results.duration, 'green') + " ms \n")
               
          function indent(string) {
            return string.replace(/^(.)/gm, '  $1')
@@ -208,7 +203,7 @@
        },
 
       /**
-       * Console formatter.
+       * Console reporter.
        *
        * @api public
        */
@@ -246,7 +241,8 @@
         // Report assertion results
         
         report : function() {
-          this.passed ? JSpec.stats.passes++ : JSpec.stats.failures++
+          if (JSpec.assert) 
+            this.passed ? JSpec.stats.passes++ : JSpec.stats.failures++
           return this
         },
         
@@ -270,7 +266,7 @@
       // Proxy
       
       object[method] = function(){
-        args = argumentsToArray(arguments)
+        args = toArray(arguments)
         result = old.apply(object, args)
         self.calls.push({ args : args, result : result })
         return result
@@ -302,7 +298,7 @@
         // Proxy arguments passed
         
         with_args : function() {
-          this.expectedArgs = argumentsToArray(arguments)
+          this.expectedArgs = toArray(arguments)
           return this
         },
         
@@ -380,7 +376,8 @@
         // Report assertion results
         
         report : function() {
-          this.passed ? ++JSpec.stats.passes : ++JSpec.stats.failures
+          if (JSpec.assert) 
+            this.passed ? ++JSpec.stats.passes : ++JSpec.stats.failures
           return this
         },
         
@@ -506,14 +503,14 @@
         
         pass : function(message) {
           this.assertions.push({ passed: true, message: message })
-          ++JSpec.stats.passes
+          if (JSpec.assert) ++JSpec.stats.passes
         },
         
         // Add failing assertion
         
         fail : function(message) {
           this.assertions.push({ passed: false, message: message })
-          ++JSpec.stats.failures
+          if (JSpec.assert) ++JSpec.stats.failures
         },
                 
         // Run deferred assertions
@@ -679,7 +676,7 @@
     /**
      * Include _object_ which may be a hash or Module instance.
      *
-     * @param  {has, Module} object
+     * @param  {hash, Module} object
      * @return {JSpec}
      * @api public
      */
@@ -690,7 +687,7 @@
       if ('init' in module) module.init()
       if ('utilities' in module) extend(this.defaultContext, module.utilities)
       if ('matchers' in module) this.addMatchers(module.matchers)
-      if ('formatters' in module) extend(this.formatters, module.formatters)
+      if ('reporters' in module) extend(this.reporters, module.reporters)
       if ('DSLs' in module)
         each(module.DSLs, function(name, methods){
           JSpec.DSLs[name] = JSpec.DSLs[name] || {}
@@ -711,7 +708,7 @@
      */
     
     hook : function(name, args) {
-      args = argumentsToArray(arguments, 1)
+      args = toArray(arguments, 1)
       return inject(JSpec.modules, [], function(results, module){
         if (typeof module[name] == 'function')
           results.push(JSpec.evalHook(module, name, args))
@@ -805,7 +802,7 @@
      * @api public
      */
     
-    argumentsToArray : function(arguments, offset) {
+    toArray : function(arguments, offset) {
       return Array.prototype.slice.call(arguments, offset || 0)
     },
     
@@ -842,7 +839,9 @@
       return 'expected ' + puts(actual) + ' to ' + 
                (negate ? 'not ' : '') + 
                   name.replace(/_/g, ' ') +
-                    ' ' + puts.apply(this, expected.slice(1))
+                    ' ' + (expected.length > 1 ?
+                      puts.apply(this, expected.slice(1)) :
+                        '')
     },
     
     /**
@@ -957,30 +956,36 @@
      */
 
     puts : function(object) {
-      if (arguments.length > 1) {
-        return map(argumentsToArray(arguments), function(arg){
+      if (arguments.length > 1)
+        return map(toArray(arguments), function(arg){
           return puts(arg)
         }).join(', ')
-      }
-      if (object === undefined) return ''
+      if (object === undefined) return 'undefined'
       if (object === null) return 'null'
       if (object === true) return 'true'
       if (object === false) return 'false'
       if (object.an_instance_of) return 'an instance of ' + object.an_instance_of.name
-      if (object.jquery && object.selector.length > 0) return 'selector ' + puts(object.selector) + ''
+      if (object.jquery && object.selector.length > 0) return 'selector ' + puts(object.selector)
       if (object.jquery) return object.get(0).outerHTML
       if (object.nodeName) return object.outerHTML
       switch (object.constructor) {
-        case String: return "'" + object + "'"
         case Number: return object
         case Function: return object.name || object 
+        case String: 
+          return '"' + object
+            .replace(/"/g,  '\\"')
+            .replace(/\n/g, '\\n')
+            .replace(/\t/g, '\\t')
+            + '"'
         case Array: 
           return inject(object, '[', function(b, v){
             return b + ', ' + puts(v)
           }).replace('[,', '[') + ' ]'
         case Object:
+          object.__hit__ = true
           return inject(object, '{', function(b, k, v) {
-            return b + ', ' + puts(k) + ' : ' + puts(v)
+            if (k == '__hit__') return b
+            return b + ', ' + k + ': ' + (v && v.__hit__ ? '<circular reference>' : puts(v))
           }).replace('{,', '{') + ' }'
         default: 
           return object.toString()
@@ -1024,7 +1029,7 @@
       */
      
      does : function(actual, matcher, expected) {
-       var assertion = new JSpec.Assertion(JSpec.matchers[matcher], actual, argumentsToArray(arguments, 2))
+       var assertion = new JSpec.Assertion(JSpec.matchers[matcher], actual, toArray(arguments, 2))
        return assertion.run().result
      },
 
@@ -1042,7 +1047,7 @@
 
     expect : function(actual) {
       assert = function(matcher, args, negate) {
-        var expected = argumentsToArray(args, 1)
+        var expected = toArray(args, 1)
         matcher.negate = negate  
         assertion = new JSpec.Assertion(matcher, actual, expected, negate)
         hook('beforeAssertion', assertion)
@@ -1114,17 +1119,20 @@
      /**
       * Iterate an object, invoking the given callback.
       *
-      * @param  {hash, array, string} object
+      * @param  {hash, array} object
       * @param  {function} callback
       * @return {JSpec}
       * @api public
       */
 
      each : function(object, callback) {
-       if (typeof object == 'string') object = object.split(' ')
-       for (key in object) 
-         if (object.hasOwnProperty(key))
-           callIterator(callback, key, object[key])
+       if (object.constructor == Array)
+         for (var i = 0, len = object.length; i < len; ++i)
+           callIterator(callback, i, object[i])
+       else
+         for (var key in object) 
+           if (object.hasOwnProperty(key))
+             callIterator(callback, key, object[key])
      },
 
      /**
@@ -1326,7 +1334,7 @@
       var context = this.context || this.defaultContext
       var contents = this.contentsOf(body)
       hook('evaluatingBody', dsl, matchers, context, contents)
-      try { eval('with (dsl){ with (context) { with (matchers) { ' + contents + ' }}}') }
+      try { with (dsl){ with (context) { with (matchers) { eval(contents) }}} }
       catch(e) { error(errorMessage, e) }
     },
 
@@ -1344,7 +1352,7 @@
       return input.
         replace(/\t/g, '  ').
         replace(/\r\n|\n|\r/g, '\n').
-        replace(/__END__[^]*/, '').
+        split('__END__')[0].
         replace(/([\w\.]+)\.(stub|destub)\((.*?)\)$/gm, '$2($1, $3)').
         replace(/describe\s+(.*?)$/gm, 'describe($1, function(){').
         replace(/^\s+it\s+(.*?)$/gm, ' it($1, function(){').
@@ -1381,8 +1389,9 @@
      */
 
     report : function() {
+      this.duration = Number(new Date) - this.start
       hook('reporting', JSpec.options)
-      new (JSpec.options.formatter || JSpec.formatters.DOM)(JSpec, JSpec.options)
+      new (JSpec.options.reporter || JSpec.reporters.DOM)(JSpec, JSpec.options)
     },
 
     /**
@@ -1397,9 +1406,8 @@
     run : function(options) {
       if (any(hook('running'), haveStopped)) return this
       if (options) extend(this.options, options)
-      if (option('profile')) console.group('Profile')
+      this.start = Number(new Date)
       each(this.suites, function(suite) { JSpec.runSuite(suite) })
-      if (option('profile')) console.groupEnd()
       return this
     },
     
@@ -1462,10 +1470,8 @@
 
     runSpec : function(spec) {
       this.currentSpec = spec
-      if (option('profile')) console.time(spec.description)
       try { this.evalBody(spec.body) }
       catch (e) { fail(e) }
-      if (option('profile')) console.timeEnd(spec.description)
       spec.runDeferredAssertions()
       destub()
       this.stats.specsFinished++
@@ -1588,8 +1594,7 @@
      */
     
     tryLoading : function(file) {
-      try { return JSpec.load(file) }
-      catch (e) {}
+      try { return JSpec.load(file) } catch (e) {}
     },
 
     /**
@@ -1638,8 +1643,8 @@
   var main = this
   var find = JSpec.any
   var utils = 'haveStopped stub hookImmutable hook destub map any last pass fail range each option inject select \
-               error escape extend puts hash query strip color does addMatchers callIterator argumentsToArray'.split(/\s+/)
-  while (utils.length) util = utils.shift(), eval('var ' + util + ' = JSpec.' + util)
+               error escape extend puts hash query strip color does addMatchers callIterator toArray'.split(/\s+/)
+  while (utils.length) eval('var ' + utils[0] + ' = JSpec.' + utils.shift())
   if (!main.setTimeout) main.setTimeout = function(callback){ callback() }
 
   // --- Matchers
@@ -1715,9 +1720,9 @@
         this.e = e
         var assert = function(arg) {
           switch (arg.constructor) {
-            case RegExp   : return arg.test(e)
+            case RegExp   : return arg.test(e.message || e.toString())
             case String   : return arg == (e.message || e.toString())
-            case Function : return (e.name || 'Error') == arg.name
+            case Function : return e instanceof arg || e.name == arg.name
           }
         }
         return message ? assert(expected) && assert(message) :
@@ -1771,6 +1776,4 @@
     }
   })
   
-  if ('exports' in main) exports.JSpec = JSpec
-
 })()
