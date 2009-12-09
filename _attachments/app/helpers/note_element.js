@@ -1,5 +1,7 @@
 NoteElement = function NoteElement(target) {
-  // console.log('constructing note element with target: ', target)
+  if(typeof(target)=="undefined" || !target.val || typeof(target.val())=="undefined"){
+    throw "NoteElement can't be instantiated without a valid note_target"
+  }
   this.note_target = target;
 }
 

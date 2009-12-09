@@ -2,56 +2,66 @@ describe 'NoteElement'
   before_each
     outline = elements(fixture('outline'))
     notes = outline.find('li')
+    // storyboard
+    // * 1: first_note
+    // * 2: second_note
+    //   ** 2a: child_note
+    //     ** 2aI: grandchild_note 
+    //   ** 2b: second_child_note
+    //     *** 2bI: second_grandchild_note
+    // * 3: last_note
+    first_note_element             = $(notes.get(0))
+    second_note_element            = $(notes.get(1))
+    child_note_element             = $(notes.get(2))
+    grandchild_note_element        = $(notes.get(3))
+    second_child_note_element      = $(notes.get(4))
+    second_grandchild_note_element = $(notes.get(5))
+    last_note_element              = $(notes.get(6))
+
+    first_note             = new NoteElement(first_note_element.find('textarea:first'))
+    second_note            = new NoteElement(second_note_element.find('textarea:first'))
+    child_note             = new NoteElement(child_note_element.find('textarea:first'))
+    grandchild_note        = new NoteElement(grandchild_note_element.find('textarea:first'))
+    second_child_note      = new NoteElement(second_child_note_element.find('textarea:first'))
+    second_grandchild_note = new NoteElement(second_grandchild_note_element.find('textarea:first'))
+    last_note              = new NoteElement(last_note_element.find('textarea:first'))
+  end
+  
+  describe 'constructor'
+    it 'should set note_target to the notes textarea'
+      first_note.note_target.should.eql first_note_element.find('textarea:first')
+      second_note.note_target.should.eql second_note_element.find('textarea:first')
+    end
+    
+    it 'should throw an error when no valid selector has been given'
+      -{new NoteElement()}.should.throw_error "NoteElement can't be instantiated without a valid note_target"
+      -{new NoteElement('bla')}.should.throw_error "NoteElement can't be instantiated without a valid note_target"
+      -{new NoteElement($('li:first'))}.should.throw_error "NoteElement can't be instantiated without a valid note_target"
+    end
+    
+    it 'should accept blank note_targets'
+      last_note.note_target.should.eql last_note_element.find('textarea:first')
+    end
   end
   
   describe 'id'
     it 'should return the ID of a note'
-      note = new NoteElement($(notes.get(0)).find('textarea:first'))
-      note.id().should.eql '1'
+      first_note.id().should.eql '1'
     end
   end
   
   describe 'hasChildren()'
     it 'should return true if the note has children'
-      first_note = new NoteElement($(notes.get(0)).find('textarea:first'))
       first_note.hasChildren().should.be_false
     end
     
     it 'should return false if the note has no children'
-      second_note = new NoteElement($(notes.get(1)).find('textarea:first'))
-      child_note  = new NoteElement($(notes.get(2)).find('textarea:first'))
       second_note.hasChildren().should.be_true
       child_note.hasChildren().should.be_true
     end
   end
   
   describe 'traversing dom'
-    before_each
-      // storyboard
-      // * 1: first_note
-      // * 2: second_note
-      //   ** 2a: child_note
-      //     ** 2aI: grandchild_note 
-      //   ** 2b: second_child_note
-      //     *** 2bI: second_grandchild_note
-      // * 3: last_note
-      first_note_element             = $(notes.get(0))
-      second_note_element            = $(notes.get(1))
-      child_note_element             = $(notes.get(2))
-      grandchild_note_element        = $(notes.get(3))
-      second_child_note_element      = $(notes.get(4))
-      second_grandchild_note_element = $(notes.get(5))
-      last_note_element              = $(notes.get(6))
-
-      first_note             = new NoteElement(first_note_element.find('textarea:first'))
-      second_note            = new NoteElement(second_note_element.find('textarea:first'))
-      child_note             = new NoteElement(child_note_element.find('textarea:first'))
-      grandchild_note        = new NoteElement(grandchild_note_element.find('textarea:first'))
-      second_child_note      = new NoteElement(second_child_note_element.find('textarea:first'))
-      second_grandchild_note = new NoteElement(second_grandchild_note_element.find('textarea:first'))
-      last_note              = new NoteElement(last_note_element.find('textarea:first'))
-    end
-    
     describe 'getting NoteElements'
       describe 'nextNote'
         it 'should return a NoteElement'
@@ -120,19 +130,6 @@ describe 'NoteElement'
     end
 
     describe 'getting lis'
-      describe 'constructor'
-        it 'should set note_target to the notes textarea'
-          first_note.note_target.should.eql first_note_element.find('textarea:first')
-          second_note.note_target.should.eql second_note_element.find('textarea:first')
-        end
-        
-        it 'should throw an error when no valid selector has been given'
-          -{new NoteElement($('textarea'))}.should.throw_error
-          -{new NoteElement('bla')}.should.throw_error
-          -{new NoteElement(first_note_element.find('form'))}.should.throw_error
-        end
-      end
-
       describe 'noteLi'
         it 'should return the li element around the target'
          first_note.noteLi().html().should.eql first_note_element.html()

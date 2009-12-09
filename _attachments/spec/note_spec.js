@@ -1,8 +1,15 @@
 describe 'Note Helpers'
   describe 'constructor'
     it 'should create a note from an attributes hash'
-      false.should.eql true
-      //write me
+      note = new Note({_id: "ae9", text: 'one', _rev: "1-148", next_id: "107", created_at: "2009/10/23 15:04:00 +0000"});
+      note.should.be_an_instance_of Note
+    end
+    
+    it 'should assign the values'
+      note = new Note({_id: "ae9", text: 'one', _rev: "1-148", next_id: "107", created_at: "2009/10/23 15:04:00 +0000"});
+      note._id.should.eql "ae9"
+      note.text.should.eql "one"
+      note.next_id.should.eql "107"
     end
   end
 
