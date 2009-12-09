@@ -108,7 +108,7 @@ body.jspec {
 }
 #jspec-report td + td {
   padding-right: 0;
-  width: 15px;
+  width: 50px;
 }
 #jspec-report td.pass {
   background: url(images/sprites.png) 3px -7px no-repeat;
@@ -135,14 +135,15 @@ body.jspec {
 #jspec-report .assertion {
   display: block;
   float: left;
-  margin: 0 0 0 1px;
+  margin: 0 0 0 3px;
   padding: 0;
-  width: 1px;
-  height: 5px;
-  background: #7B8D9B;
+  width: 3px;
+  height: 12px;
+  background: #ABBDBB;
 }
 #jspec-report .assertion.failed {
   background: red;
+  width: 3px;
 }
 .jspec-sandbox {
   display: none;
