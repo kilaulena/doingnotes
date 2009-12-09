@@ -21,6 +21,9 @@ $(function() {
 
     bind('init', function() { with(this) {
       var context = this;
+      $(window).bind("beforeunload", function(e){
+        (new NoteElement($('textarea.expanding'))).submitIfChanged();
+      });
       $(window).bind("click", function(e) {
         if(happenedOnNote(e)){
           var note = new NoteElement($(e.target));
