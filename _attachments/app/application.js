@@ -6,6 +6,7 @@ $(function() {
   sammy = new Sammy.Application(function() { with(this) {
     element_selector = '#content';
     use(Sammy.Mustache);
+    use(Sammy.Cache);
     use(Resources, couchapp);
     flash = {};
     Notes(this);
