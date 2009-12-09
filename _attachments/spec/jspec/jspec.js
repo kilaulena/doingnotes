@@ -392,15 +392,15 @@
           
           if (this.expectedResult != null && (negate ? this.anyResultsPass() : this.anyResultsFail()))
             this.message = methodString + ' to return ' + puts(this.expectedResult) + 
-              ' but ' + (negate ? 'it did' : 'got ' + puts(this.failingResult())) 
+              ' BUT ' + (negate ? 'IT DID' : 'GOT ' + puts(this.failingResult())) 
 
           if (this.expectedArgs && (negate ? !this.expectedResult && this.anyArgsPass() : this.anyArgsFail()))
             this.message = methodString + ' to be called with ' + puts.apply(this, this.expectedArgs) +
-             ' but was' + (negate ? '' : ' called with ' + puts.apply(this, this.failingArgs()))
+             ' BUT WAS' + (negate ? '' : ' CALLED WITH ' + puts.apply(this, this.failingArgs()))
 
           if (negate ? !this.expectedResult && !this.expectedArgs && this.calls.length >= this.times : this.calls.length != this.times)
             this.message = methodString + ' to be called ' + times(this.times) + 
-            ', but ' +  (this.calls.length == 0 ? ' was not called' : ' was called ' + times(this.calls.length))
+            ', BUT ' +  (this.calls.length == 0 ? ' WAS NOT CALLED ' : ' WAS CALLED ' + times(this.calls.length))
                 
           if (!this.message.length) 
             this.passed = true
