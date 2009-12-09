@@ -114,18 +114,31 @@ NoteElement.prototype = {
       attributes.next_id = this_note.nextNote().id();
     }
     context.create_object('Note', attributes, {}, function(note_object){ 
-      context.update_object('Note', {id: this_note.id(), next_id: note_object._id}, {}, function(json){
-        this_note.submitIfChanged();
-      });
-      if(this_note.hasChildren()){
-        context.update_object('Note', {id: this_note.firstChildNote().id(), parent_id: note_object._id}, {}, function(json){});
-      }
+      this_note.insertUpdateNotePointers(context, note_object);
       this_note.renderNextNote(context, note_object, function(next){
         this_note.noteLi().children('ul.indent:first').appendTo(next.noteLi());
         next.previousNote().unfocusTextarea();
         next.focusTextarea();
       });
     }); 
+  },
+  
+  insertUpdateNotePointers: function(context, inserted_note_object){
+    this.setNextPointerToNewlyInsertedNote(context, inserted_note_object);
+    if(this.hasChildren()){
+      this.setParentPointerOfFirstChildToNewlyInsertedNote(context, inserted_note_object);
+    }
+  },
+  
+  setNextPointerToNewlyInsertedNote: function(context, inserted_note_object){
+    var this_note = this;
+    context.update_object('Note', {id: this_note.id(), next_id: inserted_note_object._id}, {}, function(json){
+      this_note.submitIfChanged();
+    });
+  },
+  
+  setParentPointerOfFirstChildToNewlyInsertedNote: function(context, inserted_note_object){
+    context.update_object('Note', {id: this.firstChildNote().id(), parent_id: inserted_note_object._id}, {}, function(json){});
   },
   
   renderNotes: function(context, notes){
