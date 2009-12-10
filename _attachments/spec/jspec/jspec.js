@@ -391,15 +391,15 @@
           }
           
           if (this.expectedResult != null && (negate ? this.anyResultsPass() : this.anyResultsFail()))
-            this.message = methodString + ' to return ' + puts(this.expectedResult) + 
+            this.message = methodString + ' TO RETURN ' + puts(this.expectedResult) + 
               ' BUT ' + (negate ? 'IT DID' : 'GOT ' + puts(this.failingResult())) 
 
           if (this.expectedArgs && (negate ? !this.expectedResult && this.anyArgsPass() : this.anyArgsFail()))
-            this.message = methodString + ' to be called with ' + puts.apply(this, this.expectedArgs) +
+            this.message = methodString + ' TO BE CALLED WITH ' + puts.apply(this, this.expectedArgs) +
              ' BUT WAS' + (negate ? '' : ' CALLED WITH ' + puts.apply(this, this.failingArgs()))
 
           if (negate ? !this.expectedResult && !this.expectedArgs && this.calls.length >= this.times : this.calls.length != this.times)
-            this.message = methodString + ' to be called ' + times(this.times) + 
+            this.message = methodString + ' TO BE CALLED ' + times(this.times) + 
             ', BUT ' +  (this.calls.length == 0 ? ' WAS NOT CALLED ' : ' WAS CALLED ' + times(this.calls.length))
                 
           if (!this.message.length) 
@@ -836,9 +836,9 @@
      */
     
     defaultMatcherMessage : function(actual, expected, negate, name) {
-      return 'expected ' + puts(actual) + ' to ' + 
-               (negate ? 'not ' : '') + 
-                  name.replace(/_/g, ' ') +
+      return 'EXPECTED ' + puts(actual) + ' TO ' + 
+               (negate ? 'NOT ' : '') + 
+                  name.replace(/_/g, ' ').toUpperCase() +
                     ' ' + (expected.length > 1 ?
                       puts.apply(this, expected.slice(1)) :
                         '')
