@@ -22,7 +22,11 @@ $(function() {
     bind('init', function() { with(this) {
       var context = this;
       $(window).bind("beforeunload", function(e){
-        (new NoteElement($('textarea.expanding'))).submitIfChanged();
+        var note = new NoteElement($('li[data-focus]').find('textarea'));
+        if(note.targetHasChanged()){
+          note.submitIfChanged();
+          alert("Please don't reload this page when you have typed into a line - first leave the line with keyup/keydown or with the mouse. Sorry for this annoying message.")
+        }
       });
       $(window).bind("click", function(e) {
         if(happenedOnNote(e)){

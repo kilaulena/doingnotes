@@ -95,12 +95,15 @@ NoteElement.prototype = {
   },
   
   submitIfChanged: function() {
-    var target = this.note_target;
-    if(target.attr("data-text") != target.val()) {
-      target.removeAttr("data-text");
+    if(this.targetHasChanged()) {
+      this.note_target.removeAttr("data-text");
       this.submitForm();
       this.setDataText();
     }
+  },
+  
+  targetHasChanged: function(){
+    return (this.note_target.attr("data-text") != this.note_target.val());
   },
   
   submitForm: function(){
