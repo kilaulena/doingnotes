@@ -23,5 +23,40 @@ var OutlineHelpers = {
       context.bindSubmitOnBlurAndAutogrow();
       $('#spinner').hide(); 
     });     
+  },
+  
+  replicateUp: function(){
+    var context = this;
+    $.post(context.localServer()+ '/_replicate', 
+      '{"source":"' + context.db() + '", "target":"' + context.server() + '/' + context.db()+ '", "continuous":true}',
+      function(){},"json");
+  },
+  
+  replicateDown: function(){
+    var context = this;
+    $.post(context.localServer()+ '/_replicate', 
+      '{"source":"' + context.server() + '/' + context.db() + '", "target":"' + context.db() + '", "continuous":true}',
+      function(){},"json");
+  }, 
+  
+  db: function(){
+    return "doingnotes"
+  },
+  
+  server: function(){
+    return "http://localhost:" + this.serverPort();
+  },
+  
+  localServer: function(){
+    return "http://localhost:" + this.localPort();
+  },
+  
+  localPort: function(){
+    return window.location.port;
+  },
+  
+  serverPort: function(){
+    if(window.location.port == "5984") return "5986"
+    else return "5984"
   }
 }

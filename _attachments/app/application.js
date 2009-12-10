@@ -19,8 +19,17 @@ $(function() {
       return false;
     }});
 
+    get('#/updates', function(){with(this) {
+      $('#spinner').show();
+      $('#spinner').hide();
+      return false;
+    }});
+
     bind('init', function() { with(this) {
       var context = this;
+      replicateUp();
+      replicateDown();
+            
       $(window).bind("beforeunload", function(e){
         var note = new NoteElement($('li[data-focus]').find('textarea'));
         if(note.targetHasChanged()){

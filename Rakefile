@@ -5,7 +5,11 @@ require 'rake/rdoctask'
 require 'restclient'
 
 def host
-  'http://lenalena:flgzu11nn@localhost:5984'
+  'http://localhost:5984'
+end
+
+def server
+  'http://localhost:5986'
 end
 
 def database
@@ -13,13 +17,26 @@ def database
 end
 
 namespace :couch do
-  desc 'deletes and recreates the database and pushes the app'
-  task :dp do
-    puts 'Deleting and recreating database ...'
+  desc 'deletes and recreates the database and pushes the app to server on port 5984'
+  task :host do
+    puts 'Deleting and recreating database to 5984 ...'
     RestClient.delete "#{host}/#{database}" rescue nil
     RestClient.put "#{host}/#{database}", ""
     puts '... pushing app ...'
     system "couchapp push #{host}/#{database}"
     puts '... ready.'
   end
+  
+  desc 'deletes and recreates the database and pushes the app to the server on port 5986'
+  task :server do
+    puts 'Deleting and recreating database to 5986 ...'
+    RestClient.delete "#{server}/#{database}" rescue nil
+    RestClient.put "#{server}/#{database}", ""
+    puts '... pushing app ...'
+    system "couchapp push #{server}/#{database}"
+    puts '... ready.'
+  end
+  
+  desc "delete, create and push server and localhost"
+    task :both => [:host, :server]
 end

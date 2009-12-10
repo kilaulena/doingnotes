@@ -23,6 +23,8 @@ Before do
 end
 
 def host
+  # 'http://lenalena:flgzu11nn@localhost:5984'
+  
   'http://localhost:5984'
 end
 
