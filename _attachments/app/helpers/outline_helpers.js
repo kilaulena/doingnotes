@@ -6,6 +6,11 @@ var OutlineHelpers = {
       note.unfocusTextarea();
       note.submitIfChanged();
     });
+    $("a.image").bind("click", function(){
+      $(this).parent().next('ul.indent').toggle();
+      $(this).toggleClass('down');
+      return false;
+    });
   },
   
   getOutlineId: function(){

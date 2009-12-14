@@ -146,6 +146,7 @@ NoteElement.prototype = {
   
   renderNotes: function(context, notes){
     var note_object = notes.findById(this.id());
+    //HERE IS AN EXCEPTION
     var child_object = note_object.firstChildNoteObject(notes.notes);
     var next_object = note_object.nextNoteObject(notes.notes);
     notes.notes = notes.notes.remove(note_object);
@@ -179,10 +180,12 @@ NoteElement.prototype = {
   
   focusTextarea: function(){
     this.noteLi().attr("data-focus", true);
+    this.note_target.parent().addClass("active");
     this.note_target.focus();
   },
   
   unfocusTextarea: function(){
+    this.note_target.parent().removeClass("active");
     this.noteLi().removeAttr("data-focus");
   },
   

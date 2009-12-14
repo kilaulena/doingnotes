@@ -100,34 +100,83 @@ h2 {
   margin: 0;  
 }
 
+
 ul#notes ul.indent{
   width: 100%;
+}
+
+ul#notes form{
+  clear: left;
+  background-color: #fff;
+  border-bottom: 1px solid #bbb;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
 }
 
 textarea.expanding {
   height: 14px;
 	min-height: 14px;
-	margin: -2px;
+	margin: 0px;
+	border: none;
+	background-color: transparent;
 }
 
-/* textarea:focus {border: 1px solid red} */
+ul#notes li form.active {background-color: #f2f2f2;}
+
+ul#notes a.image {
+  width: 10px;
+  display: block;
+  float:left;
+  background-image: url(../images/arrow_right.gif);
+  background-repeat:no-repeat;
+  background-position:0px 7px;
+  text-decoration: none;
+}
+
+ul#notes a.down {
+  background-image: url(../images/arrow_down.gif);
+}
 
 ul#notes li textarea{
-  max-width: 886px;
-  width: 100%;
+  width: 865px;
   font-weight:bold;
   font-size: 13px;
 }
 
+ul#notes li span.space {
+  width: 0px;
+  display: block;
+  float: left;
+}
+
+ul#notes li img {
+  float: left;
+}
+
 ul#notes li ul li textarea {
-  padding-left: 30px;
+  width: 835px;
+/*  padding-left: 30px;*/
   font-weight:normal;
 }
 
+ul#notes li ul li span.space {
+  width: 30px;
+}
+
 ul#notes li ul li ul li textarea {
-  padding-left: 60px;
+  width: 805px;
+/*  padding-left: 60px;*/
   font-size: 12px;
 }
+
+ul#notes li ul li ul li span.space {
+  width: 60px;
+}
+
+
+
+
+
 
 ul#notes li ul li ul li ul li textarea {
   padding-left: 90px;
