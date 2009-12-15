@@ -110,13 +110,12 @@ describe 'NoteElement'
         update_object: function(Type, attributes, {}, callback){},
         partial: function(Type, attributes, callback){
           this.partial_attributes = attributes;
-          this.partial_callback = callback;
         }
       };
       first_note.insertNewNote(outer_context);
       outer_context.create_object_callback({_id:'4', text: 'inserted!'});
       outer_context.partial_attributes.should.eql {_id: '4', text: 'inserted!'}
-      outer_context.partial_callback.toString().should.match /bindSubmitOnBlurAndAutogrow()/
+      outer_context.create_object_callback.toString().should.match /bindSubmitOnBlurAndAutogrow()/
     end
   end
 end

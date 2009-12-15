@@ -122,6 +122,8 @@ NoteElement.prototype = {
         this_note.noteLi().children('ul.indent:first').appendTo(next.noteLi());
         next.previousNote().unfocusTextarea();
         next.focusTextarea();
+        context.unbindSubmitOnBlurAndAutogrow();        
+        context.bindSubmitOnBlurAndAutogrow();
       });
     }); 
   },
@@ -144,9 +146,14 @@ NoteElement.prototype = {
     context.update_object('Note', {id: this.firstChildNote().id(), parent_id: inserted_note_object._id}, {}, function(json){});
   },
   
-  renderNotes: function(context, notes){
+  renderNotes: function(context, notes, counter){
+    if (notes.notes.length == 0) return;
+    if(typeof(context.i)=="undefined"){
+      context.i = counter;
+    } else {
+      context.i = context.i-1;
+    }
     var note_object = notes.findById(this.id());
-    //HERE IS AN EXCEPTION
     var child_object = note_object.firstChildNoteObject(notes.notes);
     var next_object = note_object.nextNoteObject(notes.notes);
     notes.notes = notes.notes.remove(note_object);
@@ -161,10 +168,12 @@ NoteElement.prototype = {
         next.renderNotes(context, notes);
       });
     }
-    console.log('end of render notes...........')
-    context.unbindSubmitOnBlurAndAutogrow();
-    context.bindSubmitOnBlurAndAutogrow();
-    $('#spinner').hide();
+    if (context.i == 1) {
+      context.unbindSubmitOnBlurAndAutogrow();
+      context.bindSubmitOnBlurAndAutogrow();
+      $('#spinner').hide();
+      context.i = 0;
+    }
   },
   
   renderFollowingNote: function(context, note_object, callback){
