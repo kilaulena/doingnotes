@@ -161,6 +161,10 @@ NoteElement.prototype = {
         next.renderNotes(context, notes);
       });
     }
+    console.log('end of render notes...........')
+    context.unbindSubmitOnBlurAndAutogrow();
+    context.bindSubmitOnBlurAndAutogrow();
+    $('#spinner').hide();
   },
   
   renderFollowingNote: function(context, note_object, callback){
@@ -172,9 +176,7 @@ NoteElement.prototype = {
       } else {
         $(html).insertAfter(this_note.note_target.closest('li'));
         callback(this_note.nextNote());        
-      }
-      context.bindSubmitOnBlurAndAutogrow();
-      $('#spinner').hide();       
+      }      
     });
   },
   

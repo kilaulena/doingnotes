@@ -1,5 +1,6 @@
 var OutlineHelpers = {
   bindSubmitOnBlurAndAutogrow: function(){
+    console.log('bind')
     $('textarea.expanding').autogrow();
     $('textarea.expanding').bind('blur', function(e){
       note = new NoteElement($(e.target));
@@ -11,6 +12,12 @@ var OutlineHelpers = {
       $(this).toggleClass('down');
       return false;
     });
+  },
+  
+  unbindSubmitOnBlurAndAutogrow: function(){
+    console.log('and unbind')
+    $('textarea.expanding').unbind('blur');
+    $('a.image').unbind('click');
   },
   
   getOutlineId: function(){
@@ -25,6 +32,7 @@ var OutlineHelpers = {
         first_note.renderNotes(context, notes); 
       }
       first_note.focusTextarea();
+      console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
       context.bindSubmitOnBlurAndAutogrow();
       $('#spinner').hide(); 
     });     
