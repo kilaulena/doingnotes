@@ -109,8 +109,8 @@ ul#notes form{
   clear: left;
   background-color: #fff;
   border-bottom: 1px solid #bbb;
-  -moz-border-radius: 4px;
-  -webkit-border-radius: 4px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
 }
 
 textarea.expanding {
@@ -137,6 +137,12 @@ ul#notes a.down {
   background-image: url(../images/arrow_down.gif);
 }
 
+ul#notes li img {
+  float: left;
+}
+
+/* indenting of notes */
+
 ul#notes li textarea{
   width: 865px;
   font-weight:bold;
@@ -149,13 +155,8 @@ ul#notes li span.space {
   float: left;
 }
 
-ul#notes li img {
-  float: left;
-}
-
 ul#notes li ul li textarea {
   width: 835px;
-/*  padding-left: 30px;*/
   font-weight:normal;
 }
 
@@ -165,7 +166,6 @@ ul#notes li ul li span.space {
 
 ul#notes li ul li ul li textarea {
   width: 805px;
-/*  padding-left: 60px;*/
   font-size: 12px;
 }
 
@@ -173,31 +173,58 @@ ul#notes li ul li ul li span.space {
   width: 60px;
 }
 
-
-
-
-
-
 ul#notes li ul li ul li ul li textarea {
-  padding-left: 90px;
+  width: 775px;
+}
+
+ul#notes li ul li ul li ul li span.space {
+  width: 90px;
 }
 
 ul#notes li ul li ul li ul li ul li textarea {
-  padding-left: 120px;
+  width: 745px;
+}
+
+ul#notes li ul li ul li ul li ul li span.space {
+  width: 120px;
 }
 
 ul#notes li ul li ul li ul li ul li ul li textarea {
-  padding-left: 150px;
+  width: 715px;
+}
+
+ul#notes li ul li ul li ul li ul li ul li span.space {
+  width: 150px;
 }
 
 ul#notes li ul li ul li ul li ul li ul li ul li textarea {
-  padding-left: 170px;
+  width: 695px;
+}
+
+ul#notes li ul li ul li ul li ul li ul li ul li span.space {
+  width: 170px;
 }
 
 ul#notes li ul li ul li ul li ul li ul li ul li ul li textarea {
-  padding-left: 190px;
+  width: 675px;
+}
+
+ul#notes li ul li ul li ul li ul li ul li ul li ul li span.space {
+  width: 190px;
 }
 
 ul#notes li ul li ul li ul li ul li ul li ul li ul li ul li textarea {
-  padding-left: 210px;
+  width: 655px;
+}
+
+ul#notes li ul li ul li ul li ul li ul li ul li ul li ul li span.space {
+  width: 210px;
+}
+
+ul#notes li ul li ul li ul li ul li ul li ul li ul li ul li ul li textarea {
+  width: 635px;
+}
+
+ul#notes li ul li ul li ul li ul li ul li ul li ul li ul li ul li span.space {
+  width: 220px;
 }
