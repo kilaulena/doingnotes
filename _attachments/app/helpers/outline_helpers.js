@@ -15,7 +15,8 @@ var OutlineHelpers = {
   
   unbindSubmitOnBlurAndAutogrow: function(){
     $('textarea.expanding').unbind('blur');
-    $('a.image').unbind('click');
+    $('textarea.expanding').unbind('focus');
+    $('a.image').unbind('click');		
   },
   
   getOutlineId: function(){

@@ -120,10 +120,10 @@ NoteElement.prototype = {
       this_note.insertUpdateNotePointers(context, note_object);
       this_note.renderFollowingNote(context, note_object, function(next){
         this_note.noteLi().children('ul.indent:first').appendTo(next.noteLi());
-        next.previousNote().unfocusTextarea();
-        next.focusTextarea();
         context.unbindSubmitOnBlurAndAutogrow();        
         context.bindSubmitOnBlurAndAutogrow();
+        next.previousNote().unfocusTextarea();
+        next.focusTextarea();
       });
     }); 
   },
