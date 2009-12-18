@@ -38,14 +38,18 @@ var OutlineHelpers = {
     var context = this;
     $.post(context.localServer()+ '/_replicate', 
       '{"source":"' + context.db() + '", "target":"' + context.server() + '/' + context.db()+ '", "continuous":true}',
-      function(){},"json");
+      function(){
+        Sammy.log('replicating to ', context.server() + '/' + context.db())
+      },"json");
   },
   
   replicateDown: function(){
     var context = this;
     $.post(context.localServer()+ '/_replicate', 
       '{"source":"' + context.server() + '/' + context.db() + '", "target":"' + context.db() + '", "continuous":true}',
-      function(){},"json");
+      function(){
+        Sammy.log('replicating from ', context.server() + '/' + context.db())
+      },"json");
   }, 
   
   db: function(){
@@ -65,7 +69,7 @@ var OutlineHelpers = {
   },
   
   serverPort: function(){
-    if(window.location.port == "5984") return "5986"
+    if(window.location.port == "5984") return "5985"
     else return "5984"
   }
 }

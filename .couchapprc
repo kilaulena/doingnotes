@@ -4,7 +4,7 @@
       "db": "http://localhost:5984/doingnotes"
     },
     "second": {
-      "db": "http://localhost:5986/doingnotes"
+      "db": "http://localhost:5985/doingnotes"
     },
     "production": {
       "db": "http://lenalena:flgzu11nn@free.couch.io/lenalena"

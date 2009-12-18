@@ -9,7 +9,7 @@ def host
 end
 
 def server
-  'http://localhost:5986'
+  'http://localhost:5985'
 end
 
 def database
@@ -27,9 +27,9 @@ namespace :couch do
     puts '... ready.'
   end
   
-  desc 'deletes and recreates the database and pushes the app to the server on port 5986'
+  desc 'deletes and recreates the database and pushes the app to the server on port 5985'
   task :server do
-    puts 'Deleting and recreating database to 5986 ...'
+    puts 'Deleting and recreating database to 5985 ...'
     RestClient.delete "#{server}/#{database}" rescue nil
     RestClient.put "#{server}/#{database}", ""
     puts '... pushing app ...'
