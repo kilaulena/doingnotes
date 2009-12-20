@@ -23,15 +23,15 @@ Outlines = function(sammy, couchapp) { with(sammy) {
       endkey: [params['id'], {}],
       success: function(json) {
         if(json.rows[0]) {
-          view.title = json.rows[0].value.title;
-          view.id    = json.rows[0].value._id;
+          view.title      = json.rows[0].value.title;
+          view.outline_id = json.rows[0].value._id;
           json.rows.splice(0,1);        
-          if (json['rows'].length > 0) {   
-            notes = json['rows'].map(function(row) {return new Note(row.value)}); 
+          if (json.rows.length > 0) { 
+            notes = json.rows.map(function(row) {return new Note(row.value)}); 
             view.notes = [(new NoteCollection(notes)).firstNote()];
             renderOutline(context, view, (new NoteCollection(notes)));
           } else {
-            create_object('Note', {outline_id: view.id, first_note: true, text:''}, {}, function(note){
+            create_object('Note', {outline_id: view.outline_id, first_note: true, text:''}, {}, function(note){
               view.notes = [note];
               renderOutline(context, view, (new NoteCollection([])));
             })            
@@ -45,6 +45,16 @@ Outlines = function(sammy, couchapp) { with(sammy) {
     return false;
   }});
   
+  get('#/outlines/edit/:id', function() { with(this) {
+    load_object('Outline', params['id'], function(outline_view){
+      partial('app/templates/outlines/edit.mustache', outline_view, function(outline_view){
+        app.swap(outline_view);
+        $('#spinner').hide(); 
+      });
+    });
+    return false;
+  }});
+  
   post('#/outlines', function() { with(this) {
     create_object('Outline', params, {message: "Here is your new outline"}, function(outline){
       redirect('#/outlines/' + outline._id, flash);
@@ -52,8 +62,9 @@ Outlines = function(sammy, couchapp) { with(sammy) {
     return false;
   }});
   
-  put('#/outlines/:id', function()  { with(this) {   
+  put('#/outlines/:id', function()  { with(this) {       
     update_object('Outline', params, {}, function(outline){
+      trigger('notice', {message: 'Title successfully changed'});
       $('#spinner').hide(); 
     });
     return false;

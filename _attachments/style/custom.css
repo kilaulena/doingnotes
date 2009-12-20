@@ -95,11 +95,20 @@ h2 {
   font-size: 1.8em;
 }
 
+.right_link {
+  text-decoration: none;
+  float: right;
+}
+
+.left_link {
+  float: left;
+  margin-right: 20px;
+}
+
 #writeboard ul#notes li {
   list-style-type: none;
   margin: 0;  
 }
-
 
 ul#notes ul.indent{
   width: 100%;
