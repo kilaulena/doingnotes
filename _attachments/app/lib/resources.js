@@ -25,14 +25,14 @@ var Resources = function(app, couchapp) {
       this.partial(template_file_for(this.path, template), data, callback);
     },
   
-    new_object: function(name, callback) {
-      this.partial(template_file_for(name, 'new'), callback);
+    new_object: function(type, callback) {
+      this.partial(template_file_for(type, 'new'), callback);
     },
   
-    create_object: function(name, params, options, callback) {
+    create_object: function(type, params, options, callback) {
       options = options || {};
       var context = this;
-      var _prototype = eval(name);
+      var _prototype = eval(type);
       var object = new _prototype(params);
       if(object.valid()) {
         couchapp.db.saveDoc(object.to_json(), {
@@ -49,7 +49,7 @@ var Resources = function(app, couchapp) {
             callback(object);
           },
           error: function(response_code, res) {
-            context.flash = {message: 'Error saving ' + name + ': ' + res, type: 'error'};
+            context.flash = {message: 'Error saving ' + type + ': ' + res, type: 'error'};
             context.trigger('error', context.flash);                
           }
         });
@@ -63,15 +63,12 @@ var Resources = function(app, couchapp) {
       var context = this;      
       var collection = pluralize(type);
       var view = {};
+      var _prototype = eval(type);
+      var view_prototype = eval(type + 'View');
       couchapp.design.view(view_name, {
          success: function(json) { 
            if (json['rows'].length > 0) {   
-             view[collection] = json['rows'].map(function(row) {return row.value});                       
-             if (options['sort'] == 'byText') {
-               view[collection].sort(byText);
-             } else {
-               view[collection].sort(byDate);
-             }
+             view[collection] = json['rows'].map(function(row) {return new view_prototype(new _prototype(row.value))});
            } else {                   
              view[collection] = [];
            }

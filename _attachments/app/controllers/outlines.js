@@ -1,6 +1,11 @@
 Outlines = function(sammy, couchapp) { with(sammy) {
   get('#/outlines', function() { with(this) {
-    list_objects('Outline', 'outlines', [], function(view){  
+    list_objects('Outline', 'outlines', [], function(view_object){  
+      var view = {};
+      view.outlines = view_object.outlines.map(function(outline){return {
+        title: outline.title(), 
+        short_created_at: outline.short_created_at(),
+        _id: outline._id()}});
       render('index', view);
       $('#spinner').hide(); 
     });

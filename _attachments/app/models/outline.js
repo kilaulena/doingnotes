@@ -1,5 +1,5 @@
 Outline = function(attributes) {
-  this._id = attributes._id || slugize(stripBlanks(attributes.title));
+  this._id = attributes._id;
   this._rev = attributes._rev;
   this.created_at = attributes.created_at || new Date().toJSON();
   this.updated_at = attributes.updated_at;
@@ -9,7 +9,7 @@ Outline = function(attributes) {
 Outline.prototype = {
   valid: function() {
     this.errors = [];
-    if(!this._id) {
+    if(!this.title) {
       this.errors.push("You need to enter a title.");
     };
     if(this.title.match(/[^\w ]/)){

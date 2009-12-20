@@ -15,11 +15,11 @@ OutlineView.prototype = {
   title: function() {
     return this.outline.title;
   },
-  created_at: function() {
-    return this.outline.created_at;
+  long_created_at: function() {
+    return dateFormat(this.outline.created_at, "dddd, mmmm dS yyyy, h:MM TT");
   },
-  updated_at: function() {
-    return this.outline.updated_at;
+  short_created_at: function() {
+    return dateFormat(this.outline.created_at, "m/dd/yy, h:MM TT");
   },
   not_new_record: function() {
     return this.outline.updated_at || false;
