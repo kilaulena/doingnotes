@@ -11,21 +11,23 @@
     <script src="../app/helpers/note_element.js"></script>
     <script src="../app/helpers/outline_helpers.js"></script>
     <script src="../app/models/note.js"></script>
+    <script src="../app/models/outline.js"></script>
     <script src="../app/models/note_collection.js"></script>
     <script>
       function runSuites() {
         JSpec
-        // .exec('note_element_spec.js')
-        // .exec('inserting_note_element_spec.js')
-        // .exec('indenting_note_element_spec.js')
-        // .exec('unindenting_note_element_spec.js')
-        // .exec('focusing_note_element_spec.js')
+        .exec('note_element_spec.js')
+        .exec('inserting_note_element_spec.js')
+        .exec('indenting_note_element_spec.js')
+        .exec('unindenting_note_element_spec.js')
+        .exec('focusing_note_element_spec.js')
         .exec('rendering_note_element_spec.js')
-        // .exec('outline_helpers_spec.js')
-        // .exec('note_spec.js')
-        // .exec('note_collection_spec.js')
-        // .exec('resources_spec.js')
-        // .exec('lib_spec.js')
+        .exec('outline_helpers_spec.js')
+        .exec('outline_spec.js')
+        .exec('note_spec.js')
+        .exec('note_collection_spec.js')
+        .exec('resources_spec.js')
+        .exec('lib_spec.js')
         .run({failuresOnly: true, fixturePath: 'fixtures'})
         // .run({formatter: JSpec.formatters.Console})
         // .run()

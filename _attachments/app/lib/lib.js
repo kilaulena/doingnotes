@@ -1,15 +1,3 @@
-function byText(a, b) {
-  var x = a.text.toLowerCase();
-  var y = b.text.toLowerCase();
-  return ((x < y) ? -1 : ((x > y) ? 1 : 0));
-}
-
-function byDate(a, b) {
-  var x = a.created_at;
-  var y = b.created_at;
-  return ((x < y) ? -1 : ((x > y) ? 1 : 0));
-}
-
 function slugize(string) {
   return string.toLowerCase().replace(/\s/g, "-");
 }

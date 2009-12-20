@@ -13,40 +13,12 @@ describe 'Note Helpers'
     end
   end
 
-  describe 'simple sorting'
-    before_each
-      notes = [
-        {_id: "343", _rev: "2-188", type: "Note", created_at: "2009/10/20 15:04:30 +0000", text: "This a note"},
-        {_id: "221", _rev: "1-148", type: "Note", created_at: "2009/10/28 15:04:32 +0000", text: "Another note"},
-        {_id: "785", _rev: "1-345", type: "Note", created_at: "2009/10/26 15:04:32 +0000", text: "In between"}
-      ]
-    end
-    
-    describe 'sort by text'
-      it 'should sort notes by text attribute'
-        notes = notes.sort(byText)
-        notes[0]['text'].should.eql "Another note"
-        notes[1]['text'].should.eql "In between"
-        notes[2]['text'].should.eql "This a note"
-      end
-    end
-    
-    describe 'sort by created at'
-      it 'should sort notes by created_at attribute'
-        notes = notes.sort(byDate)
-        notes[0]['text'].should.eql "This a note"
-        notes[1]['text'].should.eql "In between"
-        notes[2]['text'].should.eql "Another note"
-      end
-    end
-  end
-  
   describe 'nextNoteObject'
     before_each
-       note3 = new Note({_id: "8c8", text: 'three', _rev: "2-188", next_id: "c03", created_at: "2009/10/20 15:04:30 +0000"});
-       note1 = new Note({_id: "ae9", text: 'one', _rev: "1-148", next_id: "107", created_at: "2009/10/23 15:04:00 +0000"});
-       note4 = new Note({_id: "c03", text: 'four', _rev: "1-345", created_at: "2009/10/25 15:04:32 +0000"});
-       note2 = new Note({_id: "107", text: 'two', _rev: "1-325", next_id: "8c8", created_at: "2009/10/28 15:04:32 +0000"});
+       note3 = new Note({_id: "8c8", text: 'three', _rev: "2-188", next_id: "c03"});
+       note1 = new Note({_id: "ae9", text: 'one', _rev: "1-148", next_id: "107"});
+       note4 = new Note({_id: "c03", text: 'four', _rev: "1-345"});
+       note2 = new Note({_id: "107", text: 'two', _rev: "1-325", next_id: "8c8"});
 
        notes = [note3, note1, note4, note2];
      end

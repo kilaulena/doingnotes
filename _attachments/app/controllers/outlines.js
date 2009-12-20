@@ -1,8 +1,10 @@
 Outlines = function(sammy, couchapp) { with(sammy) {
   get('#/outlines', function() { with(this) {
-    list_objects('Outline', 'outlines', [], function(view_object){  
+    list_objects('Outline', 'outlines', [], function(json){  
+      var outlines = json.outlines.sort(byDate);
       var view = {};
-      view.outlines = view_object.outlines.map(function(outline){return {
+      view.outlines = outlines.map(function(outline){return new OutlineView(outline)});
+      view.outlines = view.outlines.map(function(outline){return {
         title: outline.title(), 
         short_created_at: outline.short_created_at(),
         _id: outline._id()}});

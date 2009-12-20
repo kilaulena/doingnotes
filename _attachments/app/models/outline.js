@@ -17,6 +17,7 @@ Outline.prototype = {
     };
     return this.errors.length === 0;
   },
+  
   to_json: function() {
     return {
       _id: this._id,
@@ -28,3 +29,9 @@ Outline.prototype = {
     };
   }
 };
+
+function byDate(a, b) {
+  var x = a.created_at;
+  var y = b.created_at;
+  return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+}

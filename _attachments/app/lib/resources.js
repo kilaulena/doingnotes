@@ -64,11 +64,10 @@ var Resources = function(app, couchapp) {
       var collection = pluralize(type);
       var view = {};
       var _prototype = eval(type);
-      var view_prototype = eval(type + 'View');
       couchapp.design.view(view_name, {
          success: function(json) { 
            if (json['rows'].length > 0) {   
-             view[collection] = json['rows'].map(function(row) {return new view_prototype(new _prototype(row.value))});
+             view[collection] = json['rows'].map(function(row) {return new _prototype(row.value)});
            } else {                   
              view[collection] = [];
            }
