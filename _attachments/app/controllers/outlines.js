@@ -78,8 +78,32 @@ Outlines = function(sammy, couchapp) { with(sammy) {
   }});
 
   route('delete', '#/outlines/:id', function() { with(this) {
-    delete_object(params, {message: 'Outline deleted.'}, function(outline){
-      redirect('#/outlines', flash);
+    var flash = {};
+    couchapp.design.view('notes_by_outline', {
+      startkey: [params['id']],
+      endkey: [params['id'], {}],
+      success: function(json) {
+        if(json.rows[0]) {
+          delete_object(params, {message: 'Outline deleted.'}, function(outline){
+            $('#spinner').hide(); 
+            redirect('#/outlines', flash);
+          });
+          json.rows.splice(0,1);        
+          if (json.rows.length > 0) { 
+            var notes = json.rows.map(function(row) {return new Note(row.value)}); 
+            couchapp.db.bulkRemove({docs: notes}, {
+              success: function() {
+                flash = {message: 'Outline deleted.', type: 'notice'}
+                $('#spinner').hide(); 
+                redirect('#/outlines', flash);
+              },
+              error: function(response_code, json) {
+                flash = {message: 'Error deleting notes for outline: ' + json, type: 'error'};
+              }
+            });
+          } 
+        }      
+      }
     });
     return false;
   }});

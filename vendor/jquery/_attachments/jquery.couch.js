@@ -228,6 +228,20 @@
             "The document could not be deleted"
           );
         },
+        bulkRemove: function(docs, options){
+          docs.docs = $.each(docs.docs, function(i, doc){doc._deleted = true});
+          $.extend(options, {successStatus: 201});
+          ajax({
+              type: "POST",
+              contentType: "application/json",
+              dataType: "json", 
+              data: toJSON(docs),
+              url: this.uri + "_bulk_docs" + encodeOptions(options)
+            },
+            options,
+            "The documents could not be deleted"
+          );
+        },
         query: function(mapFun, reduceFun, language, options) {
           language = language || "javascript";
           if (typeof(mapFun) !== "string") {

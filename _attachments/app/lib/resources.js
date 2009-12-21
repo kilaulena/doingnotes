@@ -145,7 +145,7 @@ var Resources = function(app, couchapp) {
           callback();
         },
         error: function(response_code, json) {
-          context.flash = {message: 'Error deleting note: ' + json, type: 'error'};
+          context.flash = {message: 'Error deleting object: ' + json, type: 'error'};
         }
       }); 
     }
