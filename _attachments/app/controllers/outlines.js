@@ -1,13 +1,17 @@
 Outlines = function(sammy, couchapp) { with(sammy) {
   get('#/outlines', function() { with(this) {
-    list_objects('Outline', 'outlines', [], function(json){  
-      var outlines = json.outlines.sort(byDate);
+    list_objects('Outline', 'outlines', [], function(json){ 
       var view = {};
-      view.outlines = outlines.map(function(outline){return new OutlineView(outline)});
-      view.outlines = view.outlines.map(function(outline){return {
-        title: outline.title(), 
-        short_created_at: outline.short_created_at(),
-        _id: outline._id()}});
+      if (json.outlines.length > 0){
+        var outlines = json.outlines.sort(byDate);
+        view.outlines = outlines.map(function(outline){return new OutlineView(outline)});
+        view.outlines = view.outlines.map(function(outline){return {
+          title: outline.title(), 
+          short_created_at: outline.short_created_at(),
+          _id: outline._id()}}); 
+      } else {
+        view.empty = "You have no outlines yet."
+      }
       render('index', view);
       $('#spinner').hide(); 
     });
@@ -78,30 +82,22 @@ Outlines = function(sammy, couchapp) { with(sammy) {
   }});
 
   route('delete', '#/outlines/:id', function() { with(this) {
-    var flash = {};
     couchapp.design.view('notes_by_outline', {
       startkey: [params['id']],
       endkey: [params['id'], {}],
       success: function(json) {
-        if(json.rows[0]) {
-          delete_object(params, {message: 'Outline deleted.'}, function(outline){
-            $('#spinner').hide(); 
-            redirect('#/outlines', flash);
+        if (json.rows.length > 0) { 
+          var outline_and_notes = json.rows.map(function(row) {return row.value}); 
+          couchapp.db.bulkRemove({docs: outline_and_notes}, {
+            success: function() {
+              flash = {message: 'Outline deleted.', type: 'notice'}
+              $('#spinner').hide(); 
+              redirect('#/outlines', flash);
+            },
+            error: function(response_code, json) {
+              flash = {message: 'Error deleting outline: ' + json, type: 'error'};
+            }
           });
-          json.rows.splice(0,1);        
-          if (json.rows.length > 0) { 
-            var notes = json.rows.map(function(row) {return new Note(row.value)}); 
-            couchapp.db.bulkRemove({docs: notes}, {
-              success: function() {
-                flash = {message: 'Outline deleted.', type: 'notice'}
-                $('#spinner').hide(); 
-                redirect('#/outlines', flash);
-              },
-              error: function(response_code, json) {
-                flash = {message: 'Error deleting notes for outline: ' + json, type: 'error'};
-              }
-            });
-          } 
         }      
       }
     });
