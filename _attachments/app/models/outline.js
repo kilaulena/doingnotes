@@ -12,8 +12,11 @@ Outline.prototype = {
     if(!this.title) {
       this.errors.push("You need to enter a title.");
     };
-    if(this.title.match(/[^\w ]/)){
-      this.errors.push("Only letters, numbers and blanks are allowed.");
+    if(this.title.match(/[^\w -]/)){
+      this.errors.push("Only letters, numbers, blanks and - are allowed.");
+    };
+    if(this.title.length < 3){
+      this.errors.push("Please enter at least 3 characters.")
     };
     return this.errors.length === 0;
   },
