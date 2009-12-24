@@ -28,7 +28,7 @@ $(function() {
     bind('init', function() { with(this) {
       var context = this;
       // replicateUp();
-      // replicateDown();
+      replicateDown();
             
       $(window).bind("beforeunload", function(e){
         var note = new NoteElement($('li[data-focus]').find('textarea'));

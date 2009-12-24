@@ -66,11 +66,10 @@ var OutlineHelpers = {
   },
   
   localPort: function(){
-    return window.location.port;
+    return "5984";
   },
   
   serverPort: function(){
-    if(window.location.port == "5984") return "5985"
-    else return "5984"
+    return "5985";
   }
 }
