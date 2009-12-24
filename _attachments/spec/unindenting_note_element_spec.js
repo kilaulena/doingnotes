@@ -83,12 +83,12 @@ describe 'NoteElement'
         //   fourth_grandchild_note.unindent(outer_context);
         //   outer_context.update_object_attributes.should.not.be_null
         // end
-        // 
-        // it 'should change the dom'
-        //   third_grandchild_note.unindent(outer_context);
-        //   third_grandchild_note.previousNote().id().should.eql '2b'
-        //   third_grandchild_note.firstChildNote().id().should.eql '2bIII'
-        // end
+        
+        it 'should change the dom'
+          third_grandchild_note.unindent(outer_context);
+          third_grandchild_note.previousNote().id().should.eql '2b'
+          third_grandchild_note.firstChildNote().id().should.eql '2bIII'
+        end
       end
     end
     
@@ -157,6 +157,36 @@ describe 'NoteElement'
             third_grandchild_note.nextNote().id().should.eql '2bIII'
           end
         end
+        
+        describe 'i have child notes'
+          before_each
+            child_note.unindentNoteInDom();
+          end
+          
+          it 'should set my parent note to my former parents parent note'
+            child_note.parentNote().should.be_undefined
+          end
+        
+          it 'should set my previous note to my former parent note'
+            child_note.previousNote().id().should.eql '2'
+          end
+        
+          it 'second_child_note set my next note to my former parents next note'
+            child_note.nextNote().id().should.eql '3'
+          end
+          
+          it 'should keep my child notes'
+            child_note.firstChildNote().id().should.eql '2aI'
+          end
+          
+          it 'should append all the child notes of my former parent to my child notes'
+            child_note.firstChildNote().nextNote().id().should.eql '2b'
+          end
+          
+          it 'should not duplicate any notes'
+            child_note_element.children('ul.indent').length.should.eql 1
+          end
+        end
       end
       
       describe 'my first sibling has a parent'
@@ -200,7 +230,7 @@ describe 'NoteElement'
           end
           
           it 'should leave the child notes of my former parent that come before me with my former parent'
-            second_grandchild_note.firstChildNote().id().should.eql '2bI'
+            second_child_note.firstChildNote().id().should.eql '2bI'
           end
         end
       end
