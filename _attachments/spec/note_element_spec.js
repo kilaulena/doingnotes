@@ -6,7 +6,7 @@ describe 'NoteElement'
     // * 1: first_note
     // * 2: second_note
     //   ** 2a: child_note
-    //     ** 2aI: grandchild_note 
+    //     *** 2aI: grandchild_note 
     //   ** 2b: second_child_note
     //     *** 2bI: second_grandchild_note
     // * 3: last_note
@@ -127,6 +127,16 @@ describe 'NoteElement'
           child_note.lastChildNoteOfPreviousNote().should.be_null
         end
       end
+      
+      // describe 'firstSiblingNote'
+      //   it 'should return the ID of the first of my sibling notes'
+      //     last_note.firstSiblingNote().id().should.eql '1'
+      //   end
+      //   
+      //   it 'should return null if there is no such note'
+      //     child_note.firstSiblingNote().should.be_null
+      //   end
+      // end
     end
 
     describe 'getting lis'
@@ -240,6 +250,18 @@ describe 'NoteElement'
           second_grandchild_note.lastChildNoteLiOfPreviousNote().should.be_undefined
         end
       end
+      
+      // describe 'firstSiblingNoteLi'
+      //   it 'should return the li element of the first of my siblings'
+      //     second_note.firstSiblingNoteLi().html().should.eql first_note_element.html()
+      //     last_note.firstSiblingNoteLi().html().should.eql first_note_element.html()
+      //   end
+      // 
+      //   it 'should be_undefined when note li has no previous note'
+      //     child_note.firstSiblingNoteLi().should.be_undefined
+      //     second_grandchild_note.firstSiblingNoteLi().should.be_undefined
+      //   end
+      // end
     end 
   end
   

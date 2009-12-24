@@ -7,7 +7,7 @@ describe 'NoteElement'
       // * 1: first_note
       // * 2: second_note
       //   ** 2a: child_note
-      //     ** 2aI: grandchild_note 
+      //     *** 2aI: grandchild_note 
       //   ** 2b: second_child_note
       //     *** 2bI: second_grandchild_note
       // * 3: last_note
