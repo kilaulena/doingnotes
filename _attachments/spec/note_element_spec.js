@@ -128,6 +128,16 @@ describe 'NoteElement'
         end
       end
       
+      describe 'lastDirectChildNoteOfPreviousNote'
+        it 'should return the ID of the last child note of my previous note'
+          last_note.lastDirectChildNoteOfPreviousNote().id().should.eql '2b'
+        end
+        
+        it 'should return null if there is no such note'
+          child_note.lastDirectChildNoteOfPreviousNote().should.be_null
+        end
+      end
+      
       describe 'firstSiblingNote'
         it 'should return the ID of the first sibling note'
           last_note.firstSiblingNote().id().should.eql '1'
@@ -248,6 +258,23 @@ describe 'NoteElement'
           second_note.lastChildNoteLiOfPreviousNote().should.be_undefined
           child_note.lastChildNoteLiOfPreviousNote().should.be_undefined
           second_grandchild_note.lastChildNoteLiOfPreviousNote().should.be_undefined
+        end
+      end
+      
+      describe 'lastDirectChildNoteLiOfPreviousNote'
+        it 'should return the last child of my previous note if there is one'
+          second_child_note.lastDirectChildNoteLiOfPreviousNote().html().should.eql grandchild_note_element.html()
+        end
+        
+        it 'should not work recursively'
+          last_note.lastDirectChildNoteLiOfPreviousNote().html().should.eql second_child_note_element.html()
+        end
+        
+        it 'should be_undefined if there is no such note'
+          first_note.lastDirectChildNoteLiOfPreviousNote().should.be_undefined
+          second_note.lastDirectChildNoteLiOfPreviousNote().should.be_undefined
+          child_note.lastDirectChildNoteLiOfPreviousNote().should.be_undefined
+          second_grandchild_note.lastDirectChildNoteLiOfPreviousNote().should.be_undefined
         end
       end
       

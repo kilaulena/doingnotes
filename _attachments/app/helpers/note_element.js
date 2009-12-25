@@ -54,6 +54,11 @@ NoteElement.prototype = {
       return previous.find('li:last');
     }
   },
+  lastDirectChildNoteLiOfPreviousNote: function(){
+    if(this.noteLi().prev() && this.noteLi().prev().find('li').length){
+      return this.previousNote().noteLi().children('ul.indent').children('li:last')
+    }
+  },
   firstSiblingNoteLi: function(){
     if(this.noteLi().prev().length){ 
       var previous_notes = this.noteLi().prevAll().get();
@@ -89,6 +94,11 @@ NoteElement.prototype = {
   lastChildNoteOfPreviousNote: function(){
     if(this.lastChildNoteLiOfPreviousNote()!= null){    
       return new NoteElement(this.lastChildNoteLiOfPreviousNote().find('textarea:first'));
+    }
+  },
+  lastDirectChildNoteOfPreviousNote: function(){
+    if(this.lastDirectChildNoteLiOfPreviousNote()!= null){    
+      return new NoteElement(this.lastDirectChildNoteLiOfPreviousNote().find('textarea:first'));
     }
   },
   firstSiblingNote: function(){
@@ -279,7 +289,7 @@ NoteElement.prototype = {
     context.update_object('Note', {id: this.id(), next_id: ''}, {}, function(note){});
   },
   setLastChildOfPreviousNoteNextPointerToMyself: function(context){
-    context.update_object('Note', {id: this.lastChildNoteOfPreviousNote().id(), next_id: this.id()}, {}, function(note){});
+    context.update_object('Note', {id: this.lastDirectChildNoteOfPreviousNote().id(), next_id: this.id()}, {}, function(note){});
   },
   setNextToNullAndParentToFormerPreviousNote: function(context){
     context.update_object('Note', {id: this.id(), next_id: '', parent_id: this.previousNote().id()}, {}, function(note){});

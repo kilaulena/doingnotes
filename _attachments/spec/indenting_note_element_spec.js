@@ -151,9 +151,14 @@ describe 'NoteElement'
       end
       
       describe 'setLastChildOfPreviousNoteNextPointerToMyself'
-        it 'should the next pointer of the last child of my previous note to myself'
+        it 'should set the next pointer of the last child of my previous note to myself'
           second_child_note.setLastChildOfPreviousNoteNextPointerToMyself(outer_context);
           outer_context.update_object_attributes.should.eql {id: '2aI', next_id: '2b'}
+        end
+        
+        it 'should select the last child note in the direct level after my previous note'
+          last_note.setLastChildOfPreviousNoteNextPointerToMyself(outer_context);
+          outer_context.update_object_attributes.should.eql {id: '2b', next_id: '3'}          
         end
       end
       
