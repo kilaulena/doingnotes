@@ -54,6 +54,12 @@ NoteElement.prototype = {
       return previous.find('li:last');
     }
   },
+  firstSiblingNoteLi: function(){
+    if(this.noteLi().prev().length){ 
+      var previous_notes = this.noteLi().prevAll().get();
+      return $(previous_notes[previous_notes.length-1])
+    }
+  },
 
   nextNote: function(){    
     if(this.nextNoteLi()!= null){    
@@ -85,7 +91,12 @@ NoteElement.prototype = {
       return new NoteElement(this.lastChildNoteLiOfPreviousNote().find('textarea:first'));
     }
   },
-  
+  firstSiblingNote: function(){
+    if(this.firstSiblingNoteLi()!= null){    
+      return new NoteElement(this.firstSiblingNoteLi().find('textarea:first'));
+    }
+  },
+    
   setDataText: function(){
     var target = this.note_target;
     if (typeof(target.attr("data-text"))=="undefined") { 
@@ -307,6 +318,41 @@ NoteElement.prototype = {
   },
     
   unindentUpdateNotePointers: function(context){
+    if(this.parentNote()){
+      this.setParentToNullAndNextToParentsNextNote(context);
+      if(this.previousNote()){
+        this.setFirstSiblingsParentsNextPointerToMyself(context);
+        this.setNextPointerOfPreviousNoteToNull(context);
+      } else {
+        this.setParentsNextPointerToMyself(context);
+      }
+      if(this.nextNote()){
+        this.setNextsParentPointerToMyself(context);
+      }
+    }
+  },
   
+  setNextPointerOfPreviousNoteToNull: function(context){
+    context.update_object('Note', {id: this.previousNote().id(), next_id: ''}, {}, function(note){});
+  },
+  
+  setFirstSiblingsParentsNextPointerToMyself: function(context){
+    context.update_object('Note', {id: this.firstSiblingNote().parentNote().id(), next_id: this.id()}, {}, function(note){});
+  },
+  
+  setParentToNullAndNextToParentsNextNote: function(context){
+    var next_id = '';
+    if (this.parentNote().nextNote()){
+      next_id = this.parentNote().nextNote().id();
+    }
+    context.update_object('Note', {id: this.id(), parent_id: '', next_id: next_id}, {}, function(note){});
+  },
+   
+  setParentsNextPointerToMyself: function(context){
+    context.update_object('Note', {id: this.parentNote().id(), next_id: this.id()}, {}, function(note){});
+  },
+  
+  setNextsParentPointerToMyself: function(context){
+    context.update_object('Note', {id: this.nextNote().id(), parent_id: this.id()}, {}, function(note){});
   }
 }

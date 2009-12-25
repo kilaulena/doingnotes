@@ -66,10 +66,10 @@ describe 'NoteElement'
       end
       
       describe 'has a parent'
-        // it 'should update notes'
-        //   grandchild_note.unindent(outer_context);
-        //   outer_context.update_object_attributes.should.not.be_null
-        // end
+        it 'should update notes'
+           grandchild_note.unindent(outer_context);
+           outer_context.update_object_attributes.should.not.be_null
+         end
         
         it 'should change the dom'
           grandchild_note.unindent(outer_context);
@@ -79,10 +79,10 @@ describe 'NoteElement'
       end
       
       describe 'first sibling has a parent'
-        // it 'should update notes'
-        //   fourth_grandchild_note.unindent(outer_context);
-        //   outer_context.update_object_attributes.should.not.be_null
-        // end
+        it 'should update notes'
+          fourth_grandchild_note.unindent(outer_context);
+          outer_context.update_object_attributes.should.not.be_null
+        end
         
         it 'should change the dom'
           third_grandchild_note.unindent(outer_context);
@@ -101,16 +101,118 @@ describe 'NoteElement'
         }
       end
       
-      //   describe 'setParentNextPointerToMyself'
-      //     it 'should set the next pointer of my parent note to myself'       
-      //     end
-      //   end
-      //   
-      //   describe 'setParentToNull'
-      //     it 'should my parent pointer to null'
-      //     end
-      //   end
-   end    
+      describe 'i have a parent note'
+        describe 'i have no next notes'
+          it 'should call setParentsNextPointerToMyself'
+            grandchild_note.should.receive('setParentsNextPointerToMyself', 'once')
+            grandchild_note.unindentUpdateNotePointers(outer_context);
+          end
+          
+          it 'should call setParentToNullAndNextToParentsNextNote'
+            grandchild_note.should.receive('setParentToNullAndNextToParentsNextNote', 'once')
+            grandchild_note.unindentUpdateNotePointers(outer_context);
+          end
+        end
+        
+        describe 'i have next notes'
+          it 'should call setParentsNextPointerToMyself'
+            second_grandchild_note.should.receive('setParentsNextPointerToMyself', 'once')
+            second_grandchild_note.unindentUpdateNotePointers(outer_context);
+          end
+          
+          it 'should call setParentToNullAndNextToParentsNextNote'
+            second_grandchild_note.should.receive('setParentToNullAndNextToParentsNextNote', 'once')
+            second_grandchild_note.unindentUpdateNotePointers(outer_context);
+          end
+          
+          it 'should call setNextsParentPointerToMyself'
+            second_grandchild_note.should.receive('setNextsParentPointerToMyself', 'once')
+            second_grandchild_note.unindentUpdateNotePointers(outer_context);
+          end
+        end
+      end
+
+      describe 'my first sibling has a parent'
+        describe 'i have no next notes'
+          it 'should call setFirstSiblingsParentsNextPointerToMyself'
+            fourth_grandchild_note.should.receive('setFirstSiblingsParentsNextPointerToMyself', 'once');
+            fourth_grandchild_note.unindentUpdateNotePointers(outer_context);
+          end
+          
+          it 'should call setParentToNullAndNextToParentsNextNote'
+            fourth_grandchild_note.should.receive('setParentToNullAndNextToParentsNextNote', 'once')
+            fourth_grandchild_note.unindentUpdateNotePointers(outer_context);
+          end
+          
+          it 'should call setNextPointerOfPreviousNoteToNull'
+            fourth_grandchild_note.should.receive('setNextPointerOfPreviousNoteToNull', 'once')
+            fourth_grandchild_note.unindentUpdateNotePointers(outer_context);
+          end
+        end
+        
+        describe 'i have next notes'
+          it 'should call setFirstSiblingsParentsNextPointerToMyself'
+            third_grandchild_note.should.receive('setFirstSiblingsParentsNextPointerToMyself', 'once');
+            third_grandchild_note.unindentUpdateNotePointers(outer_context);
+          end
+          
+          it 'should call setParentToNullAndNextToParentsNextNote'
+            third_grandchild_note.should.receive('setParentToNullAndNextToParentsNextNote', 'once')
+            third_grandchild_note.unindentUpdateNotePointers(outer_context);
+          end
+          
+          it 'should call setNextPointerOfPreviousNoteToNull'
+            third_grandchild_note.should.receive('setNextPointerOfPreviousNoteToNull', 'once')
+            third_grandchild_note.unindentUpdateNotePointers(outer_context);
+          end
+          
+          it 'should call setNextsParentPointerToMyself'
+            third_grandchild_note.should.receive('setNextsParentPointerToMyself', 'once')
+            third_grandchild_note.unindentUpdateNotePointers(outer_context);
+          end
+        end
+      end
+      
+      describe 'setNextPointerOfPreviousNoteToNull'
+        it 'should set the next pointer of my previous note to null'
+          third_grandchild_note.setNextPointerOfPreviousNoteToNull(outer_context);
+          outer_context.update_object_attributes.should.eql {id: '2bI', next_id: ''}
+        end
+      end
+      
+      describe 'setFirstSiblingsParentsNextPointerToMyself'
+        it 'should set the next pointer of the parent of my first sibling to myself'
+          fourth_grandchild_note.setFirstSiblingsParentsNextPointerToMyself(outer_context);
+          outer_context.update_object_attributes.should.eql {id: '2b', next_id: '2bIII'}          
+        end
+      end
+      
+      describe 'setParentsNextPointerToMyself'
+        it 'should set the next pointer of my parent note to myself'    
+          grandchild_note.setParentsNextPointerToMyself(outer_context);
+          outer_context.update_object_attributes.should.eql {id: '2a', next_id: '2aI'}
+        end
+      end
+
+      describe 'setParentToNullAndNextToParentsNextNote'
+        it 'should set my parent pointer to null and my next pointer to next note of my parent'
+          grandchild_note.setParentToNullAndNextToParentsNextNote(outer_context);
+          outer_context.update_object_attributes.should.eql {id: '2aI', parent_id: '', next_id: '2b'}
+        end
+        
+        it 'should set my parent pointer to null and my next pointer to null if my parent has no next note'
+          second_grandchild_note.setParentToNullAndNextToParentsNextNote(outer_context);
+          outer_context.update_object_attributes.should.eql {id: '2bI', parent_id: '', next_id: ''}
+        end
+      end
+      
+      describe 'setNextsParentPointerToMyself'
+        it 'should set my parent pointer to null'
+          second_grandchild_note.setNextsParentPointerToMyself(outer_context);
+          outer_context.update_object_attributes.should.eql {id: '2bII', parent_id: '2bI'}
+        end
+      end
+    end    
 
     describe 'unindentNoteInDom'
       describe 'i have a parent note'
