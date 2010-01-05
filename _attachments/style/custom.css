@@ -105,6 +105,16 @@ h2 {
   margin-right: 20px;
 }
 
+#conflict-update {
+  background-color: #FFFFCC;
+  font-size: 14px;
+  font-weight: normal;
+  height: 30px;
+  line-height: 30px;
+  margin: 0 0 10px 16px;
+  padding: 0 0 0 5px;
+}
+
 #writeboard ul#notes li {
   list-style-type: none;
   margin: 0;  

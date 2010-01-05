@@ -28,7 +28,7 @@ Outlines = function(sammy, couchapp) { with(sammy) {
 
   get('#/outlines/:id', function() { with(this) {
     var view = {};
-    var context = this;
+    var context = this;    
     couchapp.design.view('notes_by_outline', {
       startkey: [params['id']],
       endkey: [params['id'], {}],
@@ -40,11 +40,11 @@ Outlines = function(sammy, couchapp) { with(sammy) {
           if (json.rows.length > 0) { 
             notes = json.rows.map(function(row) {return new Note(row.value)}); 
             view.notes = [(new NoteCollection(notes)).firstNote()];
-            renderOutline(context, view, (new NoteCollection(notes)));
+            renderOutline(context, view, (new NoteCollection(notes)), couchapp, params.solve);
           } else {
             create_object('Note', {outline_id: view.outline_id, first_note: true, text:''}, {}, function(note){
               view.notes = [note];
-              renderOutline(context, view, (new NoteCollection([])));
+              renderOutline(context, view, (new NoteCollection([])), couchapp, params.solve);
             })            
           } 
         } else {
