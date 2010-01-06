@@ -38,14 +38,14 @@ $(function() {
         }
       });
       $(window).bind("click", function(e) {
-        if(happenedOnNote(e)){
+        if(happenedOnNoteTarget(e)){
           var note = new NoteElement($(e.target));
           note.setDataText();
           note.focusTextarea()
         }
       });
       $(window).bind("keydown", function(e) {
-        if(happenedOnNote(e)){
+        if(happenedOnNoteTarget(e)){
           var note = new NoteElement($(e.target));
           note.setDataText();
           if (enterPressed(e)) {

@@ -32,34 +32,50 @@ var OutlineHelpers = {
       }
       first_note.focusTextarea();
       if(solve){
-        console.log('solve it baby')
+        context.showConflicts(couchapp);
       } else {
-        console.log('dont solve it ....')
-        context.solveConflicts(couchapp);
+        context.checkForConflicts(couchapp);
       }
       $('#spinner').hide(); 
     });
   },
   
-  solveConflicts: function(couchapp){
+  showConflicts: function(couchapp){
+    var context = this;
+    var outline_id = context.getOutlineId();
+
+    couchapp.design.view('notes_with_conflicts_by_outline', {
+      key: outline_id,
+      success: function(json) {
+        if (json.rows.length > 0) { 
+          var notes_with_conflicts = json.rows.map(function(row) {return row.value});
+          $.each(notes_with_conflicts, function(i, note){
+            var url = context.localServer() + '/' + context.db() + '/' + note._id + '?rev=' + note._conflicts[0];
+            $.getJSON(url, function(overwritten_note_json){
+              var note = new NoteElement(context.$element().find('li#edit_note_' + overwritten_note_json._id).find('textarea.expanding:first'))
+              note.insertConflictFields(overwritten_note_json);
+            });
+          });
+        }    
+      }
+    });
+  },
+  
+  checkForConflicts: function(couchapp){
     var context = this;
     var count = 1;
     var outline_id = context.getOutlineId();
 
-    performSolveConflicts = function(){
+    performCheckForConflicts = function(){
       console.log('solve conflicts #'+ count);
       count = count + 1;
       couchapp.design.view('notes_with_conflicts_by_outline', {
         key: outline_id,
         success: function(json) {
-          // http://localhost:5984/doingnotes/006a7e4d29581a6ac485f86df1960e49?meta=true
-          // http://localhost:5984/doingnotes/006a7e4d29581a6ac485f86df1960e49?conflicts=true (or _conflicts)
-          // http://localhost:5984/doingnotes/006a7e4d29581a6ac485f86df1960e49?rev=3-1165509119322a7f70fe9d69b38f2a03
-          // http://localhost:5984/doingnotes/_design/doingnotes/_view/notes_with_conflicts_by_outline?key=%22006a7e4d29581a6ac485f86df1960e49%22
-          // http://localhost:5984/doingnotes/_design/doingnotes/_view/notes_with_conflicts_by_outline?startkey=%22006a7e4d29581a6ac485f86df1960e49%22&endkey=%22006a7e4d29581a6ac485f86df1960e49%22
           if (json.rows.length > 0) { 
             var notes_with_conflicts = json.rows.map(function(row) {return row.value});
             $.each(notes_with_conflicts, function(i, note){
+              //TODO: kein each, nur erstes objekt, weil die note hier gar nicht gebraucht wird
               var url = context.localServer() + '/' + context.db() + '/' + note._id + '?rev=' + note._conflicts[0];
               $.getJSON(url, function(overwritten_note){
                 console.log('overwritten_note: ', overwritten_note);
@@ -69,10 +85,10 @@ var OutlineHelpers = {
           }    
         }
       });
-      // setTimeout("performSolveConflicts()", 3000);
+      // setTimeout("performCheckForConflicts()", 3000);
     }
 
-    performSolveConflicts();
+    performCheckForConflicts();
   },
   
   replicateUp: function(){

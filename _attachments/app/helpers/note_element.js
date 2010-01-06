@@ -14,6 +14,10 @@ NoteElement.prototype = {
     return this.note_target.attr('id').match(/edit_text_(\w*)/)[1];
   },
   
+  text: function(){
+    return this.note_target.text();
+  },
+  
   hasChildren: function(){
     return this.noteLi().children().is('ul.indent');
   },
@@ -68,42 +72,42 @@ NoteElement.prototype = {
 
   nextNote: function(){    
     if(this.nextNoteLi()!= null){    
-      return new NoteElement(this.nextNoteLi().find('textarea:first'));
+      return new NoteElement(this.nextNoteLi().find('textarea.expanding:first'));
     }
   },
   previousNote: function(){
     if(this.previousNoteLi()!= null){    
-      return new NoteElement(this.previousNoteLi().find('textarea:first'));
+      return new NoteElement(this.previousNoteLi().find('textarea.expanding:first'));
     }
   },
   parentNote: function(){
     if(this.parentNoteLi()!= null){    
-      return new NoteElement(this.parentNoteLi().find('textarea:first'));
+      return new NoteElement(this.parentNoteLi().find('textarea.expanding:first'));
     }
   },
   firstChildNote: function(){
     if(this.firstChildNoteLi()!=null){   
-      return new NoteElement(this.firstChildNoteLi().find('textarea:first'));
+      return new NoteElement(this.firstChildNoteLi().find('textarea.expanding:first'));
     }
   },
   nextNoteOfClosestAncestor: function(){
     if(this.nextNoteLiOfClosestAncestor()!= null){    
-      return new NoteElement(this.nextNoteLiOfClosestAncestor().find('textarea:first'));
+      return new NoteElement(this.nextNoteLiOfClosestAncestor().find('textarea.expanding:first'));
     }
   },
   lastChildNoteOfPreviousNote: function(){
     if(this.lastChildNoteLiOfPreviousNote()!= null){    
-      return new NoteElement(this.lastChildNoteLiOfPreviousNote().find('textarea:first'));
+      return new NoteElement(this.lastChildNoteLiOfPreviousNote().find('textarea.expanding:first'));
     }
   },
   lastDirectChildNoteOfPreviousNote: function(){
     if(this.lastDirectChildNoteLiOfPreviousNote()!= null){    
-      return new NoteElement(this.lastDirectChildNoteLiOfPreviousNote().find('textarea:first'));
+      return new NoteElement(this.lastDirectChildNoteLiOfPreviousNote().find('textarea.expanding:first'));
     }
   },
   firstSiblingNote: function(){
     if(this.firstSiblingNoteLi()!= null){    
-      return new NoteElement(this.firstSiblingNoteLi().find('textarea:first'));
+      return new NoteElement(this.firstSiblingNoteLi().find('textarea.expanding:first'));
     }
   },
     
@@ -364,5 +368,21 @@ NoteElement.prototype = {
   
   setNextsParentPointerToMyself: function(context){
     context.update_object('Note', {id: this.nextNote().id(), parent_id: this.id()}, {}, function(note){});
+  },
+  
+  insertConflictFields: function(overwritten_note_json){
+    var solve_text_div = $("<div class=\"solve_text\" id=\"solve_text_" + overwritten_note_json._id + "\"></div>");
+    solve_text_div.append("<textarea class=\"solve_text_left\">"+ overwritten_note_json.text +"</textarea>");
+    solve_text_div.append("<textarea class=\"solve_text_right\">"+ this.text() +"</textarea>");
+
+    var forms = $("<div></div>");    
+    var left_form = "<form class=\"solve_text_left\" action=\"#/notes/solve/"+ '1'+"\" method=\"put\"><input type=\"submit\" value=\"Keep left\"/></form>";
+    forms.append(left_form);
+    var right_form = "<form class=\"solve_text_right\" action=\"#/notes/solve/id\" method=\"put\"><input type=\"submit\" value=\"Keep right\"/></form>";
+    forms.append(right_form);
+    solve_text_div.append(forms);
+
+    this.note_target.parents('form').before(solve_text_div);
+    this.note_target.parents('form').hide();
   }
 }

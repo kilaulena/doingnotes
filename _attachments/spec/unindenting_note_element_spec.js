@@ -22,15 +22,15 @@ describe 'NoteElement'
     fourth_grandchild_note_element = $(notes.get(7))
     last_note_element              = $(notes.get(8))
 
-    first_note             = new NoteElement(first_note_element.find('textarea:first'))
-    second_note            = new NoteElement(second_note_element.find('textarea:first'))
-    child_note             = new NoteElement(child_note_element.find('textarea:first'))
-    grandchild_note        = new NoteElement(grandchild_note_element.find('textarea:first'))
-    second_child_note      = new NoteElement(second_child_note_element.find('textarea:first'))
-    second_grandchild_note = new NoteElement(second_grandchild_note_element.find('textarea:first'))
-    third_grandchild_note  = new NoteElement(third_grandchild_note_element.find('textarea:first'))
-    fourth_grandchild_note = new NoteElement(fourth_grandchild_note_element.find('textarea:first'))
-    last_note              = new NoteElement(last_note_element.find('textarea:first'))
+    first_note             = new NoteElement(first_note_element.find('textarea.expanding:first'))
+    second_note            = new NoteElement(second_note_element.find('textarea.expanding:first'))
+    child_note             = new NoteElement(child_note_element.find('textarea.expanding:first'))
+    grandchild_note        = new NoteElement(grandchild_note_element.find('textarea.expanding:first'))
+    second_child_note      = new NoteElement(second_child_note_element.find('textarea.expanding:first'))
+    second_grandchild_note = new NoteElement(second_grandchild_note_element.find('textarea.expanding:first'))
+    third_grandchild_note  = new NoteElement(third_grandchild_note_element.find('textarea.expanding:first'))
+    fourth_grandchild_note = new NoteElement(fourth_grandchild_note_element.find('textarea.expanding:first'))
+    last_note              = new NoteElement(last_note_element.find('textarea.expanding:first'))
   end
   
   describe 'unindenting'

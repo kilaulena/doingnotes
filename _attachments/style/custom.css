@@ -124,7 +124,7 @@ ul#notes ul.indent{
   width: 100%;
 }
 
-ul#notes form{
+ul#notes form.edit-note{
   clear: left;
   background-color: #fff;
   border-bottom: 1px solid #bbb;
@@ -138,6 +138,31 @@ textarea.expanding {
 	margin: 0px;
 	border: none;
 	background-color: transparent;
+}
+
+textarea.solve_text_left, textarea.solve_text_right {
+  height: 55px;
+  border: 1px solid red;
+	background-color: #ddd;
+	width: 434px;
+}
+
+textarea.solve_text_left{
+  margin: 0 2px 0 0;
+}
+
+textarea.solve_text_right {
+	margin: 0px;
+}
+
+form.solve_text_left {
+  float: left;
+  width: 450px;
+  background-color: transparent;
+}
+
+form.solve_text_right {
+  background-color: transparent;
 }
 
 ul#notes li form.active {background-color: #f2f2f2;}
@@ -162,7 +187,7 @@ ul#notes li img {
 
 /* indenting of notes */
 
-ul#notes li textarea{
+ul#notes li textarea.expanding{
   width: 865px;
   font-weight:bold;
   font-size: 14px;
@@ -174,7 +199,7 @@ ul#notes li span.space {
   float: left;
 }
 
-ul#notes li ul li textarea {
+ul#notes li ul li textarea.expanding {
   width: 835px;
   font-weight:normal;
 }
@@ -183,7 +208,7 @@ ul#notes li ul li span.space {
   width: 30px;
 }
 
-ul#notes li ul li ul li textarea {
+ul#notes li ul li ul li textarea.expanding {
   width: 805px;
   font-size: 13px;
 }
@@ -192,7 +217,7 @@ ul#notes li ul li ul li span.space {
   width: 60px;
 }
 
-ul#notes li ul li ul li ul li textarea {
+ul#notes li ul li ul li ul li textarea.expanding {
   width: 775px;
   font-size: 12px;
 }
@@ -201,7 +226,7 @@ ul#notes li ul li ul li ul li span.space {
   width: 90px;
 }
 
-ul#notes li ul li ul li ul li ul li textarea {
+ul#notes li ul li ul li ul li ul li textarea.expanding {
   width: 745px;
 }
 
@@ -209,7 +234,7 @@ ul#notes li ul li ul li ul li ul li span.space {
   width: 120px;
 }
 
-ul#notes li ul li ul li ul li ul li ul li textarea {
+ul#notes li ul li ul li ul li ul li ul li textarea.expanding {
   width: 715px;
 }
 
@@ -217,7 +242,7 @@ ul#notes li ul li ul li ul li ul li ul li span.space {
   width: 150px;
 }
 
-ul#notes li ul li ul li ul li ul li ul li ul li textarea {
+ul#notes li ul li ul li ul li ul li ul li ul li textarea.expanding {
   width: 695px;
 }
 
@@ -225,7 +250,7 @@ ul#notes li ul li ul li ul li ul li ul li ul li span.space {
   width: 170px;
 }
 
-ul#notes li ul li ul li ul li ul li ul li ul li ul li textarea {
+ul#notes li ul li ul li ul li ul li ul li ul li ul li textarea.expanding {
   width: 675px;
 }
 
@@ -233,7 +258,7 @@ ul#notes li ul li ul li ul li ul li ul li ul li ul li span.space {
   width: 190px;
 }
 
-ul#notes li ul li ul li ul li ul li ul li ul li ul li ul li textarea {
+ul#notes li ul li ul li ul li ul li ul li ul li ul li ul li textarea.expanding {
   width: 655px;
 }
 
@@ -241,7 +266,7 @@ ul#notes li ul li ul li ul li ul li ul li ul li ul li ul li span.space {
   width: 210px;
 }
 
-ul#notes li ul li ul li ul li ul li ul li ul li ul li ul li ul li textarea {
+ul#notes li ul li ul li ul li ul li ul li ul li ul li ul li ul li textarea.expanding {
   width: 635px;
 }
 
@@ -249,7 +274,7 @@ ul#notes li ul li ul li ul li ul li ul li ul li ul li ul li ul li span.space {
   width: 230px;
 }
 
-ul#notes li ul li ul li ul li ul li ul li ul li ul li ul li ul li ul li textarea {
+ul#notes li ul li ul li ul li ul li ul li ul li ul li ul li ul li ul li textarea.expanding {
   width: 615px;
 }
 
@@ -257,7 +282,7 @@ ul#notes li ul li ul li ul li ul li ul li ul li ul li ul li ul li ul li span.spa
   width: 250px;
 }
 
-ul#notes li ul li ul li ul li ul li ul li ul li ul li ul li ul li ul li ul li textarea {
+ul#notes li ul li ul li ul li ul li ul li ul li ul li ul li ul li ul li ul li textarea.expanding {
   width: 595px;
 }
 
@@ -265,7 +290,7 @@ ul#notes li ul li ul li ul li ul li ul li ul li ul li ul li ul li ul li ul li sp
   width: 270px;
 }
 
-ul#notes li ul li ul li ul li ul li ul li ul li ul li ul li ul li ul li ul li ul li textarea {
+ul#notes li ul li ul li ul li ul li ul li ul li ul li ul li ul li ul li ul li ul li textarea.expanding {
   width: 575px;
 }
 
@@ -273,7 +298,7 @@ ul#notes li ul li ul li ul li ul li ul li ul li ul li ul li ul li ul li ul li ul
   width: 290px;
 }
 
-ul#notes li ul li ul li ul li ul li ul li ul li ul li ul li ul li ul li ul li ul li ul li textarea {
+ul#notes li ul li ul li ul li ul li ul li ul li ul li ul li ul li ul li ul li ul li ul li textarea.expanding {
   width: 555px;
 }
 

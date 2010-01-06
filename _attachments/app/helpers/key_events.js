@@ -1,6 +1,6 @@
 var KeyEvents = {
-  happenedOnNote: function(event){
-    return (event.target.tagName == 'TEXTAREA' && $(event.target).attr('class', 'expanding'));
+  happenedOnNoteTarget: function(event){
+    return (event.target.tagName == 'TEXTAREA' && $(event.target).attr('class') == 'expanding') ? true : false;
   },
 
   enterPressed: function(event) {

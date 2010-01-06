@@ -3,7 +3,7 @@ describe 'NoteElement'
     outline = elements(fixture('outline'))
     notes = outline.find('li')
     // storyboard
-    // * 1: first_note
+    // * 1: first_note  Introduction
     // * 2: second_note
     //   ** 2a: child_note
     //     *** 2aI: grandchild_note 
@@ -18,19 +18,19 @@ describe 'NoteElement'
     second_grandchild_note_element = $(notes.get(5))
     last_note_element              = $(notes.get(6))
 
-    first_note             = new NoteElement(first_note_element.find('textarea:first'))
-    second_note            = new NoteElement(second_note_element.find('textarea:first'))
-    child_note             = new NoteElement(child_note_element.find('textarea:first'))
-    grandchild_note        = new NoteElement(grandchild_note_element.find('textarea:first'))
-    second_child_note      = new NoteElement(second_child_note_element.find('textarea:first'))
-    second_grandchild_note = new NoteElement(second_grandchild_note_element.find('textarea:first'))
-    last_note              = new NoteElement(last_note_element.find('textarea:first'))
+    first_note             = new NoteElement(first_note_element.find('textarea.expanding:first'))
+    second_note            = new NoteElement(second_note_element.find('textarea.expanding:first'))
+    child_note             = new NoteElement(child_note_element.find('textarea.expanding:first'))
+    grandchild_note        = new NoteElement(grandchild_note_element.find('textarea.expanding:first'))
+    second_child_note      = new NoteElement(second_child_note_element.find('textarea.expanding:first'))
+    second_grandchild_note = new NoteElement(second_grandchild_note_element.find('textarea.expanding:first'))
+    last_note              = new NoteElement(last_note_element.find('textarea.expanding:first'))
   end
   
   describe 'constructor'
     it 'should set note_target to the notes textarea'
-      first_note.note_target.should.eql first_note_element.find('textarea:first')
-      second_note.note_target.should.eql second_note_element.find('textarea:first')
+      first_note.note_target.should.eql first_note_element.find('textarea.expanding:first')
+      second_note.note_target.should.eql second_note_element.find('textarea.expanding:first')
     end
     
     it 'should throw an error when no valid selector has been given'
@@ -40,13 +40,19 @@ describe 'NoteElement'
     end
     
     it 'should accept blank note_targets'
-      last_note.note_target.should.eql last_note_element.find('textarea:first')
+      last_note.note_target.should.eql last_note_element.find('textarea.expanding:first')
     end
   end
   
   describe 'id'
     it 'should return the ID of a note'
       first_note.id().should.eql '1'
+    end
+  end
+  
+  describe 'text'
+    it 'should should return the text of a note'
+      first_note.text().should.eql 'Introduction'
     end
   end
   
@@ -296,7 +302,7 @@ describe 'NoteElement'
   
   describe 'submitIfChanged'
      before_each 
-       note = new NoteElement(first_note_element.find('textarea:first'))
+       note = new NoteElement(first_note_element.find('textarea.expanding:first'))
      end
      
      it 'should submit the form if data attribute is different form the textarea value'
@@ -332,7 +338,7 @@ describe 'NoteElement'
    
    describe 'setDataText'
      before_each 
-       note = new NoteElement($(notes.get(0)).find('textarea:first'))
+       note = new NoteElement($(notes.get(0)).find('textarea.expanding:first'))
      end
      
      it 'should set the data attribute if it is undefined'
