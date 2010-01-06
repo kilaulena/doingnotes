@@ -1,0 +1,13 @@
+<div class="solve_text" id="solve_text_' + overwritten_note_json._id + '">
+  <form class="solve_text_left" action="#/notes/solve/{{id}}" method="put" accept-charset="utf-8">
+    <input type="submit" value="Keep yours"/>
+    <textarea class="solve_text_left" name="text">{{left_text}}</textarea>
+  </form>
+
+  <div class="solve_text_middle">decide</div>
+
+  <form class="solve_text_left" action="#/notes/solve/{{id}}" method="put" accept-charset="utf-8">
+    <input type="submit" value="Keep other"/>
+    <textarea class="solve_text_right" name="text">{{right_text}}</textarea>
+  </form>
+</div>

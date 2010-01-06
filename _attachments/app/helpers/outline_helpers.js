@@ -32,7 +32,7 @@ var OutlineHelpers = {
       }
       first_note.focusTextarea();
       if(solve){
-        context.showConflicts(couchapp);
+        context.showConflicts(context, couchapp);
       } else {
         context.checkForConflicts(couchapp);
       }
@@ -40,7 +40,7 @@ var OutlineHelpers = {
     });
   },
   
-  showConflicts: function(couchapp){
+  showConflicts: function(context, couchapp){
     var context = this;
     var outline_id = context.getOutlineId();
 
@@ -53,7 +53,7 @@ var OutlineHelpers = {
             var url = context.localServer() + '/' + context.db() + '/' + note._id + '?rev=' + note._conflicts[0];
             $.getJSON(url, function(overwritten_note_json){
               var note = new NoteElement(context.$element().find('li#edit_note_' + overwritten_note_json._id).find('textarea.expanding:first'))
-              note.insertConflictFields(overwritten_note_json);
+              note.insertConflictFields(context, overwritten_note_json);
             });
           });
         }    

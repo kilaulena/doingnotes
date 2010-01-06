@@ -374,22 +374,11 @@ NoteElement.prototype = {
     context.update_object('Note', {id: this.nextNote().id(), parent_id: this.id()}, {}, function(note){});
   },
   
-  insertConflictFields: function(overwritten_note_json){
-    var solve_text_div = $("<div class=\"solve_text\" id=\"solve_text_" + overwritten_note_json._id + "\"></div>");
-
-    var left_form = $("<form class=\"solve_text_left\" action=\"#/notes/solve/"+ '1'+"\" method=\"put\"></form>");
-    left_form.append('<input type=\"submit\" value=\"Keep left\"/>');
-    left_form.append("<textarea class=\"solve_text_left\">"+ overwritten_note_json.text +"</textarea>");
-    
-    var right_form = $("<form class=\"solve_text_right\" action=\"#/notes/solve/id\" method=\"put\"></form>");
-    right_form.append('<input type=\"submit\" value=\"Keep right\"/>');
-    right_form.append("<textarea class=\"solve_text_right\">"+ this.text() +"</textarea>");
-    
-    solve_text_div.append(left_form);
-    solve_text_div.append($('<div class="solve_text_middle">decide</div>'));
-    solve_text_div.append(right_form);
-
-    this.note_target.parents('form').before(solve_text_div);
-    this.note_target.parents('form').hide();
+  insertConflictFields: function(context, overwritten_note_json){
+    var this_note = this;
+    context.partial('app/templates/notes/solve.mustache', {id: overwritten_note_json._id, left_text: this.text(), right_text: overwritten_note_json.text}, function(html) {
+      $(html).prependTo(this_note.noteLi());
+    });
+    this_note.note_target.parents('form.edit-note').hide();
   }
 }
