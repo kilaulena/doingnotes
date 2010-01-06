@@ -18,6 +18,10 @@ NoteElement.prototype = {
     return this.note_target.text();
   },
   
+  emphasizeBackground: function(){
+    this.note_target.parents('form').css("background-color", "#FFFDE1");
+  },
+  
   hasChildren: function(){
     return this.noteLi().children().is('ul.indent');
   },
@@ -372,15 +376,18 @@ NoteElement.prototype = {
   
   insertConflictFields: function(overwritten_note_json){
     var solve_text_div = $("<div class=\"solve_text\" id=\"solve_text_" + overwritten_note_json._id + "\"></div>");
-    solve_text_div.append("<textarea class=\"solve_text_left\">"+ overwritten_note_json.text +"</textarea>");
-    solve_text_div.append("<textarea class=\"solve_text_right\">"+ this.text() +"</textarea>");
 
-    var forms = $("<div></div>");    
-    var left_form = "<form class=\"solve_text_left\" action=\"#/notes/solve/"+ '1'+"\" method=\"put\"><input type=\"submit\" value=\"Keep left\"/></form>";
-    forms.append(left_form);
-    var right_form = "<form class=\"solve_text_right\" action=\"#/notes/solve/id\" method=\"put\"><input type=\"submit\" value=\"Keep right\"/></form>";
-    forms.append(right_form);
-    solve_text_div.append(forms);
+    var left_form = $("<form class=\"solve_text_left\" action=\"#/notes/solve/"+ '1'+"\" method=\"put\"></form>");
+    left_form.append('<input type=\"submit\" value=\"Keep left\"/>');
+    left_form.append("<textarea class=\"solve_text_left\">"+ overwritten_note_json.text +"</textarea>");
+    
+    var right_form = $("<form class=\"solve_text_right\" action=\"#/notes/solve/id\" method=\"put\"></form>");
+    right_form.append('<input type=\"submit\" value=\"Keep right\"/>');
+    right_form.append("<textarea class=\"solve_text_right\">"+ this.text() +"</textarea>");
+    
+    solve_text_div.append(left_form);
+    solve_text_div.append($('<div class="solve_text_middle">decide</div>'));
+    solve_text_div.append(right_form);
 
     this.note_target.parents('form').before(solve_text_div);
     this.note_target.parents('form').hide();

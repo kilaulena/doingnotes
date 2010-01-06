@@ -75,12 +75,12 @@ var OutlineHelpers = {
           if (json.rows.length > 0) { 
             var notes_with_conflicts = json.rows.map(function(row) {return row.value});
             $.each(notes_with_conflicts, function(i, note){
-              //TODO: kein each, nur erstes objekt, weil die note hier gar nicht gebraucht wird
               var url = context.localServer() + '/' + context.db() + '/' + note._id + '?rev=' + note._conflicts[0];
-              $.getJSON(url, function(overwritten_note){
-                console.log('overwritten_note: ', overwritten_note);
-                $('#conflict-update').slideDown("slow");
+              $.getJSON(url, function(overwritten_note_json){
+                var note = new NoteElement(context.$element().find('li#edit_note_' + overwritten_note_json._id).find('textarea.expanding:first'))
+                note.emphasizeBackground();
               });
+              $('#conflict-update').slideDown("slow");
             });
           }    
         }

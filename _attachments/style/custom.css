@@ -140,31 +140,6 @@ textarea.expanding {
 	background-color: transparent;
 }
 
-textarea.solve_text_left, textarea.solve_text_right {
-  height: 55px;
-  border: 1px solid red;
-	background-color: #ddd;
-	width: 434px;
-}
-
-textarea.solve_text_left{
-  margin: 0 2px 0 0;
-}
-
-textarea.solve_text_right {
-	margin: 0px;
-}
-
-form.solve_text_left {
-  float: left;
-  width: 450px;
-  background-color: transparent;
-}
-
-form.solve_text_right {
-  background-color: transparent;
-}
-
 ul#notes li form.active {background-color: #f2f2f2;}
 
 ul#notes a.image {
@@ -184,6 +159,40 @@ ul#notes a.down {
 ul#notes li img {
   float: left;
 }
+
+/* solving conflicts */
+
+div.solve_text {
+  float:left;
+  width: 884px;
+  background-color: #FFFDE1;
+  border-bottom: 1px solid #bbb;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  padding: 5px 5px 1px;
+}
+
+textarea.solve_text_left, textarea.solve_text_right {
+  height: 55px;
+  border: 1px solid #555;
+	background-color: white;
+	margin: 5px 2px 0;
+  width: 375px;
+}
+
+form.solve_text_right, form.solve_text_left {
+  float: left;
+  background-color: transparent;
+  width: 374px;
+  margin-bottom:5px;
+}
+
+div.solve_text_middle {
+  font-size:13px;
+  margin:20px 40px;
+  float: left;
+}
+
 
 /* indenting of notes */
 
