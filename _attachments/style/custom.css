@@ -105,28 +105,6 @@ h2 {
   margin-right: 20px;
 }
 
-#conflict-warning {
-  background-color: #FFCEB8;
-  border: 1px solid #F4A988;
-  font-size: 14px;
-  font-weight: normal;
-  height: 30px;
-  line-height: 30px;
-  margin: 0 0 10px 16px;
-  padding: 0 0 0 5px;
-}
-
-#change-warning {
-  background-color: #FFFFCC;
-  border: 1px solid #FFFB91;
-  font-size: 14px;
-  font-weight: normal;
-  height: 30px;
-  line-height: 30px;
-  margin: 0 0 10px 16px;
-  padding: 0 0 0 5px;
-}
-
 #writeboard ul#notes li {
   list-style-type: none;
   margin: 0;  
@@ -174,10 +152,33 @@ ul#notes li img {
 
 /* solving conflicts */
 
+#conflict-warning {
+  background-color: #FFCEB8;
+  border: 1px solid #F4A988;
+  font-size: 14px;
+  font-weight: normal;
+  height: 30px;
+  line-height: 30px;
+  margin: 0 0 10px 16px;
+  padding: 0 0 0 5px;
+}
+
+#change-warning {
+  background-color: #FFFFCC;
+  /*background-color of the note that has changed: #FFFDE1*/
+  border: 1px solid #FFFB91;
+  font-size: 14px;
+  font-weight: normal;
+  height: 30px;
+  line-height: 30px;
+  margin: 0 0 10px 16px;
+  padding: 0 0 0 5px;
+}
+
 div.solve_text {
   float:left;
   width: 884px;
-  background-color: #FFFDE1;
+  background-color: #FADBCD;
   border-bottom: 1px solid #bbb;
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;

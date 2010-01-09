@@ -131,7 +131,6 @@ NoteElement.prototype = {
   },
   
   targetHasChanged: function(){
-    console.log('targetHasChanged')
     return (this.note_target.attr("data-text") != this.note_target.val());
   },
   

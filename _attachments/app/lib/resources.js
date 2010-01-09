@@ -161,7 +161,7 @@ var Resources = function(app, couchapp) {
               if(options.success) {
                 options.success(object);
               }                          
-              callback(res);
+              callback(res, object);
             },
             error: function(response_code, res) {
               context.flash = {message: 'Error saving ' + object_view.type + ': ' + res, type: 'error'};

@@ -37,9 +37,11 @@ var OutlineHelpers = {
         first_note.renderNotes(context, notes, notes.notes.length); 
       }
       first_note.focusTextarea();
-      context.checkForUpdatesAndConflicts(couchapp);
+      context.checkForUpdates(couchapp);
       if(solve){
         context.showConflicts(context, couchapp);
+      } else {
+        context.checkForConflicts(couchapp);
       }
       $('#spinner').hide(); 
     });
@@ -48,14 +50,14 @@ var OutlineHelpers = {
   showConflicts: function(context, couchapp){
     var context = this;
     var outline_id = context.getOutlineId();
-    
+
     couchapp.design.view('notes_with_conflicts_by_outline', {
       key: outline_id,
       success: function(json) {
         if (json.rows.length > 0) { 
           var notes_with_conflicts = json.rows.map(function(row) {return row.value});
           $.each(notes_with_conflicts, function(i, conflicting_note_json){
-            var url = context.localServer() + '/' + context.db() + '/' + conflicting_note_json._id + '?rev=' + conflicting_note_json._conflicts[0];
+            var url = context.localURL() + '/' + context.db() + '/' + conflicting_note_json._id + '?rev=' + conflicting_note_json._conflicts[0];
             $.getJSON(url, function(overwritten_note_json){              
               var note = new NoteElement(context.$element().find('li#edit_note_' + overwritten_note_json._id).find('textarea.expanding:first'))
               note.insertConflictFields(context, overwritten_note_json, conflicting_note_json);
@@ -66,7 +68,7 @@ var OutlineHelpers = {
     });
   },
   
-  checkForUpdatesAndConflicts: function(couchapp){
+  checkForUpdates: function(couchapp){
     var context = this;
 
     performCheckForUpdates = function(){
@@ -95,6 +97,12 @@ var OutlineHelpers = {
       // setTimeout("performCheckForUpdates()", 5000);
     }
     
+    // performCheckForUpdates();
+  },
+  
+  checkForConflicts: function(couchapp){
+    var context = this;
+  
     performCheckForConflicts = function(){
       var outline_id = context.getOutlineId();
       
@@ -105,12 +113,12 @@ var OutlineHelpers = {
             if (json.rows.length > 0) { 
               var notes_with_conflicts = json.rows.map(function(row) {return row.value});
               $.each(notes_with_conflicts, function(i, note){
-                var url = context.localServer() + '/' + context.db() + '/' + note._id + '?rev=' + note._conflicts[0];
+                var url = context.localURL() + '/' + context.db() + '/' + note._id + '?rev=' + note._conflicts[0];
                 $.getJSON(url, function(overwritten_note_json){
                   var note = new NoteElement(context.$element().find('li#edit_note_' + overwritten_note_json._id).find('textarea.expanding:first'))
                   note.emphasizeBackground();
                 });
-                $('#conflict-update').slideDown("slow");
+                $('#conflict-warning').slideDown("slow");
               });
             }    
           }
@@ -119,8 +127,7 @@ var OutlineHelpers = {
       // setTimeout("performCheckForConflicts()", 4000);
     }
 
-    // performCheckForConflicts();
-    // performCheckForUpdates();
+    performCheckForConflicts();
   },
   
   replicateUp: function(){
