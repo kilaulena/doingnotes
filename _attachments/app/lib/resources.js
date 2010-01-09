@@ -111,6 +111,7 @@ var Resources = function(app, couchapp) {
         object_view = context.object_from_params(object_view, params);
         var object = object_view.object();
         object.updated_at = new Date().toJSON();
+        
         if(object.valid()) {
           couchapp.db.saveDoc(object.to_json(), {
             success: function(res) {
@@ -131,6 +132,47 @@ var Resources = function(app, couchapp) {
           context.trigger('error', context.flash);                
         };
       });
+    },
+   
+    //update the revision rev_keep and delete the revision rev_delete 
+    solve_conflicts: function(name, params, rev_delete, rev_keep, options, callback) {
+      var context = this;
+      
+      var _prototype = eval(name);
+      var view_prototype = eval(name + 'View');
+      var view = new view_prototype(new _prototype({_id: params.id}));
+      
+      this.load_object(name, params['id'], function(object_view){
+        object_view = context.object_from_params(object_view, params);
+        var object = object_view.object();
+        object.updated_at = new Date().toJSON();
+        object._rev = rev_keep;
+        console.log('object', object)
+        console.log('to remove: object._id =', object._id, '_rev: ', rev_delete)
+        if(object.valid()) {
+          console.log('object.to_json()', object.to_json())
+          couchapp.db.removeDoc({_id : object._id, _rev : rev_delete});
+                
+          couchapp.db.saveDoc(object.to_json(), {
+            success: function(res) {
+              if(options.message) {     
+                context.flash = {message: options.message, type: 'notice'};
+              }
+              if(options.success) {
+                options.success(object);
+              }                          
+              callback(res);
+            },
+            error: function(response_code, res) {
+              context.flash = {message: 'Error saving ' + object_view.type + ': ' + res, type: 'error'};
+            }
+          });
+        } else {
+          context.flash = {message: object.errors.join(", ")};
+          context.trigger('error', context.flash);                
+        };
+      });
+      
     },
     
     delete_object: function(params, options, callback) {

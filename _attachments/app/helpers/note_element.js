@@ -123,7 +123,7 @@ NoteElement.prototype = {
   },
   
   submitIfChanged: function() {
-    if(this.targetHasChanged()) {
+    if(this.targetHasChanged()) {      
       this.note_target.removeAttr("data-text");
       this.submitForm();
       this.setDataText();
@@ -131,10 +131,11 @@ NoteElement.prototype = {
   },
   
   targetHasChanged: function(){
+    console.log('targetHasChanged')
     return (this.note_target.attr("data-text") != this.note_target.val());
   },
   
-  submitForm: function(){
+  submitForm: function(){    
     this.note_target.parent('form').submit();
   },
   
@@ -374,9 +375,16 @@ NoteElement.prototype = {
     context.update_object('Note', {id: this.nextNote().id(), parent_id: this.id()}, {}, function(note){});
   },
   
-  insertConflictFields: function(context, overwritten_note_json){
+  insertConflictFields: function(context, overwritten_note_json, conflicting_note_json){
     var this_note = this;
-    context.partial('app/templates/notes/solve.mustache', {id: overwritten_note_json._id, left_text: this.text(), right_text: overwritten_note_json.text}, function(html) {
+    context.partial('app/templates/notes/solve.mustache', 
+      { id: overwritten_note_json._id, 
+        my_text: conflicting_note_json.text, 
+        overwritten_text: overwritten_note_json.text,
+        my_rev: conflicting_note_json._rev,
+        overwritten_rev: overwritten_note_json._rev
+      }, 
+    function(html) {
       $(html).prependTo(this_note.noteLi());
     });
     this_note.note_target.parents('form.edit-note').hide();

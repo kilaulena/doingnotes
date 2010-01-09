@@ -1,13 +1,20 @@
-<div class="solve_text" id="solve_text_' + overwritten_note_json._id + '">
-  <form class="solve_text_left" action="#/notes/solve/{{id}}" method="put" accept-charset="utf-8">
-    <input type="submit" value="Keep yours"/>
-    <textarea class="solve_text_left" name="text">{{left_text}}</textarea>
+<div class="solve_text" id="solve_text_{{id}}">
+  <form class="solve_text" action="#/notes/solve/{{id}}" method="put" accept-charset="utf-8">
+    <input type="submit" value="Keep winning version"/>
+    <input type="hidden" name="rev_keep" value="{{my_rev}}"/>
+    <input type="hidden" name="rev_delete" value="{{overwritten_rev}}"/>
+    <textarea class="solve_text_left" name="text">{{my_text}}</textarea>
   </form>
 
-  <div class="solve_text_middle">decide</div>
+  <div class="solve_text_middle">
+    &nbsp;&nbsp;&nbsp;&nbsp;decide<br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;or 
+    <br/>copy & paste</div>
 
-  <form class="solve_text_left" action="#/notes/solve/{{id}}" method="put" accept-charset="utf-8">
-    <input type="submit" value="Keep other"/>
-    <textarea class="solve_text_right" name="text">{{right_text}}</textarea>
+  <form class="solve_text" action="#/notes/solve/{{id}}" method="put" accept-charset="utf-8">
+    <input type="submit" value="Keep overwritten version"/>
+    <input type="hidden" name="rev_keep" value="{{overwritten_rev}}"/>
+    <input type="hidden" name="rev_delete" value="{{my_rev}}"/>
+    <textarea class="solve_text_right" name="text">{{overwritten_text}}</textarea>
   </form>
 </div>

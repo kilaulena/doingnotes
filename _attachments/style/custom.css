@@ -105,8 +105,20 @@ h2 {
   margin-right: 20px;
 }
 
-#conflict-update {
+#conflict-warning {
+  background-color: #FFCEB8;
+  border: 1px solid #F4A988;
+  font-size: 14px;
+  font-weight: normal;
+  height: 30px;
+  line-height: 30px;
+  margin: 0 0 10px 16px;
+  padding: 0 0 0 5px;
+}
+
+#change-warning {
   background-color: #FFFFCC;
+  border: 1px solid #FFFB91;
   font-size: 14px;
   font-weight: normal;
   height: 30px;
@@ -172,6 +184,13 @@ div.solve_text {
   padding: 5px 5px 1px;
 }
 
+form.solve_text {
+  float: left;
+  background-color: transparent;
+  width: 374px;
+  margin-bottom:5px;
+}
+
 textarea.solve_text_left, textarea.solve_text_right {
   height: 55px;
   border: 1px solid #555;
@@ -180,16 +199,9 @@ textarea.solve_text_left, textarea.solve_text_right {
   width: 375px;
 }
 
-form.solve_text_right, form.solve_text_left {
-  float: left;
-  background-color: transparent;
-  width: 374px;
-  margin-bottom:5px;
-}
-
 div.solve_text_middle {
   font-size:13px;
-  margin:20px 40px;
+  margin: 20px 12px 20px 31px;
   float: left;
 }
 

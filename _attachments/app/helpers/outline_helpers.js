@@ -20,7 +20,13 @@ var OutlineHelpers = {
   },
   
   getOutlineId: function(){
-    return this.$element().find('h2#outline-id').html();
+    if((this.$element().find('h2#outline-id')).length != 0){
+      return this.$element().find('h2#outline-id').html();
+    }
+  },
+  
+  getLocationHash: function(){
+    return hex_md5(window.location.host);
   },
   
   renderOutline: function(context, view, notes, couchapp, solve){
@@ -31,10 +37,9 @@ var OutlineHelpers = {
         first_note.renderNotes(context, notes, notes.notes.length); 
       }
       first_note.focusTextarea();
+      context.checkForUpdatesAndConflicts(couchapp);
       if(solve){
         context.showConflicts(context, couchapp);
-      } else {
-        context.checkForConflicts(couchapp);
       }
       $('#spinner').hide(); 
     });
@@ -43,17 +48,17 @@ var OutlineHelpers = {
   showConflicts: function(context, couchapp){
     var context = this;
     var outline_id = context.getOutlineId();
-
+    
     couchapp.design.view('notes_with_conflicts_by_outline', {
       key: outline_id,
       success: function(json) {
         if (json.rows.length > 0) { 
           var notes_with_conflicts = json.rows.map(function(row) {return row.value});
-          $.each(notes_with_conflicts, function(i, note){
-            var url = context.localServer() + '/' + context.db() + '/' + note._id + '?rev=' + note._conflicts[0];
-            $.getJSON(url, function(overwritten_note_json){
+          $.each(notes_with_conflicts, function(i, conflicting_note_json){
+            var url = context.localServer() + '/' + context.db() + '/' + conflicting_note_json._id + '?rev=' + conflicting_note_json._conflicts[0];
+            $.getJSON(url, function(overwritten_note_json){              
               var note = new NoteElement(context.$element().find('li#edit_note_' + overwritten_note_json._id).find('textarea.expanding:first'))
-              note.insertConflictFields(context, overwritten_note_json);
+              note.insertConflictFields(context, overwritten_note_json, conflicting_note_json);
             });
           });
         }    
@@ -61,64 +66,87 @@ var OutlineHelpers = {
     });
   },
   
-  checkForConflicts: function(couchapp){
+  checkForUpdatesAndConflicts: function(couchapp){
     var context = this;
-    var count = 1;
-    var outline_id = context.getOutlineId();
 
+    performCheckForUpdates = function(){
+      var outline_id = context.getOutlineId();
+      var source = context.getLocationHash();
+      
+      if(outline_id){
+        couchapp.design.view('notes_with_conflicts_by_outline', {
+          startkey: [outline_id, source],
+          endkey:   [outline_id, source, {}]
+        //   success: function(json) {
+        //     if (json.rows.length > 0) { 
+        //       var notes_with_conflicts = json.rows.map(function(row) {return row.value});
+        //       $.each(notes_with_conflicts, function(i, note){
+        //         var url = context.localServer() + '/' + context.db() + '/' + note._id + '?rev=' + note._conflicts[0];
+        //         $.getJSON(url, function(overwritten_note_json){
+        //           var note = new NoteElement(context.$element().find('li#edit_note_' + overwritten_note_json._id).find('textarea.expanding:first'))
+        //           note.emphasizeBackground();
+        //         });
+        //         $('#conflict-update').slideDown("slow");
+        //       });
+        //     }    
+        //   }
+        });
+      }
+      // setTimeout("performCheckForUpdates()", 5000);
+    }
+    
     performCheckForConflicts = function(){
-      console.log('solve conflicts #'+ count);
-      count = count + 1;
-      couchapp.design.view('notes_with_conflicts_by_outline', {
-        key: outline_id,
-        success: function(json) {
-          if (json.rows.length > 0) { 
-            var notes_with_conflicts = json.rows.map(function(row) {return row.value});
-            $.each(notes_with_conflicts, function(i, note){
-              var url = context.localServer() + '/' + context.db() + '/' + note._id + '?rev=' + note._conflicts[0];
-              $.getJSON(url, function(overwritten_note_json){
-                var note = new NoteElement(context.$element().find('li#edit_note_' + overwritten_note_json._id).find('textarea.expanding:first'))
-                note.emphasizeBackground();
+      var outline_id = context.getOutlineId();
+      
+      if(outline_id){
+        couchapp.design.view('notes_with_conflicts_by_outline', {
+          key: outline_id,
+          success: function(json) {
+            if (json.rows.length > 0) { 
+              var notes_with_conflicts = json.rows.map(function(row) {return row.value});
+              $.each(notes_with_conflicts, function(i, note){
+                var url = context.localServer() + '/' + context.db() + '/' + note._id + '?rev=' + note._conflicts[0];
+                $.getJSON(url, function(overwritten_note_json){
+                  var note = new NoteElement(context.$element().find('li#edit_note_' + overwritten_note_json._id).find('textarea.expanding:first'))
+                  note.emphasizeBackground();
+                });
+                $('#conflict-update').slideDown("slow");
               });
-              $('#conflict-update').slideDown("slow");
-            });
-          }    
-        }
-      });
-      // setTimeout("performCheckForConflicts()", 3000);
+            }    
+          }
+        });
+      }
+      // setTimeout("performCheckForConflicts()", 4000);
     }
 
-    performCheckForConflicts();
+    // performCheckForConflicts();
+    // performCheckForUpdates();
   },
   
   replicateUp: function(){
     var context = this;    
-    $.post(context.localServer()+ '/_replicate', 
-      '{"source":"' + context.db() + '", "target":"' + context.server() + '/' + context.db()+ '", "continuous":true}',
+    $.post(this.localURL() + '/_replicate', 
+      '{"source":"' + this.db() + '", "target":"' + context.serverURL() + '/' + this.db() + '", "continuous":true}',
       function(){
-        Sammy.log('replicating to ', context.server() + '/' + context.db())
+        Sammy.log('replicating to ', context.serverURL())
       },"json");
   },
   
   replicateDown: function(){
     var context = this;
-    $.post(context.localServer()+ '/_replicate', 
-      '{"source":"' + context.server() + '/' + context.db() + '", "target":"' + context.db() + '", "continuous":true}',
+    $.post(this.localURL() + '/_replicate', 
+      '{"source":"' + context.serverURL() + '/' + this.db() + '", "target":"' + this.db() + '", "continuous":true}',
       function(){
-        Sammy.log('replicating from ', context.server() + '/' + context.db())
+        Sammy.log('replicating from ', context.serverURL())
       },"json");
   }, 
   
-  db: function(){
-    return "doingnotes"
-  },
-  
-  server: function(){
-    return "http://localhost:" + this.serverPort();
-  },
-  
-  localServer: function(){
+  localURL: function(){
     return "http://localhost:" + this.localPort();
+  },
+  
+  serverURL: function(){
+    return "http://localhost:" + this.serverPort();
   },
   
   localPort: function(){
@@ -127,5 +155,9 @@ var OutlineHelpers = {
   
   serverPort: function(){
     return "5985";
+  },
+  
+  db: function(){
+    return "doingnotes"
   }
 }
