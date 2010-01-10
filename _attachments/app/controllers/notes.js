@@ -11,6 +11,7 @@ Notes = function(sammy) { with(sammy) {
   }});
   
   put('#/notes/:id', function()  { with(this) {
+    params.source = getLocationHash();
     update_object('Note', params, {}, function(note){
       $('#spinner').hide(); 
     });

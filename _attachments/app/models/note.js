@@ -4,6 +4,7 @@ Note = function(attributes) {
   this.created_at = attributes.created_at || new Date().toJSON();
   this.updated_at = attributes.updated_at;
   this.text = attributes.text;
+  this.source = attributes.source;
   this.outline_id = attributes.outline_id;
   this.next_id = attributes.next_id;
   this.parent_id = attributes.parent_id;
@@ -23,6 +24,7 @@ Note.prototype = {
       updated_at: this.updated_at,
       type: 'Note',
       text: this.text,
+      source: this.source,
       outline_id: this.outline_id
     };
     if(this.next_id){

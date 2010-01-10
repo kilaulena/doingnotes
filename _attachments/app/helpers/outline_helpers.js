@@ -74,30 +74,31 @@ var OutlineHelpers = {
     performCheckForUpdates = function(){
       var outline_id = context.getOutlineId();
       var source = context.getLocationHash();
+      var url = context.localURL() + '/' + context.db() + '/_design/' + context.db()
+        + '/_list/changed_notes/notes_by_outline?startkey=%5b%22' 
+        + outline_id + '%22%5d&endkey=%5b%22' + outline_id
+        + '%22%2c%7b%7d%5d&filter="' + source + '%22';
+      var display_warning = false;
       
-      if(outline_id){
-        couchapp.design.view('notes_with_conflicts_by_outline', {
-          startkey: [outline_id, source],
-          endkey:   [outline_id, source, {}]
-        //   success: function(json) {
-        //     if (json.rows.length > 0) { 
-        //       var notes_with_conflicts = json.rows.map(function(row) {return row.value});
-        //       $.each(notes_with_conflicts, function(i, note){
-        //         var url = context.localServer() + '/' + context.db() + '/' + note._id + '?rev=' + note._conflicts[0];
-        //         $.getJSON(url, function(overwritten_note_json){
-        //           var note = new NoteElement(context.$element().find('li#edit_note_' + overwritten_note_json._id).find('textarea.expanding:first'))
-        //           note.emphasizeBackground();
-        //         });
-        //         $('#conflict-update').slideDown("slow");
-        //       });
-        //     }    
-        //   }
+      if(outline_id){ 
+        $.ajax({
+          type: "GET", url: url,
+          success: function(data,textstatus) {
+            Sammy.log('checkForUpdates ', data)
+            if(data){
+              display_warning = true;
+              $('#change-warning').slideDown("slow");
+            }
+          },
+          complete: function(xhr,textstatus) {
+            Sammy.log('xhr ', xhr.getResponseHeader('ETag'))
+          }
         });
       }
-      // setTimeout("performCheckForUpdates()", 5000);
+      setTimeout("performCheckForUpdates()", 8000);
     }
     
-    // performCheckForUpdates();
+    performCheckForUpdates();
   },
   
   checkForConflicts: function(couchapp){

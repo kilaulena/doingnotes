@@ -42,7 +42,7 @@ Outlines = function(sammy, couchapp) { with(sammy) {
             view.notes = [(new NoteCollection(notes)).firstNote()];
             renderOutline(context, view, (new NoteCollection(notes)), couchapp, params.solve);
           } else {
-            create_object('Note', {outline_id: view.outline_id, first_note: true, text:''}, {}, function(note){
+            create_object('Note', {outline_id: view.outline_id, first_note: true, text:'', source: getLocationHash()}, {}, function(note){
               view.notes = [note];
               renderOutline(context, view, (new NoteCollection([])), couchapp, params.solve);
             })            

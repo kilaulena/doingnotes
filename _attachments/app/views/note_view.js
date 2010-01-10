@@ -15,6 +15,9 @@ NoteView.prototype = {
   text: function() {
     return this.note.text;
   },
+  source: function() {
+    return this.note.source;
+  },
   created_at: function() {
     return this.note.created_at;
   },
