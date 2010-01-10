@@ -70,35 +70,54 @@ var OutlineHelpers = {
   
   checkForUpdates: function(couchapp){
     var context = this;
-
-    performCheckForUpdates = function(){
-      var outline_id = context.getOutlineId();
-      var source = context.getLocationHash();
-      var url = context.localURL() + '/' + context.db() + '/_design/' + context.db()
-        + '/_list/changed_notes/notes_by_outline?startkey=%5b%22' 
-        + outline_id + '%22%5d&endkey=%5b%22' + outline_id
-        + '%22%2c%7b%7d%5d&filter="' + source + '%22';
-      var display_warning = false;
-      
+    var display_warning = false;
+    var outline_etag    = '4LUR70X8I779Y53T11CQGWH6K';
+    
+    performCheckForUpdates = function(success_callback, complete_callback){
+      var outline_id      = context.getOutlineId();
+      var source          = context.getLocationHash();
+      var url             = context.localURL() + '/' + context.db() + '/_design/' + context.db()
+                            + '/_list/changed_notes/notes_by_outline?startkey=%5b%22' 
+                            + outline_id + '%22%5d&endkey=%5b%22' + outline_id
+                            + '%22%2c%7b%7d%5d&filter="' + source + '%22';
       if(outline_id){ 
         $.ajax({
           type: "GET", url: url,
           success: function(data,textstatus) {
-            Sammy.log('checkForUpdates ', data)
-            if(data){
-              display_warning = true;
-              $('#change-warning').slideDown("slow");
-            }
+            success_callback(data, textstatus);
           },
-          complete: function(xhr,textstatus) {
-            Sammy.log('xhr ', xhr.getResponseHeader('ETag'))
+          complete: function(xhr, textstatus) {
+            complete_callback(xhr, textstatus);
           }
         });
       }
-      setTimeout("performCheckForUpdates()", 8000);
+      
+      setTimeout("performCheckForUpdates(success_callback, complete_callback);", 5000);
     }
     
-    performCheckForUpdates();
+    performCheckForUpdates(function(){}, function(xhr, textstatus){
+      console.log('first run')
+      context.create_object('Session', {outline_id: context.getOutlineId(), etag: xhr.getResponseHeader('ETag').replace(/^"+/,'').replace(/"+$/,'')}, {}, function(outline){});
+    });
+    
+    success_callback = function(data, textstatus){
+      Sammy.log('checkForUpdates ', data)
+      console.log('success_callback, ', display_warning)
+      
+      if(data){
+        display_warning = true;
+      }
+    };
+
+    complete_callback = function(xhr, textstatus){
+      var current_etag = xhr.getResponseHeader('ETag').replace(/^"+/,'').replace(/"+$/,'');
+      console.log(current_etag)
+      if(display_warning && (outline_etag != current_etag)){
+        $('#change-warning').slideDown('slow');
+        display_warning = false;
+      }
+    };
+    
   },
   
   checkForConflicts: function(couchapp){

@@ -73,7 +73,7 @@ Outlines = function(sammy, couchapp) { with(sammy) {
     return false;
   }});
   
-  put('#/outlines/:id', function()  { with(this) {       
+  put('#/outlines/:id', function()  { with(this) {    
     update_object('Outline', params, {}, function(outline){
       trigger('notice', {message: 'Title successfully changed'});
       $('#spinner').hide(); 
