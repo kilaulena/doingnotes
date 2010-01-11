@@ -176,6 +176,12 @@ NoteElement.prototype = {
   
   renderNotes: function(context, notes, counter){
     if (notes.notes.length == 0) return;
+    if (counter == 1) {
+      context.unbindSubmitOnBlurAndAutogrow();
+      context.bindSubmitOnBlurAndAutogrow();
+      $('#spinner').hide();
+      context.i = 0;
+    }
     if(typeof(context.i)=="undefined"){
       context.i = counter;
     } else {
@@ -195,12 +201,6 @@ NoteElement.prototype = {
       this.renderFollowingNote(context, next_object, function(next){
         next.renderNotes(context, notes);
       });
-    }
-    if (context.i == 1) {
-      context.unbindSubmitOnBlurAndAutogrow();
-      context.bindSubmitOnBlurAndAutogrow();
-      $('#spinner').hide();
-      context.i = 0;
     }
   },
   

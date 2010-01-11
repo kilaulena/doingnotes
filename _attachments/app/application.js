@@ -32,6 +32,7 @@ $(function() {
             
       $(window).bind("beforeunload", function(e){
         var note = new NoteElement($('li[data-focus]').find('textarea'));
+        note.setDataText();
         if(note.targetHasChanged()){
           note.submitIfChanged();
           alert("Please don't reload this page when you have typed into a line - first leave the line with keyup/keydown or with the mouse. Sorry for this annoying message.")
