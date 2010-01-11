@@ -124,6 +124,7 @@ var OutlineHelpers = {
   },
   
   checkForConflicts: function(couchapp){
+    if (window.location.protocol + '//' + window.location.host == this.serverURL()) return;
     var context = this;
   
     performCheckForConflicts = function(){
