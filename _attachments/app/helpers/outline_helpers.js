@@ -76,6 +76,7 @@ var OutlineHelpers = {
     var context = this;
     var display_warning = false;
     var outline_etag;
+    var notes_with_foreign_source;
     
     performCheckForUpdates = function(success_callback, complete_callback){
       var outline_id      = context.getOutlineId();
@@ -87,7 +88,7 @@ var OutlineHelpers = {
       if(outline_id){ 
         $.ajax({
           type: "GET", url: url,
-          success: function(data,textstatus) {
+          success: function(data, textstatus) {
             success_callback(data, textstatus);
           },
           complete: function(xhr, textstatus) {
@@ -99,24 +100,26 @@ var OutlineHelpers = {
       setTimeout("performCheckForUpdates(success_callback, complete_callback);", 6000);
     }
     
-    performCheckForUpdates(function(){}, function(xhr, textstatus){
+    performCheckForUpdates(function(data, textstatus){
+      notes_with_foreign_source = data;
+    }, function(xhr, textstatus){
       outline_etag  = context.getEtagFromXHR(xhr);
-      
     });
     
     success_callback = function(data, textstatus){
-      if(data){    
-        Sammy.log('have another source: ', data)    
+      // console.log('data', data)
+      // console.log('notes_with_foreign_source', notes_with_foreign_source)
+      if(data > 0 && data > notes_with_foreign_source){    
         display_warning = true;
       }
     };
 
     complete_callback = function(xhr, textstatus){
       var current_etag = context.getEtagFromXHR(xhr);
-      console.log('complete_callback. display_warning: ', display_warning)
-      console.log('complete_callback. outline_etag: ', outline_etag)
-      console.log('complete_callback. current_etag: ', current_etag)
-      if(display_warning && (outline_etag != current_etag)){
+      // console.log('complete_callback. display_warning: ', display_warning)
+      // console.log('complete_callback. outline_etag: ', outline_etag)
+      // console.log('complete_callback. current_etag: ', current_etag)
+      if(display_warning && 'sie weniger werden' && (outline_etag != current_etag)){
         if(context.$element().find('#change-warning:visible').length == 0){
           $('#change-warning').slideDown('slow');
         }

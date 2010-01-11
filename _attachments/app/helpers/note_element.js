@@ -176,7 +176,7 @@ NoteElement.prototype = {
   
   renderNotes: function(context, notes, counter){
     if (notes.notes.length == 0) return;
-    if (counter == 1) {
+    if (notes.notes.length == 1) {
       context.unbindSubmitOnBlurAndAutogrow();
       context.bindSubmitOnBlurAndAutogrow();
       $('#spinner').hide();
