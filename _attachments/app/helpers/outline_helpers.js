@@ -105,20 +105,23 @@ var OutlineHelpers = {
     });
     
     success_callback = function(data, textstatus){
-      Sammy.log('checkForUpdates ', data)
-      if(data){        
+      if(data){    
+        Sammy.log('have another source: ', data)    
         display_warning = true;
       }
     };
 
     complete_callback = function(xhr, textstatus){
       var current_etag = context.getEtagFromXHR(xhr);
+      console.log('complete_callback. display_warning: ', display_warning)
+      console.log('complete_callback. outline_etag: ', outline_etag)
+      console.log('complete_callback. current_etag: ', current_etag)
       if(display_warning && (outline_etag != current_etag)){
         if(context.$element().find('#change-warning:visible').length == 0){
           $('#change-warning').slideDown('slow');
         }
-        display_warning = false;
       }
+      display_warning = false;
     };
     
   },

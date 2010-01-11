@@ -140,7 +140,7 @@ NoteElement.prototype = {
   
   insertNewNote: function(context) { 
     var this_note = this;
-    var attributes = {text: '', outline_id: context.getOutlineId()};
+    var attributes = {text: '', outline_id: context.getOutlineId(), source: context.getLocationHash()};
     if (this_note.nextNote() != null){
       attributes.next_id = this_note.nextNote().id();
     }
