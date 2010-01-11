@@ -29,6 +29,10 @@ var OutlineHelpers = {
     return hex_md5(window.location.host);
   },
   
+  getEtagFromXHR: function(xhr){
+    return xhr.getResponseHeader('ETag').replace(/^"+/,'').replace(/"+$/,'');
+  },
+  
   renderOutline: function(context, view, notes, couchapp, solve){
     context.render('show', view, function(response){
       context.app.swap(response);
@@ -71,7 +75,7 @@ var OutlineHelpers = {
   checkForUpdates: function(couchapp){
     var context = this;
     var display_warning = false;
-    var outline_etag    = '4LUR70X8I779Y53T11CQGWH6K';
+    var outline_etag;
     
     performCheckForUpdates = function(success_callback, complete_callback){
       var outline_id      = context.getOutlineId();
@@ -92,28 +96,27 @@ var OutlineHelpers = {
         });
       }
       
-      setTimeout("performCheckForUpdates(success_callback, complete_callback);", 5000);
+      setTimeout("performCheckForUpdates(success_callback, complete_callback);", 6000);
     }
     
     performCheckForUpdates(function(){}, function(xhr, textstatus){
-      console.log('first run')
-      context.create_object('Session', {outline_id: context.getOutlineId(), etag: xhr.getResponseHeader('ETag').replace(/^"+/,'').replace(/"+$/,'')}, {}, function(outline){});
+      outline_etag  = context.getEtagFromXHR(xhr);
+      
     });
     
     success_callback = function(data, textstatus){
       Sammy.log('checkForUpdates ', data)
-      console.log('success_callback, ', display_warning)
-      
-      if(data){
+      if(data){        
         display_warning = true;
       }
     };
 
     complete_callback = function(xhr, textstatus){
-      var current_etag = xhr.getResponseHeader('ETag').replace(/^"+/,'').replace(/"+$/,'');
-      console.log(current_etag)
+      var current_etag = context.getEtagFromXHR(xhr);
       if(display_warning && (outline_etag != current_etag)){
-        $('#change-warning').slideDown('slow');
+        if(context.$element().find('#change-warning:visible').length == 0){
+          $('#change-warning').slideDown('slow');
+        }
         display_warning = false;
       }
     };
@@ -144,7 +147,7 @@ var OutlineHelpers = {
           }
         });
       }
-      // setTimeout("performCheckForConflicts()", 4000);
+      setTimeout("performCheckForConflicts()", 7000);
     }
 
     performCheckForConflicts();
