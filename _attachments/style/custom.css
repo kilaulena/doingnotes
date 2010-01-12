@@ -87,6 +87,14 @@ input.error {
   background: #000;
 }
 
+#nav span#system {
+  padding: 30px 10px 0px 200px;
+  color: white;
+  font-weight: bold;
+  display: block;
+  font-size: 1.3em;
+}
+
 /* writeboard */
 
 h2 {

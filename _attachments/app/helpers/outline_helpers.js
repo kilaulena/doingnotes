@@ -107,14 +107,14 @@ var OutlineHelpers = {
     });
     
     success_callback = function(data, textstatus){
-      if(data > 0 && data > notes_with_foreign_source){    
+      if(data > 0 && data >= notes_with_foreign_source){    
         display_warning = true;
       }
     };
 
     complete_callback = function(xhr, textstatus){
       var current_etag = context.getEtagFromXHR(xhr);
-      if(display_warning && 'sie weniger werden' && (outline_etag != current_etag)){
+      if(display_warning && (outline_etag != current_etag)){
         if(context.$element().find('#change-warning:visible').length == 0){
           $('#change-warning').slideDown('slow');
         }
@@ -125,9 +125,9 @@ var OutlineHelpers = {
   },
   
   checkForConflicts: function(couchapp){
-    if (window.location.protocol + '//' + window.location.host == this.SERVER) return;
     var context = this;
-  
+    if (context.onServer()) return;
+      
     performCheckForConflicts = function(){
       var outline_id = context.getOutlineId();
       
@@ -152,7 +152,7 @@ var OutlineHelpers = {
       setTimeout("performCheckForConflicts()", 7000);
     }
 
-    // performCheckForConflicts();
+    performCheckForConflicts();
   },
   
   replicateUp: function(){

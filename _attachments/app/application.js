@@ -20,16 +20,15 @@ $(function() {
       return false;
     }});
 
-    get('#/updates', function(){with(this) {
-      $('#spinner').show();
-      $('#spinner').hide();
-      return false;
-    }});
-
     bind('init', function() { with(this) {
       var context = this;
-      replicateUp();
-      replicateDown();
+      if(context.onServer()){
+        $('#system').append("the server");
+      } else {
+        replicateUp();
+        replicateDown();
+        $('#system').append("the client");
+      }
             
       $(window).bind("beforeunload", function(e){
         var note = new NoteElement($('li[data-focus]').find('textarea'));
@@ -93,5 +92,4 @@ $(function() {
 
   sammy.run('#/');
   sammy.trigger('init');
-  
 });
