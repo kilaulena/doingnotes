@@ -61,7 +61,7 @@ var OutlineHelpers = {
         if (json.rows.length > 0) { 
           var notes_with_conflicts = json.rows.map(function(row) {return row.value});
           $.each(notes_with_conflicts, function(i, conflicting_note_json){
-            var url = context.localURL() + '/' + context.db() + '/' + conflicting_note_json._id + '?rev=' + conflicting_note_json._conflicts[0];
+            var url = context.HOST + '/' + context.DB + '/' + conflicting_note_json._id + '?rev=' + conflicting_note_json._conflicts[0];
             $.getJSON(url, function(overwritten_note_json){              
               var note = new NoteElement(context.$element().find('li#edit_note_' + overwritten_note_json._id).find('textarea.expanding:first'))
               note.insertConflictFields(context, overwritten_note_json, conflicting_note_json);
@@ -81,7 +81,7 @@ var OutlineHelpers = {
     performCheckForUpdates = function(success_callback, complete_callback){
       var outline_id      = context.getOutlineId();
       var source          = context.getLocationHash();
-      var url             = context.localURL() + '/' + context.db() + '/_design/' + context.db()
+      var url             = context.HOST + '/' + context.DB + '/_design/' + context.DB
                             + '/_list/changed_notes/notes_by_outline?startkey=%5b%22' 
                             + outline_id + '%22%5d&endkey=%5b%22' + outline_id
                             + '%22%2c%7b%7d%5d&filter="' + source + '%22';
@@ -107,8 +107,6 @@ var OutlineHelpers = {
     });
     
     success_callback = function(data, textstatus){
-      // console.log('data', data)
-      // console.log('notes_with_foreign_source', notes_with_foreign_source)
       if(data > 0 && data > notes_with_foreign_source){    
         display_warning = true;
       }
@@ -116,9 +114,6 @@ var OutlineHelpers = {
 
     complete_callback = function(xhr, textstatus){
       var current_etag = context.getEtagFromXHR(xhr);
-      // console.log('complete_callback. display_warning: ', display_warning)
-      // console.log('complete_callback. outline_etag: ', outline_etag)
-      // console.log('complete_callback. current_etag: ', current_etag)
       if(display_warning && 'sie weniger werden' && (outline_etag != current_etag)){
         if(context.$element().find('#change-warning:visible').length == 0){
           $('#change-warning').slideDown('slow');
@@ -130,7 +125,7 @@ var OutlineHelpers = {
   },
   
   checkForConflicts: function(couchapp){
-    if (window.location.protocol + '//' + window.location.host == this.serverURL()) return;
+    if (window.location.protocol + '//' + window.location.host == this.SERVER) return;
     var context = this;
   
     performCheckForConflicts = function(){
@@ -143,7 +138,7 @@ var OutlineHelpers = {
             if (json.rows.length > 0) { 
               var notes_with_conflicts = json.rows.map(function(row) {return row.value});
               $.each(notes_with_conflicts, function(i, note){
-                var url = context.localURL() + '/' + context.db() + '/' + note._id + '?rev=' + note._conflicts[0];
+                var url = context.HOST + '/' + context.DB + '/' + note._id + '?rev=' + note._conflicts[0];
                 $.getJSON(url, function(overwritten_note_json){
                   var note = new NoteElement(context.$element().find('li#edit_note_' + overwritten_note_json._id).find('textarea.expanding:first'))
                   note.emphasizeBackground();
@@ -157,44 +152,24 @@ var OutlineHelpers = {
       setTimeout("performCheckForConflicts()", 7000);
     }
 
-    performCheckForConflicts();
+    // performCheckForConflicts();
   },
   
   replicateUp: function(){
-    var context = this;    
-    $.post(this.localURL() + '/_replicate', 
-      '{"source":"' + this.db() + '", "target":"' + context.serverURL() + '/' + this.db() + '", "continuous":true}',
+    var context = this;   
+    $.post(context.HOST + '/_replicate', 
+      '{"source":"' + context.DB + '", "target":"' + context.SERVER + '/' + context.DB + '", "continuous":true}',
       function(){
-        Sammy.log('replicating to ', context.serverURL())
+        Sammy.log('replicating to ', context.SERVER)
       },"json");
   },
   
   replicateDown: function(){
     var context = this;
-    $.post(this.localURL() + '/_replicate', 
-      '{"source":"' + context.serverURL() + '/' + this.db() + '", "target":"' + this.db() + '", "continuous":true}',
+    $.post(context.HOST + '/_replicate', 
+      '{"source":"' + context.SERVER + '/' + context.DB + '", "target":"' + context.DB + '", "continuous":true}',
       function(){
-        Sammy.log('replicating from ', context.serverURL())
+        Sammy.log('replicating from ', context.SERVER)
       },"json");
-  }, 
-  
-  localURL: function(){
-    return "http://localhost:" + this.localPort();
-  },
-  
-  serverURL: function(){
-    return "http://localhost:" + this.serverPort();
-  },
-  
-  localPort: function(){
-    return "5984";
-  },
-  
-  serverPort: function(){
-    return "5985";
-  },
-  
-  db: function(){
-    return "doingnotes"
   }
 }

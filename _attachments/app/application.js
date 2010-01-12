@@ -13,6 +13,7 @@ $(function() {
     Outlines(this, couchapp);    
     helpers(OutlineHelpers);
     helpers(KeyEvents);
+    helpers(Config);
     
     get('#/', function(){with(this) {
       redirect('#/outlines');

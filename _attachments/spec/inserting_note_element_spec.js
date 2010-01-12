@@ -82,28 +82,31 @@ describe 'NoteElement'
     it 'should call create_object without next_id whent there is no next node'
       var outer_context = {
         getOutlineId: function(){return 'storyboard'},
+        getLocationHash: function(){return 'eb8abd1c45f20c0989ed79381cb4907d'},
         create_object: function(Type, attributes, {}, callback){
            this.create_object_attributes = attributes;
          }
       };
       last_note.insertNewNote(outer_context);
-      outer_context.create_object_attributes.should.eql {text: '', outline_id: 'storyboard'}
+      outer_context.create_object_attributes.should.eql {text: '', outline_id: 'storyboard', source: 'eb8abd1c45f20c0989ed79381cb4907d'}
     end
   
     it 'should call create_object with the next_id when there is a next node'
       var outer_context = {
         getOutlineId: function(){return 'storyboard'},
+        getLocationHash: function(){return 'eb8abd1c45f20c0989ed79381cb4907d'},
         create_object: function(Type, attributes, {}, callback){
           this.create_object_attributes = attributes;
         }
       };
       first_note.insertNewNote(outer_context);
-      outer_context.create_object_attributes.should.eql {text: '', outline_id: 'storyboard', next_id: '2'}
+      outer_context.create_object_attributes.should.eql {text: '', outline_id: 'storyboard', next_id: '2', source: 'eb8abd1c45f20c0989ed79381cb4907d'}
     end
     
     it 'should render the edit note partial'
       var outer_context = {
         getOutlineId: function(){return 'storyboard'},
+        getLocationHash: function(){return 'eb8abd1c45f20c0989ed79381cb4907d'},
         create_object: function(Type, attributes, {}, callback){
           this.create_object_callback = callback;
         },
