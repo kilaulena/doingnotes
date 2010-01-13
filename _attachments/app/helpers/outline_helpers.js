@@ -3,6 +3,7 @@ var OutlineHelpers = {
     $('textarea.expanding').autogrow();
     $('textarea.expanding').bind('blur', function(e){
       note = new NoteElement($(e.target));
+      note.setDataText();
       note.unfocusTextarea();
       note.submitIfChanged();
     });
@@ -142,18 +143,13 @@ var OutlineHelpers = {
     });
     
     success_callback = function(data, textstatus){
-      // console.log('data', data)
-      // console.log('notes_with_foreign_source', notes_with_foreign_source)
       if(data > 0 && data >= notes_with_foreign_source){    
         display_warning = true;
       }
-      console.log('display_warning', display_warning)
     };
 
     complete_callback = function(xhr, textstatus){
       var current_etag = context.getEtagFromXHR(xhr);
-      console.log('outline_etag', outline_etag)
-      console.log('current_etag', current_etag)
       if(display_warning && (outline_etag != current_etag)){
         if(context.$element().find('#change-warning:visible').length == 0){
           $('#change-warning').slideDown('slow');
