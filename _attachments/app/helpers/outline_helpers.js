@@ -42,16 +42,18 @@ var OutlineHelpers = {
       }
       first_note.focusTextarea();
       context.checkForUpdates(couchapp);
+      var continue_conflict_checking = true;
       if(solve){
-        context.showConflicts(context, couchapp);
+        continue_conflict_checking = false;
+        context.showConflicts(couchapp);
       } else {
-        context.checkForConflicts(couchapp);
+        context.checkForConflicts(couchapp, continue_conflict_checking);
       }
       $('#spinner').hide(); 
     });
   },
   
-  showConflicts: function(context, couchapp){
+  showConflicts: function(couchapp){
     var context = this;
     var outline_id = context.getOutlineId();
 
@@ -70,6 +72,39 @@ var OutlineHelpers = {
         }    
       }
     });
+  },
+  
+  checkForConflicts: function(couchapp, continue_conflict_checking){
+    var context = this;
+    if (context.onServer()) return;
+      
+    performCheckForConflicts = function(){
+      var outline_id = context.getOutlineId();
+      
+      if(outline_id){
+        couchapp.design.view('notes_with_conflicts_by_outline', {
+          key: outline_id,
+          success: function(json) {
+            if (json.rows.length > 0) { 
+              var notes_with_conflicts = json.rows.map(function(row) {return row.value});
+              $.each(notes_with_conflicts, function(i, note){
+                var url = context.HOST + '/' + context.DB + '/' + note._id + '?rev=' + note._conflicts[0];
+                $.getJSON(url, function(overwritten_note_json){
+                  var note = new NoteElement(context.$element().find('li#edit_note_' + overwritten_note_json._id).find('textarea.expanding:first'))
+                  note.emphasizeBackground();
+                });
+                $('#conflict-warning').slideDown("slow");
+              });
+            }    
+          }
+        });
+      }
+      if(continue_conflict_checking){
+        setTimeout("performCheckForConflicts()", 7000);
+      }
+    }
+
+    performCheckForConflicts();
   },
   
   checkForUpdates: function(couchapp){
@@ -107,13 +142,18 @@ var OutlineHelpers = {
     });
     
     success_callback = function(data, textstatus){
+      // console.log('data', data)
+      // console.log('notes_with_foreign_source', notes_with_foreign_source)
       if(data > 0 && data >= notes_with_foreign_source){    
         display_warning = true;
       }
+      console.log('display_warning', display_warning)
     };
 
     complete_callback = function(xhr, textstatus){
       var current_etag = context.getEtagFromXHR(xhr);
+      console.log('outline_etag', outline_etag)
+      console.log('current_etag', current_etag)
       if(display_warning && (outline_etag != current_etag)){
         if(context.$element().find('#change-warning:visible').length == 0){
           $('#change-warning').slideDown('slow');
@@ -121,40 +161,8 @@ var OutlineHelpers = {
       }
       display_warning = false;
     };
-    
   },
-  
-  checkForConflicts: function(couchapp){
-    var context = this;
-    if (context.onServer()) return;
-      
-    performCheckForConflicts = function(){
-      var outline_id = context.getOutlineId();
-      
-      if(outline_id){
-        couchapp.design.view('notes_with_conflicts_by_outline', {
-          key: outline_id,
-          success: function(json) {
-            if (json.rows.length > 0) { 
-              var notes_with_conflicts = json.rows.map(function(row) {return row.value});
-              $.each(notes_with_conflicts, function(i, note){
-                var url = context.HOST + '/' + context.DB + '/' + note._id + '?rev=' + note._conflicts[0];
-                $.getJSON(url, function(overwritten_note_json){
-                  var note = new NoteElement(context.$element().find('li#edit_note_' + overwritten_note_json._id).find('textarea.expanding:first'))
-                  note.emphasizeBackground();
-                });
-                $('#conflict-warning').slideDown("slow");
-              });
-            }    
-          }
-        });
-      }
-      setTimeout("performCheckForConflicts()", 7000);
-    }
 
-    performCheckForConflicts();
-  },
-  
   replicateUp: function(){
     var context = this;   
     $.post(context.HOST + '/_replicate', 
