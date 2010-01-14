@@ -6,6 +6,14 @@ NoteElement = function NoteElement(target) {
 }
 
 NoteElement.prototype = {
+  noteTarget: function(){
+    if(this.note_target.parent('form.edit-note').css('display') != 'none'){
+      return this.note_target;
+    } else {
+      return this.note_target.closest('li').children('div.solve_text').children('form:first').children('textarea:first');
+    }
+  },
+  
   noteLi: function(){
     return this.note_target.closest('li');
   },
@@ -219,12 +227,12 @@ NoteElement.prototype = {
   
   focusTextarea: function(){
     this.noteLi().attr("data-focus", true);
-    this.note_target.parent().addClass("active");
-    this.note_target.focus();
+    this.noteTarget().parent('form').addClass("active");
+    this.noteTarget().focus();
   },
   
   unfocusTextarea: function(){
-    this.note_target.parent().removeClass("active");
+    this.noteTarget().parent('form').removeClass("active");
     this.noteLi().removeAttr("data-focus");
   },
   
@@ -246,7 +254,6 @@ NoteElement.prototype = {
   },
 
   focusNextTextarea: function(){
-    var context = this;
     var next_note;
     this.unfocusTextarea();
     
@@ -260,6 +267,15 @@ NoteElement.prototype = {
       next_note = this;
     }
     next_note.focusTextarea();
+  },
+  
+  focusOtherInlineTextarea: function(){
+    var other_textarea;
+    this.unfocusTextarea();
+
+    other_textarea = this.noteTarget().parent('form').siblings('form').children('textarea');
+    other_textarea.parent('form').addClass("active");
+    other_textarea.focus();
   },
   
   indent: function(context){
@@ -385,6 +401,7 @@ NoteElement.prototype = {
       }, 
     function(html) {
       $(html).prependTo(this_note.noteLi());
+      context.bindSolveConflictsFocus();
     });
     this_note.note_target.parents('form.edit-note').hide();
   }

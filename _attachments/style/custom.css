@@ -138,7 +138,9 @@ textarea.expanding {
 	background-color: transparent;
 }
 
-ul#notes li form.active {background-color: #f2f2f2;}
+ul#notes li form.edit-note.active {background-color: #f2f2f2;}
+
+ul#notes li form.solve_text.active textarea {background-color: #f2f2f2;}
 
 ul#notes a.image {
   width: 10px;
@@ -200,7 +202,7 @@ form.solve_text {
   margin-bottom:5px;
 }
 
-textarea.solve_text_left, textarea.solve_text_right {
+textarea.solve_text {
   height: 55px;
   border: 1px solid #555;
 	background-color: white;

@@ -147,7 +147,6 @@ var Resources = function(app, couchapp) {
         var object = object_view.object();
         object.updated_at = new Date().toJSON();
         object._rev = rev_keep;
-        console.log('object', object)
         console.log('to remove: object._id =', object._id, '_rev: ', rev_delete)
         if(object.valid()) {
           console.log('object.to_json()', object.to_json())

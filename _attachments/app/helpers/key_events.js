@@ -2,7 +2,11 @@ var KeyEvents = {
   happenedOnNoteTarget: function(event){
     return (event.target.tagName == 'TEXTAREA' && $(event.target).attr('class') == 'expanding') ? true : false;
   },
-
+  
+  happenedOnConflictField: function(event){
+    return (event.target.tagName == 'TEXTAREA' && $(event.target).attr('class') == 'solve_text') ? true : false;
+  },
+  
   enterPressed: function(event) {
     return (event.keyCode == 13 && event.shiftKey == false);
   },

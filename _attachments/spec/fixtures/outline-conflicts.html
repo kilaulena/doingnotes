@@ -1,0 +1,72 @@
+<!-- 
+  Storyboard:
+  * 1: Introduction
+  * 2: Main Part
+  * 3: Pizza | Pasta (in conflict)
+  * 4: 
+-->
+
+<div id="content">
+  <h2>Storyboard</h2>
+  <h2 style="display:none;" id="outline-id">storyboard</h2>
+  <div id="writeboard">
+    <ul id="notes">
+      <li class="edit-note" id="edit_note_1">
+        <form class="edit-note" action="#/notes/1" method="put" accept-charset="utf-8">
+          <span class="space">&nbsp;</span>
+          <a class="image">&nbsp;</a>
+          <textarea class="expanding" id="edit_text_1" name="text">Introduction</textarea>
+          <input type="submit" value="Save" style="display:none;"/>
+        </form>
+      </li>
+
+      <li class="edit-note" id="edit_note_2">
+        <form class="edit-note" action="#/notes/2" method="put" accept-charset="utf-8">
+          <span class="space">&nbsp;</span>
+          <a class="image">&nbsp;</a>
+          <textarea class="expanding" id="edit_text_2" name="text">Main Part</textarea>
+          <input type="submit" value="Save" style="display:none;"/>
+        </form>
+      </li>
+      
+      <li class="edit-note" id="edit_note_3">
+        <div class="solve_text" id="solve_text_3">
+          <form class="solve_text" action="#/notes/solve/3" method="put" accept-charset="utf-8">
+            <input value="Keep winning version" type="submit">
+            <input name="rev_keep" value="8-773" type="hidden">
+            <input name="rev_delete" value="8-39b" type="hidden">
+            <textarea class="solve_text" name="text">Pizza</textarea>
+          </form>
+
+          <div class="solve_text_middle">
+            &nbsp;&nbsp;&nbsp;&nbsp;decide
+            <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;or 
+            <br/>copy &amp; paste
+          </div>
+        
+          <form class="solve_text" action="#/notes/solve/2" method="put" accept-charset="utf-8">
+            <input value="Keep overwritten version" type="submit">
+            <input name="rev_keep" value="8-39b" type="hidden">
+            <input name="rev_delete" value="8-773" type="hidden">
+            <textarea class="solve_text" name="text">Pasta</textarea>
+          </form>
+        </div>
+        <form style="display: none;" class="edit-note" action="#/notes/3" method="put" accept-charset="utf-8">
+          <span class="space">&nbsp;</span>
+          <a class="image">&nbsp;</a>
+          <textarea class="expanding" id="edit_text_3" name="text">Pizza</textarea>
+          <input type="submit" value="Save" style="display:none;"/>
+        </form>
+      </li>
+      
+      <li class="edit-note" id="edit_note_4">
+        <form class="edit-note" action="#/notes/4" method="put" accept-charset="utf-8">
+          <span class="space">&nbsp;</span>
+          <a class="image">&nbsp;</a>
+          <textarea class="expanding" id="edit_text_4" name="text"></textarea>
+          <input type="submit" value="Save" style="display:none;"/>
+        </form>
+      </li>
+    </ul>
+  </div>
+</div>

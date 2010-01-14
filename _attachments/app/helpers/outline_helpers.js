@@ -20,6 +20,13 @@ var OutlineHelpers = {
     $('a.image').unbind('click');		
   },
   
+  bindSolveConflictsFocus: function(){
+    $('textarea.solve_text').bind('blur', function(e){
+      note = new NoteElement($(e.target));
+      note.unfocusTextarea();
+    });
+  },
+  
   getOutlineId: function(){
     if((this.$element().find('h2#outline-id')).length != 0){
       return this.$element().find('h2#outline-id').html();
@@ -70,7 +77,7 @@ var OutlineHelpers = {
               note.insertConflictFields(context, overwritten_note_json, conflicting_note_json);
             });
           });
-        }    
+        }
       }
     });
   },

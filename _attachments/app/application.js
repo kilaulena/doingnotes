@@ -42,7 +42,10 @@ $(function() {
         if(happenedOnNoteTarget(e)){
           var note = new NoteElement($(e.target));
           note.setDataText();
-          note.focusTextarea()
+          note.focusTextarea();
+        } else if(happenedOnConflictField(e)){
+          var note = new NoteElement($(e.target));
+          note.focusTextarea();
         }
       });
       $(window).bind("keydown", function(e) {
@@ -66,6 +69,18 @@ $(function() {
           } else if(tabShiftPressed(e)){
             e.preventDefault();
             note.unindent(context);
+          }
+        } else if(happenedOnConflictField(e)){
+          var note = new NoteElement($(e.target));
+          if(keyUpPressed(e)){
+            e.preventDefault();
+            note.focusPreviousTextarea();
+          } else if(keyDownPressed(e)){
+            e.preventDefault();
+            note.focusNextTextarea();
+          } else if(tabPressed(e) || tabShiftPressed(e)){
+            e.preventDefault();
+            note.focusOtherInlineTextarea();
           }
         }
       });
