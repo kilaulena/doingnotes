@@ -210,6 +210,10 @@ NoteElement.prototype = {
         next.renderNotes(context, notes);
       });
     }
+    if(typeof(next_object)=="undefined" && typeof(child_object)=="undefined"){
+      context.unbindSubmitOnBlurAndAutogrow();
+      context.bindSubmitOnBlurAndAutogrow();
+    }
   },
   
   renderFollowingNote: function(context, note_object, callback){
@@ -221,7 +225,7 @@ NoteElement.prototype = {
       } else {
         $(html).insertAfter(this_note.note_target.closest('li'));
         callback(this_note.nextNote());        
-      }      
+      }
     });
   },
   
@@ -400,6 +404,7 @@ NoteElement.prototype = {
         overwritten_rev: overwritten_note_json._rev
       }, 
     function(html) {
+      console.log('conflict fields sollten hier inserted werden')
       $(html).prependTo(this_note.noteLi());
       context.bindSolveConflictsFocus();
     });
