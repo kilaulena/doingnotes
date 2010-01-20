@@ -102,27 +102,24 @@ var OutlineHelpers = {
         couchapp.design.view('notes_with_conflicts_by_outline', {
           key: outline_id,
           success: function(json) {
-            if (json.rows.length > 0) { 
-              console.log('conflicts found in:')
+            if (json.rows.length > 0) {             
               var notes_with_conflicts = json.rows.map(function(row) {return row.value});
               $.each(notes_with_conflicts, function(i, note){
                 context.note = note;
                 var url = context.HOST + '/' + context.DB + '/' + note._id + '?rev=' + note._conflicts[0];
                 $.getJSON(url, function(overwritten_note_json){
                   if(overwritten_note_json.text != context.note.text){
-                    // console.log('ask the user')
+                    console.log('ask the user')
                     if(context.$element().find('#conflict-warning:visible').length == 0){
                       $('#conflict-warning').slideDown('slow');
                     }
                     context.highlightNote(context, overwritten_note_json._id);
                   } else if(overwritten_note_json.next_id != context.note.next_id){
-                    // console.log('do it automatically')
+                    console.log('do it automatically')
                     context.solve_conflict_by_sorting(context.note, overwritten_note_json);
                   }
                 });
               });
-            } else {
-              console.log('no conflicts found.')
             }
           }
         });
@@ -150,9 +147,7 @@ var OutlineHelpers = {
           rev_delete  = parent_winner_rev._rev;
           rev_keep    = parent_looser_rev._rev;
           context.partial('app/templates/notes/edit.mustache', {_id: top_child_note._id(), text: top_child_note.text()}, function(html) {
-            console.log('looser_parents_next_note comes at the top')
             var bottom_note_element = context.findNoteElementById(bottom_child_note._id());
-            console.log('bottom_note_element:', bottom_note_element)
             $(html).insertBefore(bottom_note_element.note_target.closest('li'));
           });
         } else {

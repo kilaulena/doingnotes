@@ -137,7 +137,7 @@ var Resources = function(app, couchapp) {
     //update the revision rev_keep and delete the revision rev_delete 
     solve_conflict_by_deletion: function(name, params, rev_delete, rev_keep, options, callback) {
       var context = this;
-      this.load_object_view(name, params._id, function(blank_object_view){
+      this.load_object_view(name, params._id || params.id, function(blank_object_view){
         object = context.object_view_from_params(blank_object_view, params).object();          
         object.updated_at = new Date().toJSON();
         object._rev = rev_keep;

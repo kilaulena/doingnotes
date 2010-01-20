@@ -1,5 +1,5 @@
 Notes = function(sammy) { with(sammy) {
-  put('#/notes/solve/:id', function() { with(this){  
+  put('#/notes/solve/:id', function() { with(this){ 
     var rev_delete = params.rev_delete;
     var rev_keep   = params.rev_keep;
     delete(params.rev_delete);
