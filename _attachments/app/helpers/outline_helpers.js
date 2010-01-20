@@ -2,7 +2,7 @@ var OutlineHelpers = {
   bindSubmitOnBlurAndAutogrow: function(){
     $('textarea.expanding').autogrow();
     $('textarea.expanding').bind('blur', function(e){
-      note = new NoteElement($(e.target));
+      var note = new NoteElement($(e.target));
       note.setDataText();
       note.unfocusTextarea();
       note.submitIfChanged();
@@ -33,6 +33,10 @@ var OutlineHelpers = {
     }
   },
   
+  findNoteElementById: function(id ){
+    return new NoteElement(this.$element().find('li#edit_note_' + id).find('textarea.expanding:first'))
+  },
+  
   getLocationHash: function(){
     return hex_md5(window.location.host);
   },
@@ -44,7 +48,7 @@ var OutlineHelpers = {
   renderOutline: function(context, view, notes, couchapp, solve){
     context.render('show', view, function(response){
       context.app.swap(response);
-      first_note = new NoteElement($('ul#notes li:first').find('textarea.expanding'));
+      var first_note = new NoteElement($('ul#notes li:first').find('textarea.expanding'));
       if(notes.notes.length > 1) {
         first_note.renderNotes(context, notes, notes.notes.length); 
       }
@@ -73,13 +77,18 @@ var OutlineHelpers = {
           $.each(notes_with_conflicts, function(i, conflicting_note_json){
             var url = context.HOST + '/' + context.DB + '/' + conflicting_note_json._id + '?rev=' + conflicting_note_json._conflicts[0];
             $.getJSON(url, function(overwritten_note_json){              
-              var note = new NoteElement(context.$element().find('li#edit_note_' + overwritten_note_json._id).find('textarea.expanding:first'))
+              var note = context.findNoteElementById(overwritten_note_json._id);
               note.insertConflictFields(context, overwritten_note_json, conflicting_note_json);
             });
           });
         }
       }
     });
+  },
+  
+  highlightNote: function(context, id){
+    var note_element = context.findNoteElementById(id);
+    note_element.emphasizeBackground();
   },
   
   checkForConflicts: function(couchapp, continue_conflict_checking){
@@ -94,16 +103,27 @@ var OutlineHelpers = {
           key: outline_id,
           success: function(json) {
             if (json.rows.length > 0) { 
+              console.log('conflicts found in:')
               var notes_with_conflicts = json.rows.map(function(row) {return row.value});
               $.each(notes_with_conflicts, function(i, note){
+                context.note = note;
                 var url = context.HOST + '/' + context.DB + '/' + note._id + '?rev=' + note._conflicts[0];
                 $.getJSON(url, function(overwritten_note_json){
-                  var note = new NoteElement(context.$element().find('li#edit_note_' + overwritten_note_json._id).find('textarea.expanding:first'))
-                  note.emphasizeBackground();
+                  if(overwritten_note_json.text != context.note.text){
+                    // console.log('ask the user')
+                    if(context.$element().find('#conflict-warning:visible').length == 0){
+                      $('#conflict-warning').slideDown('slow');
+                    }
+                    context.highlightNote(context, overwritten_note_json._id);
+                  } else if(overwritten_note_json.next_id != context.note.next_id){
+                    // console.log('do it automatically')
+                    context.solve_conflict_by_sorting(context.note, overwritten_note_json);
+                  }
                 });
-                $('#conflict-warning').slideDown("slow");
               });
-            }    
+            } else {
+              console.log('no conflicts found.')
+            }
           }
         });
       }
@@ -111,9 +131,57 @@ var OutlineHelpers = {
         setTimeout("performCheckForConflicts()", 7000);
       }
     }
-
     performCheckForConflicts();
   },
+  
+  
+  
+  solve_conflict_by_sorting: function(parent_winner_rev, parent_looser_rev) {
+    var context = this;
+    var first_note, second_note, rev_delete, rev_keep;
+    
+    context.load_object_view('Note', parent_winner_rev.next_id, function(winner_parents_next_note){
+      context.load_object_view('Note', parent_looser_rev.next_id, function(looser_parents_next_note){
+        if(looser_parents_next_note.created_at < winner_parents_next_note.created_at){
+          // the update on the looser_parents_next_note comes first
+          top_child_note    = looser_parents_next_note;
+          bottom_child_note = winner_parents_next_note;
+          // so the winner gets deleted
+          rev_delete  = parent_winner_rev._rev;
+          rev_keep    = parent_looser_rev._rev;
+          context.partial('app/templates/notes/edit.mustache', {_id: top_child_note._id(), text: top_child_note.text()}, function(html) {
+            console.log('looser_parents_next_note comes at the top')
+            var bottom_note_element = context.findNoteElementById(bottom_child_note._id());
+            console.log('bottom_note_element:', bottom_note_element)
+            $(html).insertBefore(bottom_note_element.note_target.closest('li'));
+          });
+        } else {
+          // the update on the winner_parents_next_note comes first
+          top_child_note  = winner_parents_next_note;
+          bottom_child_note = looser_parents_next_note;
+          // so the parent_looser_rev gets deleted
+          rev_delete  = parent_looser_rev._rev;
+          rev_keep    = parent_winner_rev._rev;
+          context.partial('app/templates/notes/edit.mustache', {_id: bottom_child_note._id(), text: bottom_child_note.text()}, function(html) {
+            var top_note_element = context.findNoteElementById(top_child_note._id());
+            $(html).insertAfter(top_note_element.note_target.closest('li'));
+          });
+        }
+        // the top_child_note's next_id must point to the bottom_child_note's id
+        context.update_object('Note', {id: top_child_note._id(), next_id: bottom_child_note._id()}, {}, function(note){});
+      
+        context.solve_conflict_by_deletion('Note', parent_winner_rev, rev_delete, rev_keep, {}, function(response, note){});
+
+        
+        if(context.$element().find('#solve-notification:visible').length == 0){
+          $('#solve-notification').slideDown('slow');
+        }
+        context.highlightNote(context, top_child_note._id());
+        context.highlightNote(context, bottom_child_note._id());
+      });
+    });
+  },
+  
   
   checkForUpdates: function(couchapp){
     var context = this;

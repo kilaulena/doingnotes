@@ -1,8 +1,9 @@
 <a class="right_link" href="#/outlines/edit/{{outline_id}}">Change title or delete this outline</a>
 <h2>{{title}}</h2>
 <h2 style="display:none;" id="outline-id">{{outline_id}}</h2>
-<h3 style="display:none;" id="conflict-warning">Replication has caused one or more conflicts in this outline. <a href="/doingnotes/_design/doingnotes/index.html#/outlines/{{outline_id}}?solve=true">Solve them.</a></h3>
-<h3 style="display:none;" id="change-warning">Replication has brought updates for this outline. <a href="" onClick="window.location.reload();return false;">View them.</a></h3>
+<h3 style="display:none;" id="conflict-warning">Replication has caused one or more conflicts. <a href="/doingnotes/_design/doingnotes/index.html#/outlines/{{outline_id}}?solve=true">Solve them.</a></h3>
+<h3 style="display:none;" id="change-warning">Replication has brought updates. <a href="" onClick="window.location.reload();return false;">View them.</a></h3>
+<h3 style="display:none;" id="solve-notification">Replication has detected and automatically solved updates. <a href="" onClick="$('h3#solve-notification').hide();return false;">Hide this message.</a></a></h3>
 <div id="writeboard">
   <ul id="notes">
     {{#notes}}

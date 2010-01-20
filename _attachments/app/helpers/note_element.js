@@ -27,7 +27,15 @@ NoteElement.prototype = {
   },
   
   emphasizeBackground: function(){
-    this.note_target.parents('form').css("background-color", "#FFFDE1");
+    var form = this.note_target.parents('form');
+    form.animate({"backgroundColor": "#FFFDE1"}, 500)
+    
+    var delay = function() { fadeBackToWhite(form); };
+    setTimeout(delay, 3000);
+    
+    function fadeBackToWhite(form){
+    	form.animate({'backgroundColor': '#FFF'}, 2000);
+    }
   },
   
   hasChildren: function(){
@@ -404,7 +412,6 @@ NoteElement.prototype = {
         overwritten_rev: overwritten_note_json._rev
       }, 
     function(html) {
-      console.log('conflict fields sollten hier inserted werden')
       $(html).prependTo(this_note.noteLi());
       context.bindSolveConflictsFocus();
     });

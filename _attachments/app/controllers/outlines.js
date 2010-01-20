@@ -38,7 +38,7 @@ Outlines = function(sammy, couchapp) { with(sammy) {
           view.outline_id = json.rows[0].value._id;
           json.rows.splice(0,1);        
           if (json.rows.length > 0) { 
-            notes = json.rows.map(function(row) {return new Note(row.value)}); 
+            var notes = json.rows.map(function(row) {return new Note(row.value)}); 
             view.notes = [(new NoteCollection(notes)).firstNote()];
             renderOutline(context, view, (new NoteCollection(notes)), couchapp, params.solve);
           } else {
@@ -57,7 +57,7 @@ Outlines = function(sammy, couchapp) { with(sammy) {
   }});
   
   get('#/outlines/edit/:id', function() { with(this) {
-    load_object('Outline', params['id'], function(outline_view){
+    load_object_view('Outline', params['id'], function(outline_view){
       partial('app/templates/outlines/edit.mustache', outline_view, function(outline_view){
         app.swap(outline_view);
         $('#spinner').hide(); 

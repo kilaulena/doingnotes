@@ -162,9 +162,7 @@ ul#notes li img {
 
 /* solving conflicts */
 
-#conflict-warning {
-  background-color: #FFCEB8;
-  border: 1px solid #F4A988;
+#conflict-warning, #change-warning, #solve-notification {
   font-size: 14px;
   font-weight: normal;
   height: 30px;
@@ -173,16 +171,20 @@ ul#notes li img {
   padding: 0 0 0 5px;
 }
 
+#conflict-warning {
+  background-color: #FFCEB8;
+  border: 1px solid #F4A988;
+}
+
 #change-warning {
   background-color: #FFFFCC;
-  /*background-color of the note that has changed: #FFFDE1*/
   border: 1px solid #FFFB91;
-  font-size: 14px;
-  font-weight: normal;
-  height: 30px;
-  line-height: 30px;
-  margin: 0 0 10px 16px;
-  padding: 0 0 0 5px;
+}
+
+#solve-notification {
+  background-color:#E6EFC2;
+  color:#264409;
+  border: 1px solid #C6D880;
 }
 
 div.solve_text {
@@ -215,7 +217,6 @@ div.solve_text_middle {
   margin: 20px 12px 20px 31px;
   float: left;
 }
-
 
 /* indenting of notes */
 
