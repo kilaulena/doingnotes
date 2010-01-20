@@ -45,6 +45,14 @@ var OutlineHelpers = {
     return xhr.getResponseHeader('ETag').replace(/^"+/,'').replace(/"+$/,'');
   },
   
+  displayAndHideFlash: function(flash){
+    $('#flash').attr('class', flash.type);
+    $('#flash').html(flash.message);
+    $('#flash').show();
+    $('#spinner').hide();    
+    setTimeout("$('#flash').fadeOut('slow')", 5000);
+  },
+  
   renderOutline: function(context, view, notes, couchapp, solve){
     context.render('show', view, function(response){
       context.app.swap(response);
@@ -167,10 +175,9 @@ var OutlineHelpers = {
       
         context.solve_conflict_by_deletion('Note', parent_winner_rev, rev_delete, rev_keep, {}, function(response, note){});
 
+        context.flash = {message: 'Replication has detected and automatically solved updates.', type: 'notice'};
+        context.trigger('notice', context.flash);    
         
-        if(context.$element().find('#solve-notification:visible').length == 0){
-          $('#solve-notification').slideDown('slow');
-        }
         context.highlightNote(context, top_child_note._id());
         context.highlightNote(context, bottom_child_note._id());
       });

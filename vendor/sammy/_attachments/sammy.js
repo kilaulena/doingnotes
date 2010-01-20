@@ -875,6 +875,7 @@
         var last = (args[args.length-1]);
         if (last.message && last.type){
           flash = {message: last.message, type: last.type};
+          $('#flash').show();
           args.pop();    
         }
         args.unshift('/');

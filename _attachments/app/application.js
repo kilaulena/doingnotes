@@ -87,21 +87,19 @@ $(function() {
     }});
  
     before(function() {
-      $('#flash').html(flash.message);
-      $('#flash').attr('class', flash.type);
+      OutlineHelpers.displayAndHideFlash(flash);
       flash = {type: '', message: ''};
       $('#spinner').show();
     });
 
     bind('error', function(e, flash) { with(this) {
-      $('#flash').html(flash.message);
-      $('#flash').attr('class', 'error');
-      $('#spinner').hide();
+      flash.type = 'error';
+      displayAndHideFlash(flash);
     }});
 
     bind('notice', function(e, flash) { with(this) {
-      $('#flash').html(flash.message);
-      $('#flash').attr('class', 'notice');
+      flash.type = 'notice';
+      displayAndHideFlash(flash);
     }});
   }});
 
