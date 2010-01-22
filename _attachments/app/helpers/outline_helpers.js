@@ -78,20 +78,20 @@ var OutlineHelpers = {
     var outline_id = context.getOutlineId();
 
     couchapp.design.view('notes_with_conflicts_by_outline', {
-      key: outline_id,
-      success: function(json) {
-        if (json.rows.length > 0) { 
-          var notes_with_conflicts = json.rows.map(function(row) {return row.value});
-          $.each(notes_with_conflicts, function(i, conflicting_note_json){
-            var url = context.HOST + '/' + context.DB + '/' + conflicting_note_json._id + '?rev=' + conflicting_note_json._conflicts[0];
-            $.getJSON(url, function(overwritten_note_json){              
-              var note = context.findNoteElementById(overwritten_note_json._id);
-              note.insertConflictFields(context, overwritten_note_json, conflicting_note_json);
-            });
-          });
-        }
-      }
-    });
+       key: outline_id,
+       success: function(json) {
+         if (json.rows.length > 0) {
+           var notes_with_conflicts = json.rows.map(function(row) {return row.value});
+           $.each(notes_with_conflicts, function(i, conflicting_note_json){
+             var url = context.HOST + '/' + context.DB + '/' + conflicting_note_json._id + '?rev=' + conflicting_note_json._conflicts[0];
+             $.getJSON(url, function(overwritten_note_json){
+               var note = context.findNoteElementById(overwritten_note_json._id);
+               note.insertConflictFields(context, overwritten_note_json, conflicting_note_json);
+             });
+           });
+         }
+       }
+     });
   },
   
   highlightNote: function(context, id){
@@ -170,70 +170,49 @@ var OutlineHelpers = {
             $(html).insertAfter(top_note_element.note_target.closest('li'));
           });
         }
+        
+        context.flash = {message: 'Replication has detected and automatically solved updates.', type: 'notice'};
+        context.trigger('notice', context.flash);
+        
+        context.highlightNote(context, top_child_note._id());
+        context.highlightNote(context, bottom_child_note._id());
+                
         // the top_child_note's next_id must point to the bottom_child_note's id
         context.update_object('Note', {id: top_child_note._id(), next_id: bottom_child_note._id()}, {}, function(note){});
       
         context.solve_conflict_by_deletion('Note', parent_winner_rev, rev_delete, rev_keep, {}, function(response, note){});
-
-        context.flash = {message: 'Replication has detected and automatically solved updates.', type: 'notice'};
-        context.trigger('notice', context.flash);    
-        
-        context.highlightNote(context, top_child_note._id());
-        context.highlightNote(context, bottom_child_note._id());
       });
     });
   },
   
   
   checkForUpdates: function(couchapp){
-    var context = this;
-    var display_warning = false;
-    var outline_etag;
-    var notes_with_foreign_source;
+    var context    = this;
+    var outline_id = context.getOutlineId();
+    var source     = context.getLocationHash();
+    var url        = context.HOST + '/' + context.DB + 
+                     '/_changes?filter=doingnotes/changed' +
+                     '&source=' + source;    
     
-    performCheckForUpdates = function(success_callback, complete_callback){
-      var outline_id      = context.getOutlineId();
-      var source          = context.getLocationHash();
-      var url             = context.HOST + '/' + context.DB + '/_design/' + context.DB
-                            + '/_list/changed_notes/notes_by_outline?startkey=%5b%22' 
-                            + outline_id + '%22%5d&endkey=%5b%22' + outline_id
-                            + '%22%2c%7b%7d%5d&filter="' + source + '%22';
-      if(outline_id){ 
-        $.ajax({
-          type: "GET", url: url,
-          success: function(data, textstatus) {
-            success_callback(data, textstatus);
-          },
-          complete: function(xhr, textstatus) {
-            complete_callback(xhr, textstatus);
+    if(outline_id){ 
+      $.getJSON(url, function(json){
+        var since = json.last_seq;
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange=function() {
+          if(xmlhttp.readyState==3){
+            console.log('checkForUpdates says this has changed in another application:')
+            console.log(xmlhttp.responseText)
+            if (xmlhttp.responseText.length > 0){
+              if(context.$element().find('#change-warning:visible').length == 0){
+                $('#change-warning').slideDown('slow');
+              }
+            }
           }
-        });
-      }
-      
-      setTimeout("performCheckForUpdates(success_callback, complete_callback);", 6000);
-    }
-    
-    performCheckForUpdates(function(data, textstatus){
-      notes_with_foreign_source = data;
-    }, function(xhr, textstatus){
-      outline_etag  = context.getEtagFromXHR(xhr);
-    });
-    
-    success_callback = function(data, textstatus){
-      if(data > 0 && data >= notes_with_foreign_source){    
-        display_warning = true;
-      }
-    };
-
-    complete_callback = function(xhr, textstatus){
-      var current_etag = context.getEtagFromXHR(xhr);
-      if(display_warning && (outline_etag != current_etag)){
-        if(context.$element().find('#change-warning:visible').length == 0){
-          $('#change-warning').slideDown('slow');
         }
-      }
-      display_warning = false;
-    };
+        xmlhttp.open("GET", url + '&feed=continuous&since=' + since, true);
+        xmlhttp.send(null);
+      });
+    }
   },
 
   replicateUp: function(){
