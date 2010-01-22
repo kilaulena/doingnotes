@@ -17,16 +17,18 @@ var ReplicationHelpers = {
         var xmlhttp = new XMLHttpRequest();
         xmlhttp.onreadystatechange=function() {
           if(xmlhttp.readyState==3){
-            console.log('This has changed in another application:')
-            console.log(xmlhttp.responseText)
-            if (xmlhttp.responseText.length > 0){
+            if(xmlhttp.responseText.match(/changes/)){
+              console.log('This has changed in another application: \n', xmlhttp.responseText)
               if(context.$element().find('#change-warning:visible').length == 0){
                 $('#change-warning').slideDown('slow');
               }
             }
+            if(xmlhttp.responseText.match(/last_seq/)){
+              console.log('Timeout in checkForUpdates:', xmlhttp.responseText)
+            }
           }
         }
-        xmlhttp.open("GET", url + '&feed=continuous&since=' + since, true);
+        xmlhttp.open("GET", url + '&feed=continuous&heartbeat=30000&since=' + since, true);
         xmlhttp.send(null);
       });
     }

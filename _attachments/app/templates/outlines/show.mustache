@@ -2,7 +2,7 @@
 <h2>{{title}}</h2>
 <h2 style="display:none;" id="outline-id">{{outline_id}}</h2>
 <h3 style="display:none;" id="conflict-warning">Replication has caused one or more conflicts. <a href="/doingnotes/_design/doingnotes/index.html#/outlines/{{outline_id}}?solve=true">Solve them.</a></h3>
-<h3 style="display:none;" id="change-warning">Replication has brought updates. <a href="" onClick="window.location.reload();return false;">View them.</a></h3>
+<h3 style="display:none;" id="change-warning">Replication has brought updates. <a href="javascript: window.location.reload();">View them.</a></h3>
 <div id="writeboard">
   <ul id="notes">
     {{#notes}}

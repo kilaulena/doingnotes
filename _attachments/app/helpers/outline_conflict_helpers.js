@@ -49,7 +49,7 @@ var OutlineConflictHelpers = {
         });
       }
       if(continue_conflict_checking){
-        setTimeout("performCheckForConflicts()", 7000);
+        setTimeout("performCheckForConflicts()", 5000);
       }
     }
     performCheckForConflicts();
