@@ -12,6 +12,8 @@ $(function() {
     Notes(this);
     Outlines(this, couchapp);    
     helpers(OutlineHelpers);
+    helpers(OutlineConflictHelpers);
+    helpers(ReplicationHelpers);
     helpers(KeyEvents);
     helpers(Config);
     

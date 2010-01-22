@@ -23,8 +23,5 @@ OutlineView.prototype = {
   },
   not_new_record: function() {
     return this.outline.updated_at || false;
-  },
-  etag: function(){
-    return this.outline.etag;
   }
 }

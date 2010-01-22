@@ -133,35 +133,6 @@ var Resources = function(app, couchapp) {
         };
       });
     },
-   
-    //update the revision rev_keep and delete the revision rev_delete 
-    solve_conflict_by_deletion: function(name, params, rev_delete, rev_keep, options, callback) {
-      var context = this;
-      this.load_object_view(name, params._id || params.id, function(blank_object_view){
-        object = context.object_view_from_params(blank_object_view, params).object();          
-        object.updated_at = new Date().toJSON();
-        object._rev = rev_keep;
-        console.log('to remove: object._id =', object._id, '_rev: ', rev_delete)
-        if(object.valid()) {
-          couchapp.db.removeDoc({_id : object._id, _rev : rev_delete});
-                
-          couchapp.db.saveDoc(object.to_json(), {
-            success: function(res) {
-              if(options.message) {     
-                context.flash = {message: options.message, type: 'notice'};
-              }                         
-              callback(res, object);
-            },
-            error: function(response_code, res) {
-              context.flash = {message: 'Error saving ' + object_view.type + ': ' + res, type: 'error'};
-            }
-          });
-        } else {
-          context.flash = {message: object.errors.join(", ")};
-          context.trigger('error', context.flash);                
-        };
-      });
-    },
     
     delete_object: function(params, options, callback) {
       options = options || {};

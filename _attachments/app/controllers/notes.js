@@ -4,7 +4,7 @@ Notes = function(sammy) { with(sammy) {
     var rev_keep   = params.rev_keep;
     delete(params.rev_delete);
     delete(params.rev_keep);
-    solve_conflict_by_deletion('Note', params, rev_delete, rev_keep, {message: 'Conflict solved.'}, function(response, note){
+    solve_conflict_by_deletion(params, rev_delete, rev_keep, {message: 'Conflict solved.'}, function(response, note){
       redirect('#/outlines/' + note.outline_id, flash);
     });
     return false;
