@@ -90,14 +90,14 @@ namespace :couch do
   
   desc "post a note to 5984"
   task :postto4 do
-    puts "Bulk posting Note with ID \"123\" to 5984."
-    system 'curl -v -d \'{"all_or_nothing": true, "docs":[{"_id":"123", "created_at": "2010/01/24 20:53:48 +0000", "updated_at": "2010/01/24 20:53:51 +0000", "type": "Note", "text": "first from client", "source": "eb8abd1c45f20c0989ed79381cb4907d", "outline_id": "01234567890", "first_note": true}]}\' -X POST http://localhost:5984/doingnotes/_bulk_docs'
+    puts "Bulk posting Note with ID \"111\" to 5984."
+    system 'curl -v -d \'{"all_or_nothing": true, "docs":[{"_id":"111", "created_at": "2010/01/24 20:53:48 +0000", "updated_at": "2010/01/24 20:53:51 +0000", "type": "Note", "text": "single from client", "source": "eb8abd1c45f20c0989ed79381cb4907d", "outline_id": "01234567890", "first_note": true}]}\' -X POST http://localhost:5984/doingnotes/_bulk_docs'
   end
   
   desc "post a note to 5985"
   task :postto5 do
-    puts "Bulk posting Note with ID \"123\" to 5985."
-    system 'curl -v -d \'{"all_or_nothing": true, "docs":[{"_id":"123", "created_at": "2010/01/24 20:53:48 +0000", "updated_at": "2010/01/24 20:55:20 +0000", "type": "Note", "text": "first from server", "source": "d476451f9b4031e515e9d139d328b116", "outline_id": "01234567890", "first_note": true}]}\' -X POST http://localhost:5985/doingnotes/_bulk_docs'
+    puts "Bulk posting Note with ID \"111\" to 5985."
+    system 'curl -v -d \'{"all_or_nothing": true, "docs":[{"_id":"111", "created_at": "2010/01/24 20:53:48 +0000", "updated_at": "2010/01/24 20:55:20 +0000", "type": "Note", "text": "single from server", "source": "d476451f9b4031e515e9d139d328b116", "outline_id": "01234567890", "first_note": true}]}\' -X POST http://localhost:5985/doingnotes/_bulk_docs'
   end
 
   desc "recreate the databases and create a write conflict"
@@ -107,18 +107,37 @@ namespace :couch do
   desc "add a second note to 5984"
   task :addto4 do
     puts "Adding a second note to 5984."
-    system 'curl -X PUT http://localhost:5984/doingnotes/456 -d \'{"created_at": "2010/01/24 21:12:10 +0000", "type": "Note", "text": "also server", "source": "d476451f9b4031e515e9d139d328b116", "outline_id": "01234567890"}\''
-    system 'curl -v -d \'{"all_or_nothing": true, "docs":[{"_id":"123", "created_at": "2010/01/24 20:53:48 +0000", "updated_at": "2010/01/24 21:12:10 +0000", "type": "Note", "text": "first from server", "source": "d476451f9b4031e515e9d139d328b116", "outline_id": "01234567890", "first_note": true, "next_id" : "456"}]}\' -X POST http://localhost:5984/doingnotes/_bulk_docs'
+    system 'curl -X PUT http://localhost:5984/doingnotes/22a -d \'{"created_at": "2010/01/24 21:12:10 +0000", "type": "Note", "text": "append with conflict from client", "source": "eb8abd1c45f20c0989ed79381cb4907d", "outline_id": "01234567890"}\''
+    system 'curl -d \'{"all_or_nothing": true, "docs":[{"_id":"111", "created_at": "2010/01/24 20:53:48 +0000", "updated_at": "2010/01/24 21:12:10 +0000", "type": "Note", "text": "first from client", "source": "d476451f9b4031e515e9d139d328b116", "outline_id": "01234567890", "first_note": true, "next_id" : "22a"}]}\' -X POST http://localhost:5984/doingnotes/_bulk_docs'
   end
   
   desc "add a second note to 5985"
   task :addto5 do
     puts "Adding a second note to 5985."
-    system 'curl -X PUT http://localhost:5985/doingnotes/789 -d \'{"created_at": "2010/01/24 21:14:40 +0000", "type": "Note", "text": "also server", "source": "d476451f9b4031e515e9d139d328b116", "outline_id": "01234567890"}\''
-    system 'curl -v -d \'{"all_or_nothing": true, "docs":[{"_id":"123", "created_at": "2010/01/24 20:53:48 +0000", "updated_at": "2010/01/24 21:14:40 +0000", "type": "Note", "text": "first from server", "source": "d476451f9b4031e515e9d139d328b116", "outline_id": "01234567890", "first_note": true, "next_id" : "789"}]}\' -X POST http://localhost:5985/doingnotes/_bulk_docs'
+    system 'curl -X PUT http://localhost:5985/doingnotes/22b -d \'{"created_at": "2010/01/24 21:14:40 +0000", "type": "Note", "text": "append with conflict from server", "source": "d476451f9b4031e515e9d139d328b116", "outline_id": "01234567890"}\''
+    system 'curl -d \'{"all_or_nothing": true, "docs":[{"_id":"111", "created_at": "2010/01/24 20:53:48 +0000", "updated_at": "2010/01/24 21:14:40 +0000", "type": "Note", "text": "first from server", "source": "d476451f9b4031e515e9d139d328b116", "outline_id": "01234567890", "first_note": true, "next_id" : "22b"}]}\' -X POST http://localhost:5985/doingnotes/_bulk_docs'
   end
   
   desc "recreate the databases and create an append conflict"
-    task :appendconflict => [:restartrecreateoutline, :postto4, :stop5, :addto4, :stop4, :start5, :addto5, :start4]
+    task :appendconflict => [:restartrecreateoutline, :stop5, :addto4, :stop4, :start5, :addto5, :start4]
   
+  desc "post two notes to 5984"
+  task :posttwiceto4 do
+    puts "Bulk posting Notes with ID \"111\" and ID \"333\" to 5984."
+    system 'curl -d \'{"all_or_nothing": true, "docs":[' + 
+    '{"_id":"333", "created_at": "2010/01/24 22:55:48 +0000", "updated_at": "2010/01/24 22:55:20 +0000", "type": "Note", "text": "second from client", "source": "eb8abd1c45f20c0989ed79381cb4907d", "outline_id": "01234567890"}, ' + 
+    '{"_id":"111", "created_at": "2010/01/24 20:53:48 +0000", "updated_at": "2010/01/24 22:55:20 +0000", "type": "Note", "text": "first from client", "source": "eb8abd1c45f20c0989ed79381cb4907d", "outline_id": "01234567890", "first_note": true, "next_id" : "333"}' + 
+    ']}\' -X POST http://localhost:5984/doingnotes/_bulk_docs'  end
+
+  desc "post two notes to 5985"
+  task :posttwiceto5 do
+    puts "Bulk posting Notes with ID \"111\" and ID \"333\" to 5985."
+    system 'curl -d \'{"all_or_nothing": true, "docs":[' + 
+    '{"_id":"333", "created_at": "2010/01/24 22:55:48 +0000", "updated_at": "2010/01/24 22:55:20 +0000", "type": "Note", "text": "second from server", "source": "d476451f9b4031e515e9d139d328b116", "outline_id": "01234567890"}, ' + 
+    '{"_id":"111", "created_at": "2010/01/24 20:53:48 +0000", "updated_at": "2010/01/24 22:55:20 +0000", "type": "Note", "text": "first from server", "source": "d476451f9b4031e515e9d139d328b116", "outline_id": "01234567890", "first_note": true, "next_id" : "333"}' + 
+    ']}\' -X POST http://localhost:5985/doingnotes/_bulk_docs'
+  end
+  
+  desc "recreate the databases and create an append and a write conflict"
+    task :twowriteconflicts => [:restartrecreateoutline, :stop5, :posttwiceto4, :stop4, :start5, :posttwiceto5, :start4]
 end
