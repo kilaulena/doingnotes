@@ -18,9 +18,13 @@ var ReplicationHelpers = {
         xmlhttp.onreadystatechange=function() {
           if(xmlhttp.readyState==3){
             if(xmlhttp.responseText.match(/changes/)){
-              console.log('This has changed in another application: \n', xmlhttp.responseText)
-              if(context.$element().find('#change-warning:visible').length == 0){
-                $('#change-warning').slideDown('slow');
+              var lines = xmlhttp.responseText.split("\n");
+              if(lines[lines.length-2].length != 0){ 
+                lines = lines.remove("");
+                console.log('This has changed in another application: \n', xmlhttp.responseText)
+                if(context.$element().find('#change-warning:visible').length == 0){
+                  $('#change-warning').slideDown('slow');
+                }
               }
             }
             if(xmlhttp.responseText.match(/last_seq/)){
@@ -28,7 +32,7 @@ var ReplicationHelpers = {
             }
           }
         }
-        xmlhttp.open("GET", url + '&feed=continuous&heartbeat=30000&since=' + since, true);
+        xmlhttp.open("GET", url + '&feed=continuous&heartbeat=5000&since=' + since, true);
         xmlhttp.send(null);
       });
     }

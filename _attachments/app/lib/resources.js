@@ -109,8 +109,20 @@ var Resources = function(app, couchapp) {
       var context = this;
       this.load_object_view(name, params['id'], function(object_view){        
         object_view = context.object_view_from_params(object_view, params);
+        console.log(object_view)
         var object = object_view.object();
         object.updated_at = new Date().toJSON();
+        
+        // 
+        // 
+        // if(name == "Note"){
+        //   // object.source = context.getLocationHash();
+        // }
+        // 
+        // console.log(object)
+        // console.log(object.source)
+        // console.log(object.to_json().source)
+        // console.log(object.to_json())
         
         if(object.valid()) {
           couchapp.db.saveDoc(object.to_json(), {

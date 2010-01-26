@@ -9,7 +9,7 @@ $(function() {
     use(Sammy.Cache);
     use(Resources, couchapp);
     flash = {};
-    Notes(this);
+    Notes(this, couchapp);
     Outlines(this, couchapp);    
     helpers(OutlineHelpers);
     helpers(OutlineConflictHelpers);

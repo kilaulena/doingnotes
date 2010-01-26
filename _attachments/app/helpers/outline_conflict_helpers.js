@@ -16,43 +16,54 @@ var OutlineConflictHelpers = {
   },
     
   checkForConflicts: function(couchapp, continue_conflict_checking){
+    if (this.onServer()) return;
     var context = this;
-    if (context.onServer()) return;
-      
-    performCheckForConflicts = function(){
-      var outline_id = context.getOutlineId();
-      
-      if(outline_id){
-        couchapp.design.view('notes_with_conflicts_by_outline', {
-          key: outline_id,
-          success: function(json) {
-            if (json.rows.length > 0) {             
-              var notes_with_conflicts = json.rows.map(function(row) {return row.value});
-              $.each(notes_with_conflicts, function(i, note){
-                context.note = note;
-                var url = context.HOST + '/' + context.DB + '/' + note._id + '?rev=' + note._conflicts[0];
-                $.getJSON(url, function(overwritten_note_json){
-                  if(overwritten_note_json.text != context.note.text){
-                    console.log('ask the user')
-                    if(context.$element().find('#conflict-warning:visible').length == 0){
-                      $('#conflict-warning').slideDown('slow');
+    var outline_id = context.getOutlineId();
+    var url        = context.HOST + '/' + context.DB + 
+                     '/_changes?filter=doingnotes/conflicted' +
+                     '&feed=continuous&heartbeat=5000';  //30000  
+    
+    if(outline_id){ 
+      var xmlhttp = new XMLHttpRequest();
+      xmlhttp.onreadystatechange=function() {
+        if(xmlhttp.readyState==3){
+          if(xmlhttp.responseText.match(/changes/)){
+            var lines = xmlhttp.responseText.split("\n");
+            if(lines[lines.length-2].length != 0){ 
+              lines = lines.remove("");
+              console.log('Conflicts here: \n', lines)
+
+              $.each(lines, function(i, line){  
+                var json = JSON.parse(line);
+                var url_note = context.HOST + '/' + context.DB + '/' + json.id + '?conflicts=true';
+                $.getJSON(url_note, function(note_json){
+                  var url_overwritten_note = context.HOST + '/' + context.DB + '/' + json.id + '?rev=' + note_json._conflicts[0];
+                  $.getJSON(url_overwritten_note, function(overwritten_note_json){
+                    if(overwritten_note_json.next_id != note_json.next_id){
+                      console.log('do it automatically')
+                      // console.log('parent_winner_rev_json:', note_json._rev, '   parent_looser_rev_json:', overwritten_note_json._rev)
+                      context.solve_conflict_by_sorting(couchapp, note_json, overwritten_note_json);
                     }
-                    context.highlightNote(context, overwritten_note_json._id);
-                  } else if(overwritten_note_json.next_id != context.note.next_id){
-                    console.log('do it automatically')
-                    context.solve_conflict_by_sorting(context.note, overwritten_note_json);
-                  }
-                });
+                    if(overwritten_note_json.text != note_json.text){
+                      console.log('ask the user')
+                      if(context.$element().find('#conflict-warning:visible').length == 0){
+                        $('#conflict-warning').slideDown('slow');
+                      }
+                      context.highlightNote(context, overwritten_note_json._id);
+                    } 
+                 });
+               });   
               });
             }
+          } 
+          if(xmlhttp.responseText.match(/last_seq/)){
+            console.log('Timeout in checkForConflicts:', xmlhttp.responseText)
           }
-        });
+        }
       }
-      if(continue_conflict_checking){
-        setTimeout("performCheckForConflicts()", 5000);
-      }
+      xmlhttp.open("GET", url, true);
+      xmlhttp.send(null);
     }
-    performCheckForConflicts();
   },
   
   showConflicts: function(couchapp){
@@ -76,56 +87,75 @@ var OutlineConflictHelpers = {
      });
   },
   
-  solve_conflict_by_sorting: function(parent_winner_rev, parent_looser_rev) {
+  solve_conflict_by_sorting: function(couchapp, parent_winner_rev_json, parent_looser_rev_json) {
     var context = this;
-    var first_note, second_note, rev_delete, rev_keep;
+    var first_note, second_note, rev_delete, rev_keep, top_child_note, bottom_child_note;
     
-    context.load_object_view('Note', parent_winner_rev.next_id, function(winner_parents_next_note){
-      context.load_object_view('Note', parent_looser_rev.next_id, function(looser_parents_next_note){
-        if(looser_parents_next_note.created_at < winner_parents_next_note.created_at){
+    context.load_object_view('Note', parent_winner_rev_json.next_id, function(winner_parents_next_note){
+      context.load_object_view('Note', parent_looser_rev_json.next_id, function(looser_parents_next_note){
+        if(looser_parents_next_note.created_at() < winner_parents_next_note.created_at()){
           // the update on the looser_parents_next_note comes first
           top_child_note    = looser_parents_next_note;
           bottom_child_note = winner_parents_next_note;
           // so the winner gets deleted
-          rev_delete  = parent_winner_rev._rev;
-          rev_keep    = parent_looser_rev._rev;
-          context.partial('app/templates/notes/edit.mustache', {_id: top_child_note._id(), text: top_child_note.text()}, function(html) {
-            var bottom_note_element = context.findNoteElementById(bottom_child_note._id());
-            $(html).insertBefore(bottom_note_element.note_target.closest('li'));
-          });
+          rev_delete  = parent_winner_rev_json._rev;
+          rev_keep    = parent_looser_rev_json._rev;
         } else {
           // the update on the winner_parents_next_note comes first
           top_child_note  = winner_parents_next_note;
           bottom_child_note = looser_parents_next_note;
-          // so the parent_looser_rev gets deleted
-          rev_delete  = parent_looser_rev._rev;
-          rev_keep    = parent_winner_rev._rev;
-          context.partial('app/templates/notes/edit.mustache', {_id: bottom_child_note._id(), text: bottom_child_note.text()}, function(html) {
-            var top_note_element = context.findNoteElementById(top_child_note._id());
-            $(html).insertAfter(top_note_element.note_target.closest('li'));
-          });
+          // so the parent_looser_rev_json gets deleted
+          rev_delete  = parent_looser_rev_json._rev;
+          rev_keep    = parent_winner_rev_json._rev;
         }
+        
+
+        // the top_child_note's next_id must point to the bottom_child_note's id
+        context.update_object('Note', {id: top_child_note._id(), next_id: bottom_child_note._id(), source: context.getLocationHash()}, {}, function(note){});
+              
+      
+        context.solve_conflict_by_deletion(couchapp, parent_winner_rev_json, rev_delete, rev_keep, {}, function(response, note){
+          // the parent's next_id must point to the top_child_note's id
+          context.update_object('Note', {id: note._id, next_id: top_child_note._id(), source: context.getLocationHash()}, {}, function(note){});
+        });
         
         context.flash = {message: 'Replication has detected and automatically solved updates.', type: 'notice'};
         context.trigger('notice', context.flash);
         
+
+        
+        // 
+        // context.partial('app/templates/notes/edit.mustache', {_id: top_child_note._id(), text: top_child_note.text()}, function(html) {
+        //   var bottom_note_element = context.findNoteElementById(bottom_child_note._id());
+        //   $(html).insertBefore(bottom_note_element.note_target.closest('li'));
+        // });
+        // 
+        // context.partial('app/templates/notes/edit.mustache', {_id: bottom_child_note._id(), text: bottom_child_note.text()}, function(html) {
+        //   console.log('inside', top_child_note._id())
+        //   console.log('inside', context.findNoteElementById(top_child_note._id()))
+        //   if(context.findNoteElementById(top_child_note._id())){
+        //     console.log('ja')
+        //   }
+        //   var top_note_element = context.findNoteElementById(top_child_note._id());
+        //   $(html).insertAfter(top_note_element.note_target.closest('li'));
+        // });
+        
         context.highlightNote(context, top_child_note._id());
         context.highlightNote(context, bottom_child_note._id());
-                
-        // the top_child_note's next_id must point to the bottom_child_note's id
-        context.update_object('Note', {id: top_child_note._id(), next_id: bottom_child_note._id()}, {}, function(note){});
-      
-        context.solve_conflict_by_deletion(parent_winner_rev, rev_delete, rev_keep, {}, function(response, note){});
+        
+        
+
       });
     });
   },
   
-  solve_conflict_by_deletion: function(params, rev_delete, rev_keep, options, callback) {
+  solve_conflict_by_deletion: function(couchapp, params, rev_delete, rev_keep, options, callback) {
     var context = this;
     this.load_object_view('Note', params._id || params.id, function(blank_object_view){
-      note = context.object_view_from_params(blank_object_view, params).object();          
+      note            = context.object_view_from_params(blank_object_view, params).object();          
       note.updated_at = new Date().toJSON();
-      note._rev = rev_keep;
+      note.source     = context.getLocationHash();
+      note._rev       = rev_keep;
       // console.log('to remove: note._id =', note._id, '_rev: ', rev_delete)
       if(note.valid()) {
         couchapp.db.removeDoc({_id : note._id, _rev : rev_delete});
@@ -135,7 +165,7 @@ var OutlineConflictHelpers = {
             if(options.message) {     
               context.flash = {message: options.message, type: 'notice'};
             }                         
-            callback(res, object);
+            callback(res, note);
           }
         });
       } else {
