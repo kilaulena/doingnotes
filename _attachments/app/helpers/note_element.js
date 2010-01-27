@@ -34,7 +34,7 @@ NoteElement.prototype = {
     setTimeout(delay, 3000);
     
     function fadeBackToWhite(form){
-    	form.animate({'backgroundColor': '#FFF'}, 2000);
+    	form.animate({'backgroundColor': '#FFF'}, 1300);
     }
   },
   
@@ -206,6 +206,7 @@ NoteElement.prototype = {
     var note_object = notes.findById(this.id());
     var child_object = note_object.firstChildNoteObject(notes.notes);
     var next_object = note_object.nextNoteObject(notes.notes);
+    
     notes.notes = notes.notes.remove(note_object);
     
     if(typeof(child_object)!="undefined"){

@@ -90,7 +90,6 @@ var OutlineConflictHelpers = {
   solve_conflict_by_sorting: function(couchapp, parent_winner_rev_json, parent_looser_rev_json) {
     var context = this;
     var first_note, second_note, rev_delete, rev_keep, top_child_note, bottom_child_note;
-    
     context.load_object_view('Note', parent_winner_rev_json.next_id, function(winner_parents_next_note){
       context.load_object_view('Note', parent_looser_rev_json.next_id, function(looser_parents_next_note){
         if(looser_parents_next_note.created_at() < winner_parents_next_note.created_at()){
@@ -98,23 +97,28 @@ var OutlineConflictHelpers = {
           top_child_note    = looser_parents_next_note;
           bottom_child_note = winner_parents_next_note;
           // so the winner gets deleted
-          rev_delete  = parent_winner_rev_json._rev;
-          rev_keep    = parent_looser_rev_json._rev;
+          rev_delete  = parent_winner_rev_json;
+          rev_keep    = parent_looser_rev_json;
         } else {
           // the update on the winner_parents_next_note comes first
           top_child_note  = winner_parents_next_note;
           bottom_child_note = looser_parents_next_note;
           // so the parent_looser_rev_json gets deleted
-          rev_delete  = parent_looser_rev_json._rev;
-          rev_keep    = parent_winner_rev_json._rev;
+          rev_delete  = parent_looser_rev_json;
+          rev_keep    = parent_winner_rev_json;
         }
         
-
         // the top_child_note's next_id must point to the bottom_child_note's id
+        top_child_note.object().next_id = bottom_child_note._id();
         context.update_object('Note', {id: top_child_note._id(), next_id: bottom_child_note._id(), source: context.getLocationHash()}, {}, function(note){});
               
-      
-        context.solve_conflict_by_deletion(couchapp, parent_winner_rev_json, rev_delete, rev_keep, {}, function(response, note){
+        // wenn ich auch behandeln will dass im parent note sich vielleicht auch der text geaendert haben koennte, 
+        // darf ich hier die beiden versionen nicht einfach loeschen, sondern muss nochmal das showConflicts aufrufen. 
+        // den update von der note aber irgendwie schon vorher machen. crazy. 
+        // also wenn winner rev.text != looser rev.text, nicht solve by deletion, sondern nur das update,
+        // und dann ...... zwei revisions erstellen, die ich dann in die show conflicts schicke, die die jeweiligen texte, aber die gleiche next id haben. frack.
+        //TODO
+        context.solve_conflict_by_deletion(couchapp, parent_winner_rev_json, rev_delete._rev, rev_keep._rev, {}, function(response, note){
           // the parent's next_id must point to the top_child_note's id
           context.update_object('Note', {id: note._id, next_id: top_child_note._id(), source: context.getLocationHash()}, {}, function(note){});
         });
@@ -122,29 +126,15 @@ var OutlineConflictHelpers = {
         context.flash = {message: 'Replication has detected and automatically solved updates.', type: 'notice'};
         context.trigger('notice', context.flash);
         
+        $('li#edit_note_' + top_child_note._id()).remove();
+        $('li#edit_note_' + bottom_child_note._id()).remove();
+        
+        var note_element = context.findNoteElementById(rev_keep._id);
+        var note_collection = new NoteCollection([new Note(rev_keep), top_child_note.object(), bottom_child_note.object()]);
+        note_element.renderNotes(context, note_collection, note_collection.notes.length); 
 
-        
-        // 
-        // context.partial('app/templates/notes/edit.mustache', {_id: top_child_note._id(), text: top_child_note.text()}, function(html) {
-        //   var bottom_note_element = context.findNoteElementById(bottom_child_note._id());
-        //   $(html).insertBefore(bottom_note_element.note_target.closest('li'));
-        // });
-        // 
-        // context.partial('app/templates/notes/edit.mustache', {_id: bottom_child_note._id(), text: bottom_child_note.text()}, function(html) {
-        //   console.log('inside', top_child_note._id())
-        //   console.log('inside', context.findNoteElementById(top_child_note._id()))
-        //   if(context.findNoteElementById(top_child_note._id())){
-        //     console.log('ja')
-        //   }
-        //   var top_note_element = context.findNoteElementById(top_child_note._id());
-        //   $(html).insertAfter(top_note_element.note_target.closest('li'));
-        // });
-        
         context.highlightNote(context, top_child_note._id());
         context.highlightNote(context, bottom_child_note._id());
-        
-        
-
       });
     });
   },
