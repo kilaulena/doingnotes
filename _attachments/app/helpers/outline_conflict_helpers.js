@@ -40,12 +40,11 @@ var OutlineConflictHelpers = {
                   var url_overwritten_note = context.HOST + '/' + context.DB + '/' + json.id + '?rev=' + note_json._conflicts[0];
                   $.getJSON(url_overwritten_note, function(overwritten_note_json){
                     if(overwritten_note_json.next_id != note_json.next_id){
-                      console.log('do it automatically')
-                      // console.log('parent_winner_rev_json:', note_json._rev, '   parent_looser_rev_json:', overwritten_note_json._rev)
+                      console.log('append conflict - do it automatically')
                       context.solve_conflict_by_sorting(couchapp, note_json, overwritten_note_json);
                     }
                     if(overwritten_note_json.text != note_json.text){
-                      console.log('ask the user')
+                      console.log('write conflict - ask the user')
                       if(context.$element().find('#conflict-warning:visible').length == 0){
                         $('#conflict-warning').slideDown('slow');
                       }
@@ -78,8 +77,8 @@ var OutlineConflictHelpers = {
            $.each(notes_with_conflicts, function(i, conflicting_note_json){
              var url = context.HOST + '/' + context.DB + '/' + conflicting_note_json._id + '?rev=' + conflicting_note_json._conflicts[0];
              $.getJSON(url, function(overwritten_note_json){
-               var note = context.findNoteElementById(overwritten_note_json._id);
-               note.insertConflictFields(context, overwritten_note_json, conflicting_note_json);
+               var note_element = context.findNoteElementById(overwritten_note_json._id);
+               note_element.insertConflictFields(context, overwritten_note_json, conflicting_note_json);
              });
            });
          }
@@ -112,12 +111,6 @@ var OutlineConflictHelpers = {
         top_child_note.object().next_id = bottom_child_note._id();
         context.update_object('Note', {id: top_child_note._id(), next_id: bottom_child_note._id(), source: context.getLocationHash()}, {}, function(note){});
               
-        // wenn ich auch behandeln will dass im parent note sich vielleicht auch der text geaendert haben koennte, 
-        // darf ich hier die beiden versionen nicht einfach loeschen, sondern muss nochmal das showConflicts aufrufen. 
-        // den update von der note aber irgendwie schon vorher machen. crazy. 
-        // also wenn winner rev.text != looser rev.text, nicht solve by deletion, sondern nur das update,
-        // und dann ...... zwei revisions erstellen, die ich dann in die show conflicts schicke, die die jeweiligen texte, aber die gleiche next id haben. frack.
-        //TODO
         context.solve_conflict_by_deletion(couchapp, parent_winner_rev_json, rev_delete._rev, rev_keep._rev, {}, function(response, note){
           // the parent's next_id must point to the top_child_note's id
           context.update_object('Note', {id: note._id, next_id: top_child_note._id(), source: context.getLocationHash()}, {}, function(note){});
@@ -146,18 +139,20 @@ var OutlineConflictHelpers = {
       note.updated_at = new Date().toJSON();
       note.source     = context.getLocationHash();
       note._rev       = rev_keep;
-      // console.log('to remove: note._id =', note._id, '_rev: ', rev_delete)
+      console.log('to remove: note._id =', note._id, '_rev: ', rev_delete, 'source:', note.source)
+      console.log('to keep: note._id =', note._id, '_rev: ', rev_keep, 'source:', note.source)
       if(note.valid()) {
         couchapp.db.removeDoc({_id : note._id, _rev : rev_delete});
-              
         couchapp.db.saveDoc(note.to_json(), {
           success: function(res) {
             if(options.message) {     
               context.flash = {message: options.message, type: 'notice'};
-            }                         
+            }                 
+            console.log('saved')                    
             callback(res, note);
           }
         });
+        
       } else {
         context.flash = {message: note.errors.join(", ")};
         context.trigger('error', context.flash);                

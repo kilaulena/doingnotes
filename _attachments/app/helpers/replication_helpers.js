@@ -21,10 +21,21 @@ var ReplicationHelpers = {
               var lines = xmlhttp.responseText.split("\n");
               if(lines[lines.length-2].length != 0){ 
                 lines = lines.remove("");
-                console.log('This has changed in another application: \n', xmlhttp.responseText)
-                if(context.$element().find('#change-warning:visible').length == 0){
-                  $('#change-warning').slideDown('slow');
-                }
+                $.each(lines, function(i, line){
+                  var line_json = JSON.parse(line)
+                  var changed_rev = line_json.changes[0].rev;
+                  couchapp.db.openDoc(line_json.id, {
+                    success: function(doc) {
+                      if(changed_rev == doc._rev){
+                        console.log('This has changed in another application:', lines)
+                        if(context.$element().find('#change-warning:visible').length == 0){
+                          $('#change-warning').slideDown('slow');
+                        }
+                      }
+                    }
+                  });
+                });
+
               }
             }
             if(xmlhttp.responseText.match(/last_seq/)){

@@ -1,12 +1,15 @@
 Notes = function(sammy, couchapp) { with(sammy) {
   put('#/notes/solve/:id', function() { with(this){ 
+    var context = this;
     var rev_delete = params.rev_delete;
     var rev_keep   = params.rev_keep;
     delete(params.rev_delete);
     delete(params.rev_keep);
     solve_conflict_by_deletion(couchapp, params, rev_delete, rev_keep, {message: 'Conflict solved.'}, function(response, note){
-      if($('div.solve_text').size() > 1){
-        redirect('#/outlines/' + note.outline_id + '?solve=true', flash);
+      if($('div.solve_text:visible').size() > 1){
+        var note_element = context.findNoteElementById(note._id);
+        note_element.replaceConflictFields(context, note);
+        $('#spinner').hide(); 
       } else {
         redirect('#/outlines/' + note.outline_id, flash);
       }

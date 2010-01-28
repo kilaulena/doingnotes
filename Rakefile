@@ -125,18 +125,21 @@ namespace :couch do
   
   desc "post two notes to 5984"
   task :posttwiceto4 do
-    puts "Bulk posting Notes with ID \"111\" and ID \"444\" to 5984."
+    puts "Bulk posting Notes with ID \"111\", \"222\" and \"333\" to 5984."
     system 'curl -d \'{"all_or_nothing": true, "docs":[' + 
-    '{"_id":"444", "created_at": "2010/01/24 22:55:48 +0000", "updated_at": "2010/01/24 22:55:20 +0000", "type": "Note", "text": "second from client", "source": "eb8abd1c45f20c0989ed79381cb4907d", "outline_id": "01234567890"}, ' + 
-    '{"_id":"111", "created_at": "2010/01/24 20:53:48 +0000", "updated_at": "2010/01/24 22:55:20 +0000", "type": "Note", "text": "first from client", "source": "eb8abd1c45f20c0989ed79381cb4907d", "outline_id": "01234567890", "first_note": true, "next_id" : "444"}' + 
-    ']}\' -X POST http://localhost:5984/doingnotes/_bulk_docs'  end
+    '{"_id":"111", "created_at": "2010/01/24 20:53:48 +0000", "updated_at": "2010/01/24 22:55:20 +0000", "type": "Note", "text": "top from client, created first", "source": "eb8abd1c45f20c0989ed79381cb4907d", "outline_id": "01234567890", "first_note": true, "next_id" : "222"}, ' + 
+    '{"_id":"222", "created_at": "2010/01/24 22:56:48 +0000", "updated_at": "2010/01/24 22:57:20 +0000", "type": "Note", "text": "bottom from client, created last", "source": "eb8abd1c45f20c0989ed79381cb4907d", "outline_id": "01234567890", "next_id" : "333"}, ' + 
+    '{"_id":"333", "created_at": "2010/01/24 22:58:48 +0000", "updated_at": "2010/01/24 22:59:20 +0000", "type": "Note", "text": "just a last one.", "source": "d476451f9b4031e515e9d139d328b116", "outline_id": "01234567890"}' + 
+    ']}\' -X POST http://localhost:5984/doingnotes/_bulk_docs'
+  end
 
   desc "post two notes to 5985"
   task :posttwiceto5 do
-    puts "Bulk posting Notes with ID \"111\" and ID \"444\" to 5985."
+    puts "Bulk posting Notes with ID \"111\", \"222\" and \"333\" to 5985."
     system 'curl -d \'{"all_or_nothing": true, "docs":[' + 
-    '{"_id":"444", "created_at": "2010/01/24 22:55:48 +0000", "updated_at": "2010/01/24 22:55:20 +0000", "type": "Note", "text": "second from server", "source": "d476451f9b4031e515e9d139d328b116", "outline_id": "01234567890"}, ' + 
-    '{"_id":"111", "created_at": "2010/01/24 20:53:48 +0000", "updated_at": "2010/01/24 22:55:20 +0000", "type": "Note", "text": "first from server", "source": "d476451f9b4031e515e9d139d328b116", "outline_id": "01234567890", "first_note": true, "next_id" : "444"}' + 
+    '{"_id":"111", "created_at": "2010/01/24 20:54:48 +0000", "updated_at": "2010/01/24 22:55:20 +0000", "type": "Note", "text": "top from server, created last", "source": "d476451f9b4031e515e9d139d328b116", "outline_id": "01234567890", "first_note": true, "next_id" : "222"}, ' + 
+    '{"_id":"222", "created_at": "2010/01/24 22:55:48 +0000", "updated_at": "2010/01/24 22:57:20 +0000", "type": "Note", "text": "bottom from server, created first", "source": "d476451f9b4031e515e9d139d328b116", "outline_id": "01234567890", "next_id" : "333"},' + 
+    '{"_id":"333", "created_at": "2010/01/24 22:58:48 +0000", "updated_at": "2010/01/24 22:59:20 +0000", "type": "Note", "text": "just a last one.", "source": "d476451f9b4031e515e9d139d328b116", "outline_id": "01234567890"}' + 
     ']}\' -X POST http://localhost:5985/doingnotes/_bulk_docs'
   end
   

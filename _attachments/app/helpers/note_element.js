@@ -413,9 +413,21 @@ NoteElement.prototype = {
         overwritten_rev: overwritten_note_json._rev
       }, 
     function(html) {
+      this_note.note_target.parents('form.edit-note').hide();
       $(html).prependTo(this_note.noteLi());
       context.bindSolveConflictsFocus();
     });
-    this_note.note_target.parents('form.edit-note').hide();
+  },
+  
+  replaceConflictFields: function(context, winner_note){
+    var this_note = this;
+    context.partial('app/templates/notes/edit.mustache', 
+      {_id: winner_note._id, text: winner_note.text}, 
+      function(html) {
+        this_note.noteLi().children('div.solve_text').hide();
+        $(html).appendTo(this_note.noteLi());
+        context.bindSubmitOnBlurAndAutogrow();
+      }
+    );
   }
 }
