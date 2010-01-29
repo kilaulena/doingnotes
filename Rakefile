@@ -145,4 +145,17 @@ namespace :couch do
   
   desc "recreate the databases and create an append and a write conflict"
     task :twowriteconflicts => [:restartrecreateoutline, :stop5, :posttwiceto4, :stop4, :start5, :posttwiceto5, :start4]
+    
+
+  desc "add a second note with different text to 5985"
+  task :adddifferentto5 do
+    puts "Adding a second note to 5985, with different text."
+    system 'curl -X PUT http://localhost:5985/doingnotes/22b -d \'{"created_at": "2010/01/24 21:14:40 +0000", "type": "Note", "text": "append with conflict from server", "source": "d476451f9b4031e515e9d139d328b116", "outline_id": "01234567890", "next_id" : "333"}\''
+    system 'curl -d \'{"all_or_nothing": true, "docs":[{"_id":"111", "created_at": "2010/01/24 20:53:48 +0000", "updated_at": "2010/01/24 21:14:40 +0000", "type": "Note", "text": "first, but different, from server.", "source": "d476451f9b4031e515e9d139d328b116", "outline_id": "01234567890", "first_note": true, "next_id" : "22b"}]}\' -X POST http://localhost:5985/doingnotes/_bulk_docs'
+    system 'curl -X PUT http://localhost:5984/doingnotes/333 -d \'{"created_at": "2010/01/24 21:00:10 +0000", "type": "Note", "text": "last one.", "source": "d476451f9b4031e515e9d139d328b116", "outline_id": "01234567890"}\''
+  end
+
+  desc "recreate the databases and create an append conflict"
+    task :appendandwriteconflict => [:restartrecreateoutline, :stop5, :addto4, :stop4, :start5, :adddifferentto5, :start4]
+
 end
