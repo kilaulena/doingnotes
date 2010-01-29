@@ -26,15 +26,18 @@ NoteElement.prototype = {
     return this.note_target.text();
   },
   
-  emphasizeBackground: function(){
+  emphasizeBackground: function(back_to_white){
+    var color = (back_to_white ? "#E6EFC2" : "#FBE3D8");
     var form = this.note_target.parents('form');
-    form.animate({"backgroundColor": "#FFFDE1"}, 500)
+    form.animate({"backgroundColor": color}, 500)
     
     var delay = function() { fadeBackToWhite(form); };
     setTimeout(delay, 3000);
     
     function fadeBackToWhite(form){
-    	form.animate({'backgroundColor': '#FFF'}, 1300);
+      if(back_to_white){
+    	  form.animate({'backgroundColor': '#FFF'}, 1300);
+    	}
     }
   },
   

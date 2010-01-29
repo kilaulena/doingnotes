@@ -38,10 +38,6 @@ var OutlineHelpers = {
     context.render('show', view, function(response){
       context.app.swap(response);
       var first_note = new NoteElement($('ul#notes li:first').find('textarea.expanding'));
-      if(notes.notes.length > 1) {
-        first_note.renderNotes(context, notes, notes.notes.length); 
-      }
-      first_note.focusTextarea();
       context.checkForUpdates(couchapp);
       var continue_conflict_checking = true;
       if(solve){
@@ -50,6 +46,10 @@ var OutlineHelpers = {
       } else {
         context.checkForConflicts(couchapp, continue_conflict_checking);
       }
+      if(notes.notes.length > 1) {
+        first_note.renderNotes(context, notes, notes.notes.length); 
+      }
+      first_note.focusTextarea();
       $('#spinner').hide(); 
     });
   }

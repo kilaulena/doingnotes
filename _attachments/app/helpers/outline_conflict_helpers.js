@@ -3,9 +3,14 @@ var OutlineConflictHelpers = {
     return new NoteElement(this.$element().find('li#edit_note_' + id).find('textarea.expanding:first'))
   },
 
+  highlightNoteShort: function(context, id){
+    var note_element = context.findNoteElementById(id);
+    note_element.emphasizeBackground(true);
+  },
+  
   highlightNote: function(context, id){
     var note_element = context.findNoteElementById(id);
-    note_element.emphasizeBackground();
+    note_element.emphasizeBackground(false);
   },
   
   bindSolveConflictsFocus: function(){
@@ -133,7 +138,7 @@ var OutlineConflictHelpers = {
           });
         });
         
-        context.flash = {message: 'Replication has detected and automatically solved updates.', type: 'notice'};
+        context.flash = {message: 'Replication has automatically solved updates.', type: 'notice'};
         context.trigger('notice', context.flash);
         
         $('li#edit_note_' + top_child_note._id()).remove();
@@ -143,8 +148,8 @@ var OutlineConflictHelpers = {
         var note_collection = new NoteCollection([new Note(rev_keep), top_child_note.object(), bottom_child_note.object()]);
         note_element.renderNotes(context, note_collection, note_collection.notes.length); 
 
-        context.highlightNote(context, top_child_note._id());
-        context.highlightNote(context, bottom_child_note._id());
+        context.highlightNoteShort(context, top_child_note._id());
+        context.highlightNoteShort(context, bottom_child_note._id());
       });
     });
   },

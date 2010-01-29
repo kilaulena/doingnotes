@@ -61,7 +61,7 @@ Note.prototype = {
       // console.log('this is the note that is examined: ', this_note._id)
       // console.log('this is the next_id: ', this_note.next_id)
       // console.log('this is what is in the array:', notes_with_next_id[0]._id, ' ... ', notes_with_next_id[1]._id)
-      throw 'More than one note pointing to "' + this_note.next_id + '" found';
+      Sammy.log('More than one note pointing to "' + this_note.next_id + '" found');
     };
   },
   
