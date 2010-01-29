@@ -36,12 +36,6 @@ describe 'Note Helpers'
     it 'should return undefined when it has no next_id'
       note4.nextNoteObject(notes).should.be_undefined
     end
-    
-    it 'should throw an error if there is more than one note with the same next_id'
-      note2a = new Note({_id: "666", _rev: "2-420", next_id: "8c8", created_at: "2009/10/25 15:04:32 +0000"});
-      notes.push(note2a);
-      -{note1.nextNoteObject(notes)}.should.throw_error 'More than one note pointing to "8c8" found'
-    end
   end
   
   describe 'firstChildNoteObject'
