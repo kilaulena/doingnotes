@@ -214,7 +214,17 @@
               contentType: "application/json",
               dataType: "json", 
               data: toJSON(docs),
-              url: this.uri + "_bulk_docs" + encodeOptions(options)
+              url: this.uri + "_bulk_docs" + encodeOptions(options),
+              complete: function(req) {
+                var resp = $.httpData(req, "json");
+                if (req.status == 201) {
+                  if (options.success) options.success(resp);
+                } else if (options.error) {
+                  options.error(req.status, resp.error, resp.reason);
+                } else {
+                  alert("The documents could not be saved: " + resp.reason);
+                }
+              }
             },
             options,
             "The documents could not be saved"
