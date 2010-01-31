@@ -45,7 +45,8 @@ describe 'NoteElement'
           partial: function(Type, attributes, callback){
             this.partial_attributes = attributes;
           },
-          bindSubmitOnBlurAndAutogrow: function(){}
+          bindSubmitOnBlurAndAutogrow: function(){},
+          unbindSubmitOnBlurAndAutogrow: function(){}
         };
       end  
       
