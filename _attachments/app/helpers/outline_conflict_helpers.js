@@ -116,11 +116,11 @@ var OutlineConflictHelpers = {
         
         // the top_child_note's next_id must point to the bottom_child_note's id
         top_child_note.object().next_id = bottom_child_note._id();
-        context.update_object('Note', {id: top_child_note._id(), next_id: bottom_child_note._id(), source: context.getLocationHash()}, {}, function(response){});
+        context.update_object('Note', {id: top_child_note._id(), next_id: bottom_child_note._id()}, {}, function(response){});
 
         context.solve_conflict_by_deletion(couchapp, parent_winner_rev_json, rev_delete._rev, rev_keep._rev, {}, function(delete_response, note){
           // the parent's next_id must point to the top_child_note's id
-          context.update_object('Note', {id: note._id, next_id: top_child_note._id(), source: context.getLocationHash()}, {}, function(response){
+          context.update_object('Note', {id: note._id, next_id: top_child_note._id()}, {}, function(response){
             if(parent_winner_rev_json.text != parent_looser_rev_json.text){
               var note_with_write_conflict  = note; 
               note_with_write_conflict.text = parent_looser_rev_json.text;
