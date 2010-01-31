@@ -65,11 +65,21 @@ When /I go to the (.+)/ do |path|
   When 'I wait for the AJAX call to finish'
 end
 
-When /I wait for the AJAX call to finish/ do
-  sleep 0.2
-  puts 'Waiting for page to load ...' if $browser.div(:id, 'spinner').visible?
-  $browser.wait_while { $browser.div(:id, 'spinner').visible?} 
+When /^I wait for the AJAX call to finish$/ do
+  $browser.wait_while do
+    begin
+      count = $browser.execute_script("window.running_ajax_calls").to_i
+      count.to_i > 0
+    rescue => e
+      if e.message.include?('HtmlunitCorejsJavascript::Undefined')
+        raise "For 'I wait for the AJAX call to finish' to work please include culerity.js after including jQuery. If you don't use jQuery please rewrite culerity.js accordingly."
+      else
+        raise(e)
+      end
+    end
+  end
 end
+
 
 When /^I visit "([^\"]+)"$/ do |url|
   $browser.goto host + url

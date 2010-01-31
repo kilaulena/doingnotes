@@ -22,9 +22,7 @@ Before do
   # $browser.execute_script("setTestEnv();")
 end
 
-def host
-  # 'http://lenalena:flgzu11nn@localhost:5984'
-  
+def host  
   'http://localhost:5984'
 end
 
