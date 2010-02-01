@@ -42,7 +42,7 @@ describe 'NoteElement'
     describe 'renderNotes'
       before_each
         outer_context = {
-          partial: function(Type, attributes, callback){
+          partial: function(Kind, attributes, callback){
             this.partial_attributes = attributes;
           },
           bindSubmitOnBlurAndAutogrow: function(){},

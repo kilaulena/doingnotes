@@ -30,7 +30,7 @@ describe 'NoteElement'
   describe 'insertUpdateNotePointers'
     before_each
       outer_context = {
-        update_object: function(Type, attributes, {}, callback){
+        update_object: function(Kind, attributes, {}, callback){
            this.update_object_attributes = attributes;
          }
       };
@@ -54,7 +54,7 @@ describe 'NoteElement'
     
     it 'should submit the note'
       var outer_context = {
-        update_object: function(Type, attributes, {}, callback){
+        update_object: function(Kind, attributes, {}, callback){
           this.update_object_attributes = attributes;
           this.update_object_callback = callback;
         }
@@ -83,7 +83,7 @@ describe 'NoteElement'
       var outer_context = {
         getOutlineId: function(){return 'storyboard'},
         getLocationHash: function(){return 'eb8abd1c45f20c0989ed79381cb4907d'},
-        create_object: function(Type, attributes, {}, callback){
+        create_object: function(Kind, attributes, {}, callback){
            this.create_object_attributes = attributes;
          }
       };
@@ -95,7 +95,7 @@ describe 'NoteElement'
       var outer_context = {
         getOutlineId: function(){return 'storyboard'},
         getLocationHash: function(){return 'eb8abd1c45f20c0989ed79381cb4907d'},
-        create_object: function(Type, attributes, {}, callback){
+        create_object: function(Kind, attributes, {}, callback){
           this.create_object_attributes = attributes;
         }
       };
@@ -107,11 +107,11 @@ describe 'NoteElement'
       var outer_context = {
         getOutlineId: function(){return 'storyboard'},
         getLocationHash: function(){return 'eb8abd1c45f20c0989ed79381cb4907d'},
-        create_object: function(Type, attributes, {}, callback){
+        create_object: function(Kind, attributes, {}, callback){
           this.create_object_callback = callback;
         },
-        update_object: function(Type, attributes, {}, callback){},
-        partial: function(Type, attributes, callback){
+        update_object: function(Kind, attributes, {}, callback){},
+        partial: function(Kind, attributes, callback){
           this.partial_attributes = attributes;
         }
       };

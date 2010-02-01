@@ -28,7 +28,7 @@ Outline.prototype = {
       _rev: this._rev,
       created_at: this.created_at,
       updated_at: this.updated_at,
-      type: 'Outline',
+      kind: 'Outline',
       title: this.title
     };
     return attributes;

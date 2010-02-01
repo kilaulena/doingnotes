@@ -25,31 +25,42 @@ var Resources = function(app, couchapp) {
       this.partial(template_file_for(this.path, template), data, callback);
     },
   
-    new_object: function(type, callback) {
-      this.partial(template_file_for(type, 'new'), callback);
+    new_object: function(kind, callback) {
+      this.partial(template_file_for(kind, 'new'), callback);
     },
   
-    create_object: function(type, params, options, callback) {
+    create_object: function(kind, params, options, callback) {
+      // console.log('kind', kind)
+      // console.log('params', params)
       options = options || {};
       var context = this;
-      var _prototype = eval(type);
+      var _prototype = eval(kind);
       var object = new _prototype(params);
       if(object.valid()) {
         couchapp.db.saveDoc(object.to_json(), {
-          success: function(res) {
+          success: function(response) {
+            // alert('success in create_object')
+            console.log('succes in create_object', object.to_json().kind)
             if(typeof(object._id)=="undefined"){
-              object._id = res.id;
+              object._id = response.id;
             }
             if(options.message) {
               context.flash = {message: options.message, type: 'notice'};
             }
             if(options.success) {
               options.success(object);
-            }          
+            }   
+            // alert('end of success')       
             callback(object);
           },
-          error: function(response_code, res) {
-            context.flash = {message: 'Error saving ' + type + ': ' + res, type: 'error'};
+          error: function(response_code, response) {
+            // console.log('error in create_object', object.to_json().kind)
+            // console.log('the error response in create_object is', response)
+            
+            context.flash = {message: 'Error saving ' + kind + ': ' + response, type: 'error'};
+            console.log(context.flash)
+            // alert('error in create_object', object.to_json().kind)
+            
             context.trigger('error', context.flash);                
           }
         });
@@ -59,11 +70,11 @@ var Resources = function(app, couchapp) {
       };
     },
   
-    list_objects: function(type, view_name, options, callback) {
+    list_objects: function(kind, view_name, options, callback) {
       var context = this;      
-      var collection = pluralize(type);
+      var collection = pluralize(kind);
       var view = {};
-      var _prototype = eval(type);
+      var _prototype = eval(kind);
       couchapp.design.view(view_name, {
          success: function(json) { 
            if (json['rows'].length > 0) {   
@@ -76,17 +87,17 @@ var Resources = function(app, couchapp) {
        });
     },
   
-    load_object_view: function(type, id, callback){
+    load_object_view: function(kind, id, callback){
       var context = this;
       couchapp.db.openDoc(id, {
         success: function(doc) {
-          var _prototype = eval(type);
-          var view_prototype = eval(type + 'View');
+          var _prototype = eval(kind);
+          var view_prototype = eval(kind + 'View');
           var view = new view_prototype(new _prototype(doc));
           if(doc) {            
             callback(view);            
           } else {
-            context.flash = {message: type + ' with ID "' + id + '" not found.', type: 'error'};
+            context.flash = {message: kind + ' with ID "' + id + '" not found.', type: 'error'};
           }
         },
         error: function() {
@@ -111,7 +122,7 @@ var Resources = function(app, couchapp) {
         object_view = context.object_view_from_params(object_view, params);
         var object = object_view.object();
         object.updated_at = new Date().toJSON();
-        if(object.to_json().type == 'Note'){
+        if(object.to_json().kind == 'Note'){
           object.source = context.getLocationHash();
         }
         

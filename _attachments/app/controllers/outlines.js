@@ -27,8 +27,10 @@ Outlines = function(sammy, couchapp) { with(sammy) {
   }});
 
   get('#/outlines/:id', function() { with(this) {
+    console.log('hallo get outlines ', params, params.id)
     var view = {};
     var context = this;    
+    alert('get outlines id')
     couchapp.design.view('notes_by_outline', {
       startkey: [params['id']],
       endkey: [params['id'], {}],
@@ -68,6 +70,11 @@ Outlines = function(sammy, couchapp) { with(sammy) {
   
   post('#/outlines', function() { with(this) {
     create_object('Outline', params, {message: "Here is your new outline"}, function(outline){
+      console.log('in call back create_object outline', outline.kind, outline._id, outline._rev, outline.title, outline)
+      console.log(outline)
+      console.log(outline._id)
+      alert('post outlines finshed')
+      
       redirect('#/outlines/' + outline._id, flash);
     });
     return false;

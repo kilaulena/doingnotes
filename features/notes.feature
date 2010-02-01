@@ -9,11 +9,7 @@ Feature: add and update notes
     Then I should see a blank text input in a div with id "new-outline" 
     When I fill in "title" with "Songs"    
     And I press "Save"
-    Then I should see "Songs"
-    And I should see "Here is your new outline"
-    And I should see a blank note li
-
-    When I fill in "text" with "No Ceiling"
+    And I fill in "text" with "No Ceiling"
     And I hit "enter" in a note textarea with text "No Ceiling"
     Then I should see "2" notes 
     And I should see "No Ceiling" in a note li

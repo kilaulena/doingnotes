@@ -2,17 +2,17 @@ require 'restclient'
 require 'json'
 
 Given /^a note with the text "([^\"]*)"$/ do |text|
-  note = {:type => 'Note', :text => text}
+  note = {:kind => 'Note', :text => text}
   RestClient.post "#{host}/#{database}", note.to_json
 end
 
 Given /^a note with the text "([^\"]*)" and the id "([^\"]*)"$/ do |text, id|
-  note = {:type => 'Note', :id => id, :text => text}
+  note = {:kind => 'Note', :id => id, :text => text}
   RestClient.put "#{host}/#{database}/#{id}", note.to_json
 end
 
 Given /^a note with the text "([^\"]*)" created "([^\"]*)" minutes ago$/ do |text, minutes|
-  note = {:type => 'Note', :created_at => (Time.now - minutes.to_i).strftime("%Y/%m/%d %H:%M:%S +0000"), :text => text}
+  note = {:kind => 'Note', :created_at => (Time.now - minutes.to_i).strftime("%Y/%m/%d %H:%M:%S +0000"), :text => text}
   RestClient.post "#{host}/#{database}", note.to_json
 end
 
@@ -41,7 +41,7 @@ When /^I update the text of the note "([^\"]*)" with "([^\"]*)"$/ do |old_text, 
     :text => new_text, 
     :_rev => note['_rev'],
     :created_at => note['created_at'],
-    :type => note['type'],
+    :kind => note['kind'],
     :updated_at => Time.now.to_json
   }.to_json
 end 
@@ -74,8 +74,8 @@ Then /^I should see "([^\"]+)" in a note li$/ do |text|
   unless li.html.match(/text/im) 
     raise("#{text} can't be found in a note li") 
   end
- # puts  find_element(type.to_sym, name).html
- #  find_element(type.to_sym, name).html should include(text)
+ # puts  find_element(kind.to_sym, name).html
+ #  find_element(kind.to_sym, name).html should include(text)
 end
 
 
@@ -83,5 +83,12 @@ Then /^I should see a blank note li$/ do
   li = $browser.li(:class, "edit-note")
   unless li.html.match(/>\s*<\/textarea>/) 
     raise("No blank note li found") 
+  end  
+end
+
+Then /^I should see a blank text input in a div with id "([^\"]+)"$/ do |id|
+  div = $browser.div(:id, id)
+  unless div.html.match(/<input(.*)type="text"(.*)\/>/) 
+    raise("paragraph #{id} is not blank") 
   end  
 end

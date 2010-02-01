@@ -37,7 +37,7 @@ describe 'NoteElement'
     describe 'unindent'
       before_each
         outer_context = {
-          update_object: function(Type, attributes, {}, callback){
+          update_object: function(Kind, attributes, {}, callback){
             this.update_object_attributes = attributes;
           }
         }
@@ -95,7 +95,7 @@ describe 'NoteElement'
     describe 'unindentUpdateNotePointers'
       before_each
         outer_context = {
-          update_object: function(Type, attributes, {}, callback){
+          update_object: function(Kind, attributes, {}, callback){
             this.update_object_attributes = attributes;
           }
         }

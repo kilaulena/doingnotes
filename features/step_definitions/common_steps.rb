@@ -28,10 +28,10 @@ end
 #   find_element(:text_field, element_id).attribute_value(:class).should_not include(css_class)
 # end
 
-def find_element(type, attribute)
+def find_element(kind, attribute)
   matchers = [[attribute, :id], [attribute, :name]]
   matchers << [$browser.label(:text, attribute).for, :id] if $browser.label(:text, attribute).exist?
   matchers.map{ |field, matcher| 
-    $browser.send(type, matcher, field)
-  }.find(&:exist?) ||  raise("#{type} '#{attribute}' not found")
+    $browser.send(kind, matcher, field)
+  }.find(&:exist?) ||  raise("#{kind} '#{attribute}' not found")
 end

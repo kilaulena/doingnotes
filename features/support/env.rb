@@ -18,8 +18,6 @@ Before do
   RestClient.delete "#{host}/#{database}" rescue nil
   RestClient.put "#{host}/#{database}", ""
   system "couchapp push #{database}"
-  # $browser.goto host + path_to('start page');
-  # $browser.execute_script("setTestEnv();")
 end
 
 def host  

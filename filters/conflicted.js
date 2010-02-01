@@ -1,5 +1,5 @@
 function(doc, req) {
-  if(doc._conflicts && doc.type == "Note") {
+  if(doc._conflicts && doc.kind == "Note") {
     return true;
   }
   return false;

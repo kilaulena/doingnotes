@@ -22,7 +22,7 @@ Note.prototype = {
       _rev: this._rev,
       created_at: this.created_at,
       updated_at: this.updated_at,
-      type: 'Note',
+      kind: 'Note',
       text: this.text,
       source: this.source,
       outline_id: this.outline_id

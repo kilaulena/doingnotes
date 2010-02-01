@@ -145,12 +145,16 @@
     // if <tt>include_functions</tt> is true, it will also toString() the 
     // methods of this object. By default only prints the attributes.
     toString: function(include_functions) {
-      var s = []
+      console.log('in sammy toString')
+      var s = [];
       $.each(function(k, v) {
+        console.log(k, v, 'AAAAAAAA')
 		    if (!$.isFunction(v) || include_functions) {
+		      console.log(v, 'v')
           s.push('"' + k + '": ' + v.toString());
 		    }
       });
+      console.log('end: ', s)
       return "Sammy.Object: {" + s.join(',') + "}"; 
     }
   });
@@ -686,6 +690,8 @@
           target = e.target;
         }
         returned = app._checkFormSubmission(target);
+        // alert('returned from run in sammy: ', returned)
+        
         return (returned === false) ? e.preventDefault() : false;
       });
 
@@ -782,6 +788,7 @@
     // Either returns the value returned by the route callback or raises a 404 Not Found error.
     //
     runRoute: function(verb, path, params) {
+      console.log(params, '<- params in runRoute')
       this.log('runRoute', [verb, path].join(' '));
       this.trigger('run-route', {verb: verb, path: path, params: params});
       if (typeof params == 'undefined') params = {};
@@ -790,6 +797,7 @@
       
       var route = this.lookupRoute(verb, path);
       if (route) {
+        console.log('and there is a route to run:', route)
         this.trigger('route-found', {route: route});
         // pull out the params from the path
         if ((path_params = route.path.exec(this.routablePath(path))) != null) {
@@ -820,6 +828,7 @@
         }
         context.trigger('event-context-before', {context: context});
         var returned = route.callback.apply(context, [context]);
+        console.log('this gets returned from runRoute', returned)
         context.trigger('event-context-after', {context: context});
         return returned;
       } else {
@@ -907,7 +916,10 @@
       if (!verb || verb == '') { verb = 'get'; }
       params = $.extend({}, this._parseFormParams($form), {'$form': $form});
       try { // catch 404s
+        console.log('in _checkFormSubmission: verb', verb, 'path:', path, 'params', params)
         returned = this.runRoute(verb, path, params);
+        console.log(returned, 'returned')
+        alert('stop in _checkFormSubmission')
       } catch(e) {
         if (e.toString().match(/^404/) && this.silence_404) {
           return true;
@@ -1092,9 +1104,16 @@
     //      redirect('#', 'other', 'route');
     //
     redirect: function() {
+      console.log('sammy redirect')
       var to, args = $.makeArray(arguments), 
           current_location = this.app.getLocation();
       if (args.length > 1) {
+        var last = (args[args.length-1]);
+        if (last.message && last.type){
+          flash = {message: last.message, type: last.type};
+          $('#flash').show();
+          args.pop();    
+        }
         args.unshift('/');
         to = this.join.apply(this, args);
       } else {

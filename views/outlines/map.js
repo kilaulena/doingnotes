@@ -1,5 +1,5 @@
 function(doc) {
-  if(doc.type == 'Outline') {
+  if(doc.kind == 'Outline') {
     emit(doc._id, doc);
   }
 }
