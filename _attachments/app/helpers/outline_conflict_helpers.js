@@ -37,28 +37,34 @@ var OutlineConflictHelpers = {
             var lines = xmlhttp.responseText.split("\n");
             if(lines[lines.length-2].length != 0){ 
               lines = lines.remove("");
-              Sammy.log('Conflicts here: \n', lines)
               $.each(lines, function(i, line){  
                 var json = JSON.parse(line);
-                if(!solved_ids.contains(json.id)){
-                  solved_ids.push(json.id);
-                  var url_note = context.HOST + '/' + context.DB + '/' + json.id + '?conflicts=true';
-                  $.getJSON(url_note, function(note_json){
-                    var url_overwritten_note = context.HOST + '/' + context.DB + '/' + json.id + '?rev=' + note_json._conflicts[0];
-                    $.getJSON(url_overwritten_note, function(overwritten_note_json){
-                      if(overwritten_note_json.next_id != note_json.next_id){
-                        Sammy.log('append conflict - do it automatically')
-                        context.solve_conflict_by_sorting(couchapp, note_json, overwritten_note_json);
-                      } else if(overwritten_note_json.text != note_json.text){
-                        Sammy.log('write conflict - ask the user')
-                        if(context.$element().find('#conflict-warning:visible').length == 0){
-                          $('#conflict-warning').slideDown('slow');
-                        }
-                        context.highlightNote(context, overwritten_note_json._id);
+                couchapp.db.openDoc(json.id, {
+                  success: function(doc) {
+                    if(outline_id == doc.outline_id){
+                      Sammy.log('Conflicts here: \n', lines)                                      
+                      if(!solved_ids.contains(json.id)){
+                        solved_ids.push(json.id);
+                        var url_note = context.HOST + '/' + context.DB + '/' + json.id + '?conflicts=true';
+                        $.getJSON(url_note, function(note_json){
+                          var url_overwritten_note = context.HOST + '/' + context.DB + '/' + json.id + '?rev=' + note_json._conflicts[0];
+                          $.getJSON(url_overwritten_note, function(overwritten_note_json){
+                            if(overwritten_note_json.next_id != note_json.next_id){
+                              Sammy.log('append conflict - do it automatically')
+                              context.solve_conflict_by_sorting(couchapp, note_json, overwritten_note_json);
+                            } else if(overwritten_note_json.text != note_json.text){
+                              Sammy.log('write conflict - ask the user')
+                              if(context.$element().find('#conflict-warning:visible').length == 0){
+                                $('#conflict-warning').slideDown('slow');
+                              }
+                              context.highlightNote(context, overwritten_note_json._id);
+                            }
+                          });
+                        });
                       }
-                    });
-                  });
-                }
+                    }
+                  }
+                });
               });
             }
           }
