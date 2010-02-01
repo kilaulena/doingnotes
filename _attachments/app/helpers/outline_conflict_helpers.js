@@ -37,7 +37,7 @@ var OutlineConflictHelpers = {
             var lines = xmlhttp.responseText.split("\n");
             if(lines[lines.length-2].length != 0){ 
               lines = lines.remove("");
-              console.log('Conflicts here: \n', lines)
+              Sammy.log('Conflicts here: \n', lines)
               $.each(lines, function(i, line){  
                 var json = JSON.parse(line);
                 if(!solved_ids.contains(json.id)){
@@ -47,10 +47,10 @@ var OutlineConflictHelpers = {
                     var url_overwritten_note = context.HOST + '/' + context.DB + '/' + json.id + '?rev=' + note_json._conflicts[0];
                     $.getJSON(url_overwritten_note, function(overwritten_note_json){
                       if(overwritten_note_json.next_id != note_json.next_id){
-                        console.log('append conflict - do it automatically')
+                        Sammy.log('append conflict - do it automatically')
                         context.solve_conflict_by_sorting(couchapp, note_json, overwritten_note_json);
                       } else if(overwritten_note_json.text != note_json.text){
-                        console.log('write conflict - ask the user')
+                        Sammy.log('write conflict - ask the user')
                         if(context.$element().find('#conflict-warning:visible').length == 0){
                           $('#conflict-warning').slideDown('slow');
                         }
@@ -63,7 +63,7 @@ var OutlineConflictHelpers = {
             }
           }
           if(xmlhttp.responseText.match(/last_seq/)){
-            console.log('Timeout in checkForConflicts:', xmlhttp.responseText)
+            Sammy.log('Timeout in checkForConflicts:', xmlhttp.responseText)
           }
         }
       }

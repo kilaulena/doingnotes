@@ -27,7 +27,7 @@ var ReplicationHelpers = {
                   couchapp.db.openDoc(line_json.id, {
                     success: function(doc) {
                       if(changed_rev == doc._rev){
-                        console.log('This has changed in another application:', lines)
+                        Sammy.log('This has changed in another application:', lines)
                         if(context.$element().find('#change-warning:visible').length == 0){
                           $('#change-warning').slideDown('slow');
                         }
@@ -39,7 +39,7 @@ var ReplicationHelpers = {
               }
             }
             if(xmlhttp.responseText.match(/last_seq/)){
-              console.log('Timeout in checkForUpdates:', xmlhttp.responseText)
+              Sammy.log('Timeout in checkForUpdates:', xmlhttp.responseText)
             }
           }
         }

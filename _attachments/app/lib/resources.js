@@ -30,8 +30,6 @@ var Resources = function(app, couchapp) {
     },
   
     create_object: function(kind, params, options, callback) {
-      // console.log('kind', kind)
-      // console.log('params', params)
       options = options || {};
       var context = this;
       var _prototype = eval(kind);
@@ -39,8 +37,6 @@ var Resources = function(app, couchapp) {
       if(object.valid()) {
         couchapp.db.saveDoc(object.to_json(), {
           success: function(response) {
-            // alert('success in create_object')
-            console.log('succes in create_object', object.to_json().kind)
             if(typeof(object._id)=="undefined"){
               object._id = response.id;
             }
@@ -50,17 +46,10 @@ var Resources = function(app, couchapp) {
             if(options.success) {
               options.success(object);
             }   
-            // alert('end of success')       
             callback(object);
           },
           error: function(response_code, response) {
-            // console.log('error in create_object', object.to_json().kind)
-            // console.log('the error response in create_object is', response)
-            
             context.flash = {message: 'Error saving ' + kind + ': ' + response, type: 'error'};
-            console.log(context.flash)
-            // alert('error in create_object', object.to_json().kind)
-            
             context.trigger('error', context.flash);                
           }
         });
