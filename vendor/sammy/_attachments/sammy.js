@@ -679,7 +679,13 @@
       
       // bind to submit to capture post/put/delete routes
       this.bind('submit', function(e) {
-        var returned = app._checkFormSubmission(e.target);
+        var target, returned;
+        if(e.target.type == "submit"){
+          target = $(e.target).parents('form');
+        } else {
+          target = e.target;
+        }
+        returned = app._checkFormSubmission(target);
         return (returned === false) ? e.preventDefault() : false;
       });
 

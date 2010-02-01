@@ -46,24 +46,42 @@ When /^I update the text of the note "([^\"]*)" with "([^\"]*)"$/ do |old_text, 
   }.to_json
 end 
 
+When /^I hit "([^\"]*)" in a note textarea with text "([^\"]*)"$/ do |key, text|
+  key_code = case key
+    when 'enter'
+      13
+    when 'up'
+      38
+    when 'down'
+      40
+    when 'tab'
+      9
+    when 'shift+tab'
+      9
+    else
+      0
+    end
+  shift = (key == "shift+tab")
+  $browser.execute_script('event = document.createEvent("KeyboardEvent");')
+  $browser.execute_script('event.initKeyEvent("keydown", true, false, document.window, false, false, ' + shift + ', false, ' + key_code.to_s + ', 0)')
+  $browser.execute_script("document.getElementsByClassName('edit-note')[0].dispatchEvent(event)")
+  When 'I wait for the AJAX call to finish'
+end
 
-Then /^I should see "([^\"]+)" in a li with class "([^\"]+)"$/ do |text, css_class|  
-  li = $browser.li(:class, css_class)
+Then /^I should see "([^\"]+)" in a note li$/ do |text|  
+  li = $browser.li(:class, "edit-note")
   # puts li.html
   unless li.html.match(/text/im) 
-    raise("#{text} can't be found in li #{css_class}") 
+    raise("#{text} can't be found in a note li") 
   end
  # puts  find_element(type.to_sym, name).html
  #  find_element(type.to_sym, name).html should include(text)
 end
 
-Then /^I should see a li with id "([^\"]*)"$/ do |id|
-  $browser.li(:id, id).attribute_value(:id).should include(id)
-end
 
-Then /^I should see a blank li with id "([^\"]+)"$/ do |id|
-  li = $browser.li(:id, id)
+Then /^I should see a blank note li$/ do 
+  li = $browser.li(:class, "edit-note")
   unless li.html.match(/>\s*<\/textarea>/) 
-    raise("li #{id} is not blank") 
+    raise("No blank note li found") 
   end  
 end

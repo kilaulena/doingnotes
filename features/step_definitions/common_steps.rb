@@ -6,22 +6,6 @@ When /^show the "([^\"]*)" div$/ do |name|
   p $browser.div(name).html
 end
 
-When /^I hit "([^\"]*)" in a text_field with id "([^\"]*)"$/ do |key, id|
-  key_code = case key
-    when 'enter'
-      13
-    when 'up'
-      38
-    when 'down'
-      40
-    else
-      0
-    end
-  $browser.execute_script('event = document.createEvent("KeyboardEvent");')
-  $browser.execute_script('event.initKeyEvent("keydown", true, false, document.window, false, false, false, false, ' + key_code.to_s + ', 0)')
-  $browser.execute_script("document.getElementById('#{id}').dispatchEvent(event)")
-  When 'I wait for the AJAX call to finish'
-end
 
 Then /^I should see "([^\"]*)" before "([^\"]*)"$/ do |first, second|
   div = $browser.div('container')
