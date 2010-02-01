@@ -11,7 +11,7 @@ Outline.prototype = {
   valid: function() {
     this.errors = [];
     if(!this.title) {
-      this.errors.push("You need to enter a title.");
+      this.errors.push("You need to enter a title");
     };
     if(this.title.match(/[^\w -]/)){
       this.errors.push("Only letters, numbers, blanks and - are allowed.");
