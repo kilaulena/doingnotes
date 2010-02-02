@@ -3,15 +3,35 @@ var ReplicationHelpers = {
     return hex_md5(window.location.host);
   },
   
+  showChangesWarning: function(context, changed_rev, doc, lines){
+    var outline = context.getOutlineId();
+    // console.log(doc.outline_id, ' versus ', outline_id)
+    // if(changed_rev == doc._rev && outline_id == doc.outline_id){
+    if(changed_rev == doc._rev){
+      Sammy.log('This has changed in another application:', lines)
+      if(context.$element().find('#change-warning:visible').length == 0){
+        $('#change-warning').slideDown('slow');
+      }
+    }  
+  },
+  
+  parseLineAndShowChangesWarning: function(context, couchapp, line, lines){
+    var line_json = JSON.parse(line)
+    var changed_rev = line_json.changes[0].rev;
+    couchapp.db.openDoc(line_json.id, {
+      success: function(doc) {
+        context.showChangesWarning(context, changed_rev, doc, lines);
+      }
+    });
+  },
+  
   checkForUpdates: function(couchapp){
     var context    = this;
-    var outline_id = context.getOutlineId();
     var source     = context.getLocationHash();
     var url        = context.HOST + '/' + context.DB + 
-                     '/_changes?filter=doingnotes/changed' +
-                     '&source=' + source;    
+                     '/_changes?filter=doingnotes/changed&source=' + source;   
     
-    if(outline_id){ 
+    if(context.getOutlineId()){ 
       $.getJSON(url, function(json){
         var since = json.last_seq;
         var xmlhttp = new XMLHttpRequest();
@@ -22,18 +42,7 @@ var ReplicationHelpers = {
               if(lines[lines.length-2].length != 0){ 
                 lines = lines.remove("");
                 $.each(lines, function(i, line){
-                  var line_json = JSON.parse(line)
-                  var changed_rev = line_json.changes[0].rev;
-                  couchapp.db.openDoc(line_json.id, {
-                    success: function(doc) {
-                      if(changed_rev == doc._rev){
-                        Sammy.log('This has changed in another application:', lines)
-                        if(context.$element().find('#change-warning:visible').length == 0){
-                          $('#change-warning').slideDown('slow');
-                        }
-                      }
-                    }
-                  });
+                  context.parseLineAndShowChangesWarning(context, couchapp, line, lines);
                 });
               }
             }
