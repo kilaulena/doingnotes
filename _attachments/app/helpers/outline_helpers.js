@@ -37,13 +37,15 @@ var OutlineHelpers = {
   renderOutline: function(context, view, notes, couchapp, solve){
     context.render('show', view, function(response){
       context.app.swap(response);
-      context.checkForUpdates(couchapp);
-      var continue_conflict_checking = true;
-      if(solve){
-        continue_conflict_checking = false;
-        context.showConflicts(couchapp);
-      } else {
-        context.checkForConflicts(couchapp, continue_conflict_checking);
+      if(context.ENV == 'production'){
+        context.checkForUpdates(couchapp);
+        var continue_conflict_checking = true;
+        if(solve){
+          continue_conflict_checking = false;
+          context.showConflicts(couchapp);
+        } else {
+          context.checkForConflicts(couchapp, continue_conflict_checking);
+        }
       }
       var first_note = new NoteElement($('ul#notes li:first').find('textarea.expanding'));
       if(notes.notes.length > 1) {

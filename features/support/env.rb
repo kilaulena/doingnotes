@@ -4,7 +4,6 @@ require 'cucumber/formatter/unicode'
 require 'restclient'
 require 'json'
 
-
 Symbol.class_eval do
   def to_proc
     Proc.new{|object| object.send(self)}

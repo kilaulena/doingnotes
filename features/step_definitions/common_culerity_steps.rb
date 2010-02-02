@@ -1,7 +1,6 @@
 When /I press "(.*)"/ do |button|
   button = [$browser.button(:text, button), $browser.button(:id, button)].find(&:exist?)
   button.click
-  # puts 'press'
   When 'I wait for the AJAX call to finish'
 end
 
@@ -13,13 +12,11 @@ When /I follow "(.*)"/ do |link|
   _link = [[:text, /^#{Regexp.escape(link)}$/], [:id, link], [:title, link]].map{|args| $browser.link(*args)}.find{|__link| __link.exist?}
   raise "link \"#{link}\" not found" unless _link
   _link.click
-  # puts 'follow regex'
   When 'I wait for the AJAX call to finish'
 end
 
 When /I follow \/(.*)\// do |link|
   $browser.link(:text, /#{link}/).click
-  # puts 'follow'
   When 'I wait for the AJAX call to finish'
 end
 
@@ -66,6 +63,7 @@ When /I go to the (.+)/ do |path|
 end
 
 When /^I wait for the AJAX call to finish$/ do
+  # puts 'waiting for the AJAX call ...'
   $browser.wait_while do
     begin
       count = $browser.execute_script("window.running_ajax_calls").to_i

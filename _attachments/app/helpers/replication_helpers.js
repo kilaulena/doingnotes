@@ -16,7 +16,7 @@ var ReplicationHelpers = {
         var since = json.last_seq;
         var xmlhttp = new XMLHttpRequest();
         xmlhttp.onreadystatechange=function() {
-          if(xmlhttp.readyState==3){
+          if(xmlhttp.readyState == 3){
             if(xmlhttp.responseText.match(/changes/)){
               var lines = xmlhttp.responseText.split("\n");
               if(lines[lines.length-2].length != 0){ 
@@ -35,7 +35,6 @@ var ReplicationHelpers = {
                     }
                   });
                 });
-
               }
             }
             if(xmlhttp.responseText.match(/last_seq/)){

@@ -11,10 +11,16 @@ Given /^a note with the text "([^\"]*)" and the id "([^\"]*)"$/ do |text, id|
   RestClient.put "#{host}/#{database}/#{id}", note.to_json
 end
 
-Given /^a note with the text "([^\"]*)" created "([^\"]*)" minutes ago$/ do |text, minutes|
-  note = {:kind => 'Note', :created_at => (Time.now - minutes.to_i).strftime("%Y/%m/%d %H:%M:%S +0000"), :text => text}
+Given /^a note with the text "([^\"]*)" for the outline "([^\"]*)"$/ do |text, title|
+  note = {:kind => 'Note', :text => text, :outline_id => title}
   RestClient.post "#{host}/#{database}", note.to_json
 end
+
+Given /^a first note with the text "([^\"]*)" for the outline "([^\"]*)"$/ do |text, title|
+  note = {:kind => 'Note', :text => text, :outline_id => title, :first_note => true}
+  RestClient.post "#{host}/#{database}", note.to_json
+end
+
 
 # When /^I press "Delete" for note "([^\"]*)"$/ do |text|
 #   notes = JSON.parse(RestClient.get "#{host}/#{database}/_design/#{app}/_view/notes_by_text")

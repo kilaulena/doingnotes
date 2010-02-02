@@ -1,7 +1,15 @@
 function setTestEnv(){
   sammy.use(TestEnvironment);
+  sammy.helpers(TestConfig);
   sammy.trigger('setTestEnvironment');
 };
+
+var TestConfig = {
+  DB:     "doingnotes_test",
+  SERVER: "http://localhost:5985",
+  HOST:   "http://localhost:5984",
+  ENV:    "test", 
+}
 
 var TestEnvironment = function(app) {
   this.bind('setTestEnvironment', function(e) { 

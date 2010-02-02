@@ -3,6 +3,7 @@ $(function() {
   $.CouchApp(function(app) {
     couchapp = app;
   });
+  
   sammy = new Sammy.Application(function() { with(this) {
     element_selector = '#content';
     use(Sammy.Mustache);
