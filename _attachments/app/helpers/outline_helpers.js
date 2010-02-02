@@ -37,16 +37,7 @@ var OutlineHelpers = {
   renderOutline: function(context, view, notes, couchapp, solve){
     context.render('show', view, function(response){
       context.app.swap(response);
-      if(context.ENV == 'production'){
-        context.checkForUpdates(couchapp);
-        var continue_conflict_checking = true;
-        if(solve){
-          continue_conflict_checking = false;
-          context.showConflicts(couchapp);
-        } else {
-          context.checkForConflicts(couchapp, continue_conflict_checking);
-        }
-      }
+      context.checkForUpdatesAndConflicts(context, couchapp, solve);
       var first_note = new NoteElement($('ul#notes li:first').find('textarea.expanding'));
       if(notes.notes.length > 1) {
         first_note.renderNotes(context, notes, notes.notes.length); 
@@ -54,5 +45,18 @@ var OutlineHelpers = {
       first_note.focusTextarea();
       $('#spinner').hide(); 
     });
+  },
+  
+  checkForUpdatesAndConflicts: function(context, couchapp, solve){
+    if(context.ENV == 'production'){
+      context.checkForUpdates(couchapp);
+      var continue_conflict_checking = true;
+      if(solve){
+        continue_conflict_checking = false;
+        context.showConflicts(couchapp);
+      } else {
+        context.checkForConflicts(couchapp, continue_conflict_checking);
+      }
+    }
   }
 }
