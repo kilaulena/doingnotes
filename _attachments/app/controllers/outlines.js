@@ -5,10 +5,13 @@ Outlines = function(sammy, couchapp) { with(sammy) {
       if (json.outlines.length > 0){
         var outlines = json.outlines.sort(byDate);
         view.outlines = outlines.map(function(outline){return new OutlineView(outline)});
-        view.outlines = view.outlines.map(function(outline){return {
-          title: outline.title(), 
-          short_created_at: outline.short_created_at(),
-          _id: outline._id()}}); 
+        view.outlines = view.outlines.map(function(outline){
+          return {
+            title: outline.title(), 
+            short_created_at: outline.short_created_at(),
+            _id: outline._id()
+          }
+        }); 
       } else {
         view.empty = "You have no outlines yet."
       }
