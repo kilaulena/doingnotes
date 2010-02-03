@@ -114,6 +114,8 @@ var Resources = function(app, couchapp) {
         if(object.to_json().kind == 'Note'){
           object.source = context.getLocationHash();
         }
+        console.log('params', params)
+        console.log('update_object:', object.to_json())
         
         if(object.valid()) {
           couchapp.db.saveDoc(object.to_json(), {

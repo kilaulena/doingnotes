@@ -20,16 +20,37 @@ var OutlineConflictHelpers = {
     });
   },
   
+  showWriteConflictWarning: function(context){
+    if(context.$element().find('#conflict-warning:visible').length == 0){
+      $('#conflict-warning').slideDown('slow');
+    }  
+  },
+  
+  markNoteAsWriteConflicted: function(context, id){
+    console.log('markNoteAsWriteConflicted')
+    load_object_view('Outline', params['id'], function(outline_view){
+      partial('app/templates/outlines/edit.mustache', outline_view, function(outline_view){
+        app.swap(outline_view);
+        $('#spinner').hide(); 
+      });
+    });
+    context.update_object('Outline', {id: context.getOutlineId(), write_conflict: true}, 
+      {success: function(obj){console.log('success', obj)}}, 
+      function(note){
+        console.log('yes. and note is: ', note)
+      }
+    );
+  },
+  
   showAppropriateConflictWarning: function(context, couchapp, overwritten_note_json, note_json){
     if(overwritten_note_json.next_id != note_json.next_id){
       Sammy.log('append conflict - do it automatically')
       context.solve_conflict_by_sorting(couchapp, note_json, overwritten_note_json);
     } else if(overwritten_note_json.text != note_json.text){
       Sammy.log('write conflict - ask the user')
-      if(context.$element().find('#conflict-warning:visible').length == 0){
-        $('#conflict-warning').slideDown('slow');
-      }
+      context.showWriteConflictWarning(context);
       context.highlightNote(context, overwritten_note_json._id);
+      context.markNoteAsWriteConflicted(context, overwritten_note_json._id);
     }
   },
   
@@ -46,7 +67,7 @@ var OutlineConflictHelpers = {
     }
   },
   
-  checkForConflicts: function(couchapp, continue_conflict_checking){
+  checkForNewConflicts: function(couchapp, continue_conflict_checking){
     if (this.onServer()) return;
     var context    = this;
     var outline_id = context.getOutlineId();

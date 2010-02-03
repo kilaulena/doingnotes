@@ -37,8 +37,8 @@ var OutlineHelpers = {
   renderOutline: function(context, view, notes, couchapp, solve){
     context.render('show', view, function(response){
       context.app.swap(response);
-      context.checkForUpdatesAndConflicts(context, couchapp, solve);
-      var first_note = new NoteElement($('ul#notes li:first').find('textarea.expanding'));
+      context.checkForNewUpdatesAndConflicts(context, couchapp, solve);
+      var first_note = new NoteElement($('ul#notes li:first').find('textarea'));
       if(notes.notes.length > 1) {
         first_note.renderNotes(context, notes, notes.notes.length); 
       }
@@ -47,7 +47,7 @@ var OutlineHelpers = {
     });
   },
   
-  checkForUpdatesAndConflicts: function(context, couchapp, solve){
+  checkForNewUpdatesAndConflicts: function(context, couchapp, solve){
     if(context.ENV == 'production'){
       context.checkForUpdates(couchapp);
       var continue_conflict_checking = true;
@@ -55,7 +55,7 @@ var OutlineHelpers = {
         continue_conflict_checking = false;
         context.showConflicts(couchapp);
       } else {
-        context.checkForConflicts(couchapp, continue_conflict_checking);
+        context.checkForNewConflicts(couchapp, continue_conflict_checking);
       }
     }
   }

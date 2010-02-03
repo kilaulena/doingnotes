@@ -23,5 +23,9 @@ OutlineView.prototype = {
   },
   not_new_record: function() {
     return this.outline.updated_at || false;
+  }, 
+  notes_with_write_conflict: function(){
+    return this.outline.notes_with_write_conflict;
   }
+  
 }
