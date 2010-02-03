@@ -3,24 +3,23 @@ var ReplicationHelpers = {
     return hex_md5(window.location.host);
   },
   
-  showChangesWarning: function(context, changed_rev, doc, lines){
-    var outline = context.getOutlineId();
-    // console.log(doc.outline_id, ' versus ', outline_id)
-    // if(changed_rev == doc._rev && outline_id == doc.outline_id){
-    if(changed_rev == doc._rev){
-      Sammy.log('This has changed in another application:', lines)
-      if(context.$element().find('#change-warning:visible').length == 0){
-        $('#change-warning').slideDown('slow');
-      }
-    }  
+  showChangesWarning: function(context, doc, lines){
+    Sammy.log('This has changed in another application:', lines)
+    if(context.$element().find('#change-warning:visible').length == 0){
+      $('#change-warning').slideDown('slow');
+    }
   },
   
   parseLineAndShowChangesWarning: function(context, couchapp, line, lines){
+    var outline_id = context.getOutlineId();
     var line_json = JSON.parse(line)
     var changed_rev = line_json.changes[0].rev;
+
     couchapp.db.openDoc(line_json.id, {
       success: function(doc) {
-        context.showChangesWarning(context, changed_rev, doc, lines);
+        if(outline_id == doc.outline_id && changed_rev == doc._rev){
+          context.showChangesWarning(context, doc, lines);
+        }
       }
     });
   },
