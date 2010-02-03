@@ -5,12 +5,12 @@ var OutlineConflictHelpers = {
 
   highlightNoteShort: function(context, id){
     var note_element = context.findNoteElementById(id);
-    note_element.emphasizeBackground(true);
+    note_element.emphasizeBackground(context, true);
   },
   
   highlightNote: function(context, id){
     var note_element = context.findNoteElementById(id);
-    note_element.emphasizeBackground(false);
+    note_element.emphasizeBackground(context, false);
   },
   
   bindSolveConflictsFocus: function(){
@@ -67,46 +67,7 @@ var OutlineConflictHelpers = {
     }
   },
   
-  checkForNewConflicts: function(couchapp, continue_conflict_checking){
-    if (this.onServer()) return;
-    var context    = this;
-    var outline_id = context.getOutlineId();
-    var url        = context.HOST + '/' + context.DB + 
-                     '/_changes?filter=doingnotes/conflicted' +
-                     '&feed=continuous&heartbeat=5000';
-    var solved_ids = [];
-    
-    if(outline_id){ 
-      var xmlhttp = new XMLHttpRequest();
-      xmlhttp.onreadystatechange=function() {
-        if(xmlhttp.readyState==3){
-          if(xmlhttp.responseText.match(/changes/)){
-            var lines = xmlhttp.responseText.split("\n");
-            if(lines[lines.length-2].length != 0){ 
-              lines = lines.remove("");
-              $.each(lines, function(i, line){  
-                var json = JSON.parse(line);
-                couchapp.db.openDoc(json.id, {
-                  success: function(doc) {
-                    if(outline_id == doc.outline_id){
-                      Sammy.log('Conflicts here: \n', lines)                                      
-                      context.getFirstConflictingRevisionOfNoteAndShowWarning(context, couchapp, solved_ids, json);
-                    }
-                  }
-                });
-              });
-            }
-          }
-          if(xmlhttp.responseText.match(/last_seq/)){
-            Sammy.log('Timeout in checkForConflicts:', xmlhttp.responseText)
-          }
-        }
-      }
-      xmlhttp.open("GET", url, true);
-      xmlhttp.send(null);
-    }
-  },
-  
+
   showConflicts: function(couchapp){
     var context = this;
     var outline_id = context.getOutlineId();
