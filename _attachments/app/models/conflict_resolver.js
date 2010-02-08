@@ -2,7 +2,6 @@ ConflictResolver = function(context, couchapp) {
   this.couchapp  = couchapp;
   this.context   = context;
   this.presenter = this.presenter || new ConflictPresenter(context, couchapp);
-  
 }
 
 ConflictResolver.prototype = {
@@ -45,7 +44,7 @@ ConflictResolver.prototype = {
                   if(this.context.$element().find('#conflict-warning:visible').length == 0){
                     $('#conflict-warning').slideDown('slow');
                   }
-                  this.context.highlightNote(context, note._id);
+                  this.context.highlightNoteConflicted(context, note._id);
                 }
               });
             }
@@ -62,8 +61,8 @@ ConflictResolver.prototype = {
         var note_collection = new NoteCollection([new Note(rev_keep), top_child_note.object(), bottom_child_note.object()]);
         note_element.renderNotes(this.context, note_collection, note_collection.notes.length); 
 
-        this.presenter.highlightNoteShort(context, top_child_note._id());
-        this.presenter.highlightNoteShort(context, bottom_child_note._id());
+        this.presenter.highlightNoteOkay(top_child_note._id());
+        this.presenter.highlightNoteOkay(bottom_child_note._id());
       });
     });
   },

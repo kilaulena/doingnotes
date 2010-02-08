@@ -10,12 +10,12 @@ ConflictPresenter.prototype = {
     }  
   },
   
-  highlightNoteShort: function(id){
+  highlightNoteOkay: function(id){
     var note_element = this.context.findNoteElementById(id);
     note_element.emphasizeBackground(this.context, true);
   },
   
-  highlightNote: function(id){
+  highlightNoteConflicted: function(id){
     var note_element = this.context.findNoteElementById(id);
     note_element.emphasizeBackground(this.context, false);
   },
@@ -23,7 +23,7 @@ ConflictPresenter.prototype = {
   showWriteConflictWarning: function(overwritten_note_json, note_json){
     Sammy.log('write conflict - ask the user')
     this.dropDownConflictWarning();
-    this.highlightNote(overwritten_note_json._id);
+    this.highlightNoteConflicted(overwritten_note_json._id);
   },
   
   showConflicts: function(){

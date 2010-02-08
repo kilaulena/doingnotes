@@ -22,7 +22,8 @@ ConflictDetector.prototype = {
             if(overwritten_note_json.next_id != note_json.next_id){
               Sammy.log('append conflict - do it automatically')
               resolver.solve_conflict_by_sorting(note_json, overwritten_note_json);
-            } else if(overwritten_note_json.text != note_json.text){
+            } 
+            if(overwritten_note_json.text != note_json.text){
               presenter.showWriteConflictWarning(overwritten_note_json, note_json);
               this.markNoteAsWriteConflicted(overwritten_note_json._id);
             }
@@ -63,7 +64,7 @@ ConflictDetector.prototype = {
       }
     }
     if(responseText.match(/last_seq/)){
-      Sammy.log('Timeout in checkForConflicts:', responseText)
+      Sammy.log('checkForConflicts has timed out ...')
     }
   },
   
