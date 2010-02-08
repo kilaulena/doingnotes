@@ -14,7 +14,7 @@ var ReplicationHelpers = {
     var outline_id = context.getOutlineId();
     var line_json = JSON.parse(line)
     var changed_rev = line_json.changes[0].rev;
-
+    
     couchapp.db.openDoc(line_json.id, {
       success: function(doc) {
         if(outline_id == doc.outline_id && changed_rev == doc._rev){

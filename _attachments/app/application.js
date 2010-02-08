@@ -9,15 +9,14 @@ $(function() {
     use(Sammy.Mustache);
     use(Sammy.Cache);
     use(Resources, couchapp);
-    flash = {};
-    Notes(this, couchapp);
-    Outlines(this, couchapp);  
-    ConflictResolver(this, couchapp);  
+    flash = {};  
     helpers(OutlineHelpers);
     helpers(OutlineConflictHelpers);
     helpers(ReplicationHelpers);
     helpers(KeyEvents);
     helpers(Config);
+    Notes(this, couchapp);
+    Outlines(this, couchapp);
     
     get('#/', function(){with(this) {
       redirect('#/outlines');

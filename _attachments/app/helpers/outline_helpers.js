@@ -20,6 +20,13 @@ var OutlineHelpers = {
     $('a.image').unbind('click');		
   },
   
+  bindSolveConflictsFocus: function(){
+    $('textarea.solve_text').bind('blur', function(e){
+      note = new NoteElement($(e.target));
+      note.unfocusTextarea();
+    });
+  },
+  
   getOutlineId: function(){
     if((this.$element().find('h2#outline-id')).length != 0){
       return this.$element().find('h2#outline-id').html();
@@ -34,10 +41,10 @@ var OutlineHelpers = {
     setTimeout("$('#flash').fadeOut('slow')", 5000);
   },
   
-  renderOutline: function(context, view, notes, couchapp, solve){
-    context.render('show', view, function(response){
-      context.app.swap(response);
-      context.checkForNewUpdatesAndConflicts(context, couchapp, solve);
+  renderOutline: function(view, notes, couchapp, solve){
+    this.render('show', view, function(response){
+      this.app.swap(response);
+      this.checkForNewUpdatesAndConflicts(couchapp, solve);
       var first_note = new NoteElement($('ul#notes li:first').find('textarea'));
       if(notes.notes.length > 1) {
         first_note.renderNotes(context, notes, notes.notes.length); 
@@ -45,17 +52,5 @@ var OutlineHelpers = {
       first_note.focusTextarea();
       $('#spinner').hide(); 
     });
-  },
-  
-  checkForNewUpdatesAndConflicts: function(context, couchapp, solve){
-    if(context.ENV == 'production'){
-      context.checkForUpdates(couchapp);
-      var conflictResolver = new ConflictResolver(context, couchapp);
-      if(solve){
-        conflictResolver.showConflicts();
-      } else {
-        conflictResolver.checkForNewConflicts();
-      }
-    }
   }
 }

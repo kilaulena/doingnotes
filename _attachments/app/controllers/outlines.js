@@ -43,11 +43,11 @@ Outlines = function(sammy, couchapp) { with(sammy) {
           if (json.rows.length > 0) { 
             var notes = json.rows.map(function(row) {return new Note(row.value)}); 
             view.notes = [(new NoteCollection(notes)).firstNote()];
-            renderOutline(context, view, (new NoteCollection(notes)), couchapp, params.solve);
+            renderOutline(view, (new NoteCollection(notes)), couchapp, params.solve);
           } else {
             create_object('Note', {outline_id: view.outline_id, first_note: true, text:'', source: getLocationHash()}, {}, function(note){
               view.notes = [note];
-              renderOutline(context, view, (new NoteCollection([])), couchapp, params.solve);
+              renderOutline(view, (new NoteCollection([])), couchapp, params.solve);
             })            
           } 
         } else {
