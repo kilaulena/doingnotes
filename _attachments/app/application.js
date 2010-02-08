@@ -93,7 +93,6 @@ $(function() {
  
     before(function() {
       if(this.getOutlineId()){
-        //TODO need to replace this with a singleton
         var conflictDetector = new ConflictDetector(this, couchapp)
         conflictDetector.saveNotesWithWriteConflict();
       }

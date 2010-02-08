@@ -97,7 +97,7 @@ var Resources = function(app, couchapp) {
   
     object_view_from_params: function(object_view, params) { 
       $.each(params, function(key, value){
-        if (typeof(value) == 'string') {
+        if (typeof(value) == 'string' || typeof(value).length) {
           object_view.object()[key] = value;
         }
       });
@@ -110,6 +110,7 @@ var Resources = function(app, couchapp) {
       this.load_object_view(name, params['id'], function(object_view){        
         object_view = context.object_view_from_params(object_view, params);
         var object = object_view.object();
+        
         object.updated_at = new Date().toJSON();
         if(object.to_json().kind == 'Note'){
           object.source = context.getLocationHash();
