@@ -51,10 +51,8 @@ var OutlineHelpers = {
     if(context.ENV == 'production'){
       context.checkForUpdates(couchapp);
       var conflictResolver = new ConflictResolver(context, couchapp);
-      var continue_conflict_checking = true;
       if(solve){
-        continue_conflict_checking = false;
-        context.showConflicts(couchapp);
+        conflictResolver.showConflicts();
       } else {
         conflictResolver.checkForNewConflicts();
       }

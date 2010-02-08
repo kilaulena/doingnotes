@@ -11,7 +11,8 @@ $(function() {
     use(Resources, couchapp);
     flash = {};
     Notes(this, couchapp);
-    Outlines(this, couchapp);    
+    Outlines(this, couchapp);  
+    ConflictResolver(this, couchapp);  
     helpers(OutlineHelpers);
     helpers(OutlineConflictHelpers);
     helpers(ReplicationHelpers);
