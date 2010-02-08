@@ -9,7 +9,7 @@ $(function() {
     use(Sammy.Mustache);
     use(Sammy.Cache);
     use(Resources, couchapp);
-    flash = {};  
+    flash = {};
     helpers(OutlineHelpers);
     helpers(OutlineConflictHelpers);
     helpers(ReplicationHelpers);
@@ -92,6 +92,11 @@ $(function() {
     }});
  
     before(function() {
+      if(this.getOutlineId()){
+        //TODO need to replace this with a singleton
+        var conflictDetector = new ConflictDetector(this, couchapp)
+        conflictDetector.saveNotesWithWriteConflict();
+      }
       OutlineHelpers.displayAndHideFlash(flash);
       flash = {type: '', message: ''};
       $('#spinner').show();

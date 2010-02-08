@@ -1,4 +1,5 @@
 Outline = function(attributes) {
+  console.log('initial attributes', attributes)
   this._id                       = attributes._id;
   this._rev                      = attributes._rev;
   this.created_at                = attributes.created_at || new Date().toJSON();
@@ -31,6 +32,8 @@ Outline.prototype = {
       kind: 'Outline',
       title: this.title
     };
+    console.log(this.notes_with_write_conflict)
+    console.log(attributes)
     if(this.notes_with_write_conflict){
       attributes.notes_with_write_conflict = this.notes_with_write_conflict;
     };

@@ -1,10 +1,11 @@
 ConflictDetector = function(context, couchapp) {
-  this.couchapp        = couchapp;
-  this.context         = context;
-  this.presenter       = this.presenter || new ConflictPresenter(context, couchapp);
-  this.resolver        = this.resolver  || new ConflictResolver(context, couchapp);
-
-  this.solved_note_ids = [];
+  console.log('a new ConflictDetector')
+  this.couchapp                  = couchapp;
+  this.context                   = context;
+  this.presenter                 = this.presenter || new ConflictPresenter(context, couchapp);
+  this.resolver                  = this.resolver  || new ConflictResolver(context, couchapp);
+  this.notes_with_conflict       = [];
+  this.notes_with_write_conflict = [];
 }
 
 ConflictDetector.prototype = {
@@ -25,7 +26,9 @@ ConflictDetector.prototype = {
             } 
             if(overwritten_note_json.text != note_json.text){
               presenter.showWriteConflictWarning(overwritten_note_json, note_json);
-              this.markNoteAsWriteConflicted(overwritten_note_json._id);
+              console.log('PUSHING', overwritten_note_json._id)
+              detector.notes_with_write_conflict.push(overwritten_note_json._id);
+              console.log(detector.notes_with_write_conflict)
             }
           });
         });
@@ -70,8 +73,8 @@ ConflictDetector.prototype = {
   
   getFirstConflictingRevisionOfNote: function(json, callback){
     var detector = this;
-    if(!detector.solved_note_ids.contains(json.id)){
-      detector.solved_note_ids.push(json.id);
+    if(!detector.notes_with_conflict.contains(json.id)){
+      detector.notes_with_conflict.push(json.id);
       var url_note = detector.context.HOST + '/' + detector.context.DB + '/' + json.id + '?conflicts=true';
       $.getJSON(url_note, function(note_json){
         var url_overwritten_note = detector.context.HOST + '/' + detector.context.DB + '/' + json.id + '?rev=' + note_json._conflicts[0];
@@ -82,23 +85,17 @@ ConflictDetector.prototype = {
     }
   },
   
-  markNoteAsWriteConflicted: function(id){
-    console.log('markNoteAsWriteConflicted')
-    // TODO
-    // irgendwo in diesem objekt ein array mit allen note ids die write conflict haben speichern
-    // was dann in der outline persistiert wird. aber wann? als callback von dem checkForNewConflicts?
+  saveNotesWithWriteConflict: function(){
+    console.log('saveNotesWithWriteConflict', this)
+    console.log('notes_with_write_conflict', this.notes_with_write_conflict)
+    console.log('outlineId', this.context.getOutlineId())
     
-    // load_object_view('Outline', params['id'], function(outline_view){
-    //   partial('app/templates/outlines/edit.mustache', outline_view, function(outline_view){
-    //     app.swap(outline_view);
-    //     $('#spinner').hide(); 
-    //   });
-    // });
-    // context.update_object('Outline', {id: context.getOutlineId(), write_conflict: true}, 
-    //   {success: function(obj){console.log('success', obj)}}, 
-    //   function(outline){
-    //     console.log('updated. and outline is: ', outline)
-    //   }
-    // );
+    // this.context.update_object('Outline', {id: this.context.getOutlineId(), notes_with_write_conflict: this.notes_with_write_conflict}, 
+    //   // {},
+    //    {success: function(obj){console.log('success', obj)}}, 
+    //    function(outline){
+    //      console.log('updated. and outline is: ', outline)
+    //    }
+    //  );
   }
 };

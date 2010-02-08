@@ -4,13 +4,15 @@ var OutlineConflictHelpers = {
   },
   
   checkForNewUpdatesAndConflicts: function(couchapp, solve){
-    ConflictDetector(this, couchapp);  
+    ConflictDetector(this, couchapp);
     ConflictPresenter(this, couchapp);
     ConflictResolver(this, couchapp);
     
     if(this.ENV == 'production'){
       this.checkForUpdates(couchapp);
-      var conflictDetector  = new ConflictDetector(this, couchapp);
+      //TODO need to create a singleton conflictDetector here
+      
+      var conflictDetector = new ConflictDetector(this, couchapp)
       if(solve){
         conflictDetector.presenter.showConflicts();
       } else {
