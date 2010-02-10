@@ -13,8 +13,22 @@ ConflictDetector = function(context, couchapp) {
       presenter                 : this.presenter || new ConflictPresenter(context, couchapp),
       resolver                  : this.resolver  || new ConflictResolver(context, couchapp),
       notes_with_conflict       : [],
-      notes_with_write_conflict : [],
+      notes_with_write_conflict : {},
 		  
+		  checkForOldConflicts: function(){
+		    if (this.context.onServer()) return;
+		    var dt = this;
+		    
+        if(dt.context.getOutlineId() && typeof(dt.notes_with_write_conflict[dt.context.getOutlineId()]) != 'undefined'){
+          $.each(dt.notes_with_write_conflict[dt.context.getOutlineId()], function(i, id){  
+            dt.getFirstConflictingRevisionOfNote(id, function(overwritten_note_json, note_json){
+              presenter.showWriteConflictWarning(overwritten_note_json, note_json);
+              dt.notes_with_write_conflict[dt.context.getOutlineId()].remove(overwritten_note_json._id);
+            });  
+          });
+        }
+		  },
+		  		  
       checkForNewConflicts: function(){
         if (this.context.onServer()) return;
         var detector   = this;
@@ -23,17 +37,13 @@ ConflictDetector = function(context, couchapp) {
                          '&feed=continuous&heartbeat=5000';
 
         if(detector.context.getOutlineId()){ 
+          detector.notes_with_write_conflict[detector.context.getOutlineId()] = detector.notes_with_write_conflict[detector.context.getOutlineId()] || [];
           detector.listenForConflicts(url, function(responseText){
-            detector.examineResponseText(responseText, function(json){
-              detector.getFirstConflictingRevisionOfNote(json, function(overwritten_note_json, note_json){
-                if(overwritten_note_json.next_id != note_json.next_id){
-                  Sammy.log('append conflict - do it automatically')
-                  resolver.solve_conflict_by_sorting(note_json, overwritten_note_json);
-                } 
-                if(overwritten_note_json.text != note_json.text){
-                  presenter.showWriteConflictWarning(overwritten_note_json, note_json);
-                  detector.notes_with_write_conflict.push(overwritten_note_json._id);
-                }
+            detector.examineResponseText(responseText, function(id, lines){
+              detector.checkIfConflictNeedsToBeHandled(id, lines, function(id){
+                detector.getFirstConflictingRevisionOfNote(id, function(overwritten_note_json, note_json){
+                  detector.identifyAndHandleConflict(overwritten_note_json, note_json);
+                });
               });
             });
           });
@@ -59,14 +69,7 @@ ConflictDetector = function(context, couchapp) {
             lines = lines.remove("");
             $.each(lines, function(i, line){  
               var json = JSON.parse(line);
-              detector.couchapp.db.openDoc(json.id, {
-                success: function(doc) {
-                  if(detector.context.getOutlineId() == doc.outline_id){
-                    Sammy.log('Conflicts here: \n', lines);   
-                    callback(json);
-                  }
-                }
-              });
+              callback(json.id, lines);
             });
           }
         }
@@ -75,30 +78,42 @@ ConflictDetector = function(context, couchapp) {
         }
       },
 
-      getFirstConflictingRevisionOfNote: function(json, callback){
+      checkIfConflictNeedsToBeHandled: function(id, lines, callback){
         var detector = this;
-        if(!detector.notes_with_conflict.contains(json.id)){
-          detector.notes_with_conflict.push(json.id);
-          var url_note = detector.context.HOST + '/' + detector.context.DB + '/' + json.id + '?conflicts=true';
-          $.getJSON(url_note, function(note_json){
-            var url_overwritten_note = detector.context.HOST + '/' + detector.context.DB + '/' + json.id + '?rev=' + note_json._conflicts[0];
-            $.getJSON(url_overwritten_note, function(overwritten_note_json){
-              callback(overwritten_note_json, note_json);
-            });
-          });
-        }
+        detector.couchapp.db.openDoc(id, {
+          success: function(doc) {
+            if(detector.context.getOutlineId() == doc.outline_id){
+              Sammy.log('Conflicts here: \n', lines);
+              if(!detector.notes_with_conflict.contains(id)){
+                detector.notes_with_conflict.push(id);  
+                callback(id);
+              }
+            }
+          }
+        });
       },
 
-      saveNotesWithWriteConflict: function(){
+      getFirstConflictingRevisionOfNote: function(id, callback){
         var detector = this;
-        detector.context.update_object('Outline', {
-            id: detector.context.getOutlineId(), 
-            notes_with_write_conflict: detector.notes_with_write_conflict
-          }, 
-          {}, function(outline){
-            detector.notes_with_write_conflict = [];
-          }
-        );
+        var url_note = detector.context.HOST + '/' + detector.context.DB + '/' + id + '?conflicts=true';
+        $.getJSON(url_note, function(note_json){
+          var url_overwritten_note = detector.context.HOST + '/' + detector.context.DB + '/' + id + '?rev=' + note_json._conflicts[0];
+          $.getJSON(url_overwritten_note, function(overwritten_note_json){
+            callback(overwritten_note_json, note_json);
+          });
+        });
+      },
+
+      identifyAndHandleConflict: function(overwritten_note_json, note_json){
+        var dt = this;
+        if(overwritten_note_json.next_id != note_json.next_id){
+          Sammy.log('append conflict - do it automatically')
+          dt.resolver.solve_conflict_by_sorting(note_json, overwritten_note_json);
+        } 
+        if(overwritten_note_json.text != note_json.text){
+          presenter.showWriteConflictWarning(overwritten_note_json, note_json);
+          dt.notes_with_write_conflict[dt.context.getOutlineId()].push(overwritten_note_json._id);
+        }
       }
 		}
 	}

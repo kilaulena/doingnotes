@@ -92,10 +92,6 @@ $(function() {
     }});
  
     before(function() {
-      if(this.getOutlineId()){
-        var conflictDetector = new ConflictDetector(this, couchapp)
-        conflictDetector.saveNotesWithWriteConflict();
-      }
       OutlineHelpers.displayAndHideFlash(flash);
       flash = {type: '', message: ''};
       $('#spinner').show();

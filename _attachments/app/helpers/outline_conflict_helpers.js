@@ -14,6 +14,7 @@ var OutlineConflictHelpers = {
       if(solve){
         conflictDetector.presenter.showConflicts();
       } else {
+        conflictDetector.checkForOldConflicts();
         conflictDetector.checkForNewConflicts();
       }
     }

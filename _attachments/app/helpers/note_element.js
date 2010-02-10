@@ -225,13 +225,6 @@ NoteElement.prototype = {
     if(typeof(next_object)=="undefined" && typeof(child_object)=="undefined"){
       context.unbindSubmitOnBlurAndAutogrow();
       context.bindSubmitOnBlurAndAutogrow();
-      // TODO call a method that does the showing of conflicts / or the showing 
-      // of conflict message with the outline ID.
-      // should belong into the conflictPresenter. 
-      // this outline has the information about all the conflicts.
-      console.log(context.getOutlineId())
-      
-      //TODO remove the notes_with_write_conflict again from outline after they are solved!!!!
     }
   },
   
