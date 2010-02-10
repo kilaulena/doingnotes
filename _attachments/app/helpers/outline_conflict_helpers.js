@@ -10,7 +10,9 @@ var OutlineConflictHelpers = {
       ConflictDetector(this, couchapp);
       ConflictPresenter(this, couchapp);
       ConflictResolver(this, couchapp);
+      
       var conflictDetector = new ConflictDetector(this, couchapp);
+
       if(solve){
         conflictDetector.presenter.showConflicts();
       } else {

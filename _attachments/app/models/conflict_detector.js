@@ -31,18 +31,17 @@ ConflictDetector = function(context, couchapp) {
 		  		  
       checkForNewConflicts: function(){
         if (this.context.onServer()) return;
-        var detector   = this;
-        var url        = this.context.HOST + '/' + this.context.DB + 
-                         '/_changes?filter=doingnotes/conflicted' +
-                         '&feed=continuous&heartbeat=5000';
+        var dt  = this;
+        var url = dt.context.HOST + '/' + dt.context.DB + 
+                  '/_changes?filter=doingnotes/conflicted&feed=continuous&heartbeat=5000';
 
-        if(detector.context.getOutlineId()){ 
-          detector.notes_with_write_conflict[detector.context.getOutlineId()] = detector.notes_with_write_conflict[detector.context.getOutlineId()] || [];
-          detector.listenForConflicts(url, function(responseText){
-            detector.examineResponseText(responseText, function(id, lines){
-              detector.checkIfConflictNeedsToBeHandled(id, lines, function(id){
-                detector.getFirstConflictingRevisionOfNote(id, function(overwritten_note_json, note_json){
-                  detector.identifyAndHandleConflict(overwritten_note_json, note_json);
+        if(dt.context.getOutlineId()){ 
+          dt.notes_with_write_conflict[dt.context.getOutlineId()] = dt.notes_with_write_conflict[dt.context.getOutlineId()] || [];
+          dt.listenForConflicts(url, function(responseText){
+            dt.examineResponseText(responseText, function(id, lines){
+              dt.checkIfConflictNeedsToBeHandled(id, lines, function(id){
+                dt.getFirstConflictingRevisionOfNote(id, function(overwritten_note_json, note_json){
+                  dt.identifyAndHandleConflict(overwritten_note_json, note_json);
                 });
               });
             });
@@ -62,7 +61,6 @@ ConflictDetector = function(context, couchapp) {
       },
 
       examineResponseText: function(responseText, callback){
-        var detector = this;
         if(responseText.match(/changes/)){
           var lines = responseText.split("\n");
           if(lines[lines.length-2].length != 0){ 
@@ -79,13 +77,13 @@ ConflictDetector = function(context, couchapp) {
       },
 
       checkIfConflictNeedsToBeHandled: function(id, lines, callback){
-        var detector = this;
-        detector.couchapp.db.openDoc(id, {
+        var dt = this;
+        dt.couchapp.db.openDoc(id, {
           success: function(doc) {
-            if(detector.context.getOutlineId() == doc.outline_id){
+            if(dt.context.getOutlineId() == doc.outline_id){
               Sammy.log('Conflicts here: \n', lines);
-              if(!detector.notes_with_conflict.contains(id)){
-                detector.notes_with_conflict.push(id);  
+              if(!dt.notes_with_conflict.contains(id)){
+                dt.notes_with_conflict.push(id);  
                 callback(id);
               }
             }
@@ -94,10 +92,10 @@ ConflictDetector = function(context, couchapp) {
       },
 
       getFirstConflictingRevisionOfNote: function(id, callback){
-        var detector = this;
-        var url_note = detector.context.HOST + '/' + detector.context.DB + '/' + id + '?conflicts=true';
+        var dt = this;
+        var url_note = dt.context.HOST + '/' + dt.context.DB + '/' + id + '?conflicts=true';
         $.getJSON(url_note, function(note_json){
-          var url_overwritten_note = detector.context.HOST + '/' + detector.context.DB + '/' + id + '?rev=' + note_json._conflicts[0];
+          var url_overwritten_note = dt.context.HOST + '/' + dt.context.DB + '/' + id + '?rev=' + note_json._conflicts[0];
           $.getJSON(url_overwritten_note, function(overwritten_note_json){
             callback(overwritten_note_json, note_json);
           });
