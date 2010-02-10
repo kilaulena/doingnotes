@@ -16,42 +16,56 @@ ConflictResolver.prototype = {
           top_child_note    = looser_parents_next_note;
           bottom_child_note = winner_parents_next_note;
           // so the winner gets deleted
-          rev_delete  = parent_winner_rev_json;
-          rev_keep    = parent_looser_rev_json;
+          rev_delete = parent_winner_rev_json;
+          rev_keep   = parent_looser_rev_json;
         } else {
           // the update on the winner_parents_next_note comes first
           top_child_note  = winner_parents_next_note;
           bottom_child_note = looser_parents_next_note;
           // so the parent_looser_rev_json gets deleted
-          rev_delete  = parent_looser_rev_json;
-          rev_keep    = parent_winner_rev_json;
+          rev_delete = parent_looser_rev_json;
+          rev_keep   = parent_winner_rev_json;
         }
         
-        // the top_child_note's next_id must point to the bottom_child_note's id
-        top_child_note.object().next_id = bottom_child_note._id();
-        rs.context.update_object('Note', {id: top_child_note._id(), next_id: bottom_child_note._id()}, {}, function(response){});
-
+        rs.setTopChildNoteNextIdToBottomChildNote(top_child_note, bottom_child_note);
+        
         rs.solve_conflict_by_deletion(parent_winner_rev_json, rev_delete._rev, rev_keep._rev, {}, function(delete_response, note){
-          // the parent's next_id must point to the top_child_note's id
-          rs.context.update_object('Note', {id: note._id, next_id: top_child_note._id()}, {}, function(response){
-            if(parent_winner_rev_json.text != parent_looser_rev_json.text){
-              var note_with_write_conflict  = note; 
-              note_with_write_conflict.text = parent_looser_rev_json.text;
-              //bulk post to note._id with the text this version hasn't, to recreate the write conflict.
-              rs.couchapp.db.bulkSave({"all_or_nothing": true, "docs" : [note_with_write_conflict.to_json()]}, {
-               success: function(res) {
-                 rs.presenter.showWriteConflictWarning(note._id);
-               }
-              });
-            }
-          });
-        });
+          rs.setParentsNextPointerToTopChildNote(note, top_child_note, parent_winner_rev_json, parent_looser_rev_json);
+        });  
         
         rs.context.flash = {message: 'Replication has automatically solved updates.', type: 'notice'};
         rs.context.trigger('notice', this.context.flash);
 
         rs.showAndHighlightResolvedNotes(top_child_note, bottom_child_note, rev_keep);
       });
+    });
+  },
+  
+  setTopChildNoteNextIdToBottomChildNote: function(top_child_note, bottom_child_note){
+    top_child_note.object().next_id = bottom_child_note._id();
+    rs.context.update_object('Note', {
+        id: top_child_note._id(), next_id: bottom_child_note._id()
+      }, {}, function(response){}
+    );
+  },
+  
+  setParentsNextPointerToTopChildNote: function(note, top_child_note, parent_winner_rev_json, parent_looser_rev_json){
+    rs.context.update_object('Note', {id: note._id, next_id: top_child_note._id()}, {}, function(response){
+      if(parent_winner_rev_json.text != parent_looser_rev_json.text){
+        rs.recreateWriteConflict(note, parent_looser_rev_json);
+      }
+    });
+  },
+  
+  recreateWriteConflict: function(note, parent_looser_rev_json){
+    var rs = this;
+    var note_with_write_conflict  = note; 
+    note_with_write_conflict.text = parent_looser_rev_json.text;
+    //bulk post to note._id with the text this version hasn't, to recreate the write conflict.
+    rs.couchapp.db.bulkSave({"all_or_nothing": true, "docs" : [note_with_write_conflict.to_json()]}, {
+     success: function(res) {
+       rs.presenter.showWriteConflictWarning(note._id);
+     }
     });
   },
     
