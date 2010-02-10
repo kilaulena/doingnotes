@@ -44,7 +44,7 @@ var OutlineHelpers = {
   renderOutline: function(view, notes, couchapp, solve){
     this.render('show', view, function(response){
       this.app.swap(response);
-      this.checkForNewUpdatesAndConflicts(couchapp, solve);
+      this.checkForNewUpdatesAndConflictsOrShow(couchapp, solve);
       var first_note = new NoteElement($('ul#notes li:first').find('textarea'));
       if(notes.notes.length > 1) {
         first_note.renderNotes(context, notes, notes.notes.length); 

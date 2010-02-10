@@ -1,12 +1,4 @@
 ConflictDetector = function(context, couchapp) {
-  var couchapp                  = couchapp;
-  var context                   = context;
-  var singletonInstance         = null;
-  var presenter                 = presenter || new ConflictPresenter(context, couchapp);
-  var resolver                  = resolver  || new ConflictResolver(context, couchapp);
-  var notes_with_conflict       = [];
-  var notes_with_write_conflict = [];
-  
   var getInstance = function() {
 		if (!this.singletonInstance) { 
 			this.singletonInstance = createInstance();
@@ -15,14 +7,13 @@ ConflictDetector = function(context, couchapp) {
 	}
 	
 	var createInstance = function() {
-		// Here, you return all public methods and variables
 		return {
-		  couchapp : couchapp,
-      context  : context,
+		  couchapp                  : couchapp,
+      context                   : context,
       presenter                 : this.presenter || new ConflictPresenter(context, couchapp),
-      resolver                  :  this.resolver  || new ConflictResolver(context, couchapp),
-      notes_with_conflict       :  [],
-      notes_with_write_conflict :  [],
+      resolver                  : this.resolver  || new ConflictResolver(context, couchapp),
+      notes_with_conflict       : [],
+      notes_with_write_conflict : [],
 		  
       checkForNewConflicts: function(){
         if (this.context.onServer()) return;
@@ -41,9 +32,7 @@ ConflictDetector = function(context, couchapp) {
                 } 
                 if(overwritten_note_json.text != note_json.text){
                   presenter.showWriteConflictWarning(overwritten_note_json, note_json);
-                  console.log('PUSHING', overwritten_note_json._id)
                   detector.notes_with_write_conflict.push(overwritten_note_json._id);
-                  console.log(detector.notes_with_write_conflict)
                 }
               });
             });
@@ -101,16 +90,15 @@ ConflictDetector = function(context, couchapp) {
       },
 
       saveNotesWithWriteConflict: function(){
-        console.log('saveNotesWithWriteConflict', this)
-        console.log('notes_with_write_conflict', this.notes_with_write_conflict)
-        console.log('outlineId', this.context.getOutlineId())
-
-        this.context.update_object('Outline', {id: this.context.getOutlineId(), notes_with_write_conflict: this.notes_with_write_conflict}, 
-          {},
-           function(outline){
-             console.log('updated. and outline is: ', outline)
-           }
-         );
+        var detector = this;
+        detector.context.update_object('Outline', {
+            id: detector.context.getOutlineId(), 
+            notes_with_write_conflict: detector.notes_with_write_conflict
+          }, 
+          {}, function(outline){
+            detector.notes_with_write_conflict = [];
+          }
+        );
       }
 		}
 	}
