@@ -37,15 +37,11 @@ ConflictResolver.prototype = {
             if(parent_winner_rev_json.text != parent_looser_rev_json.text){
               var note_with_write_conflict  = note; 
               note_with_write_conflict.text = parent_looser_rev_json.text;
-              note_with_write_conflict._rev = note._rev;
-              //bulk post to note._id with the text this version hasn't, to create a conflict.
-              rs.couchapp.db.bulkSave({"all_or_nothing": true, "docs" : [note.to_json()]}, {
-                success: function(res) {
-                  if(this.context.$element().find('#conflict-warning:visible').length == 0){
-                    $('#conflict-warning').slideDown('slow');
-                  }
-                  this.context.highlightNoteConflicted(context, note._id);
-                }
+              //bulk post to note._id with the text this version hasn't, to recreate the write conflict.
+              rs.couchapp.db.bulkSave({"all_or_nothing": true, "docs" : [note_with_write_conflict.to_json()]}, {
+               success: function(res) {
+                 rs.presenter.showWriteConflictWarning(note._id);
+               }
               });
             }
           });
@@ -53,19 +49,26 @@ ConflictResolver.prototype = {
         
         rs.context.flash = {message: 'Replication has automatically solved updates.', type: 'notice'};
         rs.context.trigger('notice', this.context.flash);
-        
-        $('li#edit_note_' + top_child_note._id()).remove();
-        $('li#edit_note_' + bottom_child_note._id()).remove();
-        
-        var note_element = this.context.findNoteElementById(rev_keep._id);
-        var note_collection = new NoteCollection([new Note(rev_keep), top_child_note.object(), bottom_child_note.object()]);
-        note_element.renderNotes(this.context, note_collection, note_collection.notes.length); 
 
-        this.presenter.highlightNoteOkay(top_child_note._id());
-        this.presenter.highlightNoteOkay(bottom_child_note._id());
+        rs.showAndHighlightResolvedNotes(top_child_note, bottom_child_note, rev_keep);
       });
     });
   },
+    
+  showAndHighlightResolvedNotes: function(top_child_note, bottom_child_note, rev_keep){
+    $('li#edit_note_' + top_child_note._id()).remove();
+    $('li#edit_note_' + bottom_child_note._id()).remove();
+    
+    var note_element = this.context.findNoteElementById(rev_keep._id);
+    var note_collection = new NoteCollection([new Note(rev_keep), top_child_note.object(), bottom_child_note.object()]);
+    note_element.renderNotes(this.context, note_collection, note_collection.notes.length); 
+  
+    this.presenter.highlightNoteOkay(top_child_note._id());
+    this.presenter.highlightNoteOkay(bottom_child_note._id());
+  },
+  
+  
+  
   
   solve_conflict_by_deletion: function(params, rev_delete, rev_keep, options, callback) {
     var rs = this;

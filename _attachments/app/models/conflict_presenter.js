@@ -20,10 +20,10 @@ ConflictPresenter.prototype = {
     note_element.emphasizeBackground(this.context, false);
   },
   
-  showWriteConflictWarning: function(overwritten_note_json, note_json){
+  showWriteConflictWarning: function(id){
     Sammy.log('write conflict - ask the user')
     this.dropDownConflictWarning();
-    this.highlightNoteConflicted(overwritten_note_json._id);
+    this.highlightNoteConflicted(id);
   },
   
   showConflicts: function(){

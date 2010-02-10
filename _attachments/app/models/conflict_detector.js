@@ -22,7 +22,7 @@ ConflictDetector = function(context, couchapp) {
         if(dt.context.getOutlineId() && typeof(dt.notes_with_write_conflict[dt.context.getOutlineId()]) != 'undefined'){
           $.each(dt.notes_with_write_conflict[dt.context.getOutlineId()], function(i, id){  
             dt.getFirstConflictingRevisionOfNote(id, function(overwritten_note_json, note_json){
-              presenter.showWriteConflictWarning(overwritten_note_json, note_json);
+              presenter.showWriteConflictWarning(overwritten_note_json._id);
               dt.notes_with_write_conflict[dt.context.getOutlineId()].remove(overwritten_note_json._id);
             });  
           });
@@ -109,7 +109,7 @@ ConflictDetector = function(context, couchapp) {
           dt.resolver.solve_conflict_by_sorting(note_json, overwritten_note_json);
         } 
         if(overwritten_note_json.text != note_json.text){
-          presenter.showWriteConflictWarning(overwritten_note_json, note_json);
+          presenter.showWriteConflictWarning(overwritten_note_json._id);
           dt.notes_with_write_conflict[dt.context.getOutlineId()].push(overwritten_note_json._id);
         }
       }
