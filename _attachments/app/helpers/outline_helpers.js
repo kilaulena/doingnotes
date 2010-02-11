@@ -45,7 +45,7 @@ var OutlineHelpers = {
     setTimeout("$('#flash').fadeOut('slow')", 5000);
   },
   
-  renderOutline: function(view, notes, couchapp, solve){
+  renderOutline: function(context, view, notes, couchapp, solve){
     this.render('show', view, function(response){
       this.app.swap(response);
       this.checkForNewUpdatesAndConflictsOrShow(couchapp, solve);

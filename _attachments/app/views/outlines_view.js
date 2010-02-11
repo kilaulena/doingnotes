@@ -40,11 +40,11 @@ OutlinesView.prototype = {
           if (json.rows.length > 0) { 
             var notes = json.rows.map(function(row) {return new Note(row.value)}); 
             view.notes = [(new NoteCollection(notes)).firstNote()];
-            context.renderOutline(view, (new NoteCollection(notes)), ov.couchapp, params.solve);
+            context.renderOutline(context, view, (new NoteCollection(notes)), ov.couchapp, params.solve);
           } else {
             context.create_object('Note', {outline_id: view.outline_id, first_note: true, text:'', source: ov.context.getLocationHash()}, {}, function(note){
               view.notes = [note];
-              context.renderOutline(view, (new NoteCollection([])), ov.couchapp, params.solve);
+              context.renderOutline(context, view, (new NoteCollection([])), ov.couchapp, params.solve);
             })            
           } 
         } else {
