@@ -26,7 +26,6 @@ ConflictResolver.prototype = {
           rev_delete = parent_looser_rev_json;
           rev_keep   = parent_winner_rev_json;
         }
-        
         rs.setTopChildNoteNextIdToBottomChildNote(top_child_note, bottom_child_note);
         
         rs.solve_conflict_by_deletion(parent_winner_rev_json, rev_delete._rev, rev_keep._rev, {}, function(delete_response, note){
@@ -51,6 +50,7 @@ ConflictResolver.prototype = {
   },
   
   setParentsNextPointerToTopChildNote: function(note, top_child_note, parent_winner_rev_json, parent_looser_rev_json){
+    var rs = this;
     rs.context.update_object('Note', {id: note._id, next_id: top_child_note._id()}, {}, function(response){
       if(parent_winner_rev_json.text != parent_looser_rev_json.text){
         rs.recreateWriteConflict(note, parent_looser_rev_json);
@@ -65,6 +65,7 @@ ConflictResolver.prototype = {
     //bulk post to note._id with the text this version hasn't, to recreate the write conflict.
     rs.couchapp.db.bulkSave({"all_or_nothing": true, "docs" : [note_with_write_conflict.to_json()]}, {
      success: function(res) {
+       console.log('conflict created')
        rs.presenter.showWriteConflictWarning(note._id);
      }
     });

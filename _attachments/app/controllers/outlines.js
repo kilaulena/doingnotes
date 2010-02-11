@@ -1,4 +1,6 @@
 Outlines = function(sammy, couchapp) { with(sammy) {
+  var context;
+
   get('#/outlines', function() { with(this) {
     list_objects('Outline', 'outlines', [], function(json){ 
       var view = {};
@@ -29,12 +31,12 @@ Outlines = function(sammy, couchapp) { with(sammy) {
     return false;
   }});
 
-  get('#/outlines/:id', function() { with(this) {
+  get('#/outlines/:id', function() {
     var view = {};
-    var context = this;    
+    context = this;    
     couchapp.design.view('notes_by_outline', {
-      startkey: [params['id']],
-      endkey: [params['id'], {}],
+      startkey: [context.params.id],
+      endkey: [context.params.id, {}],
       success: function(json) {
         if(json.rows[0]) {
           view.title      = json.rows[0].value.title;
@@ -43,11 +45,11 @@ Outlines = function(sammy, couchapp) { with(sammy) {
           if (json.rows.length > 0) { 
             var notes = json.rows.map(function(row) {return new Note(row.value)}); 
             view.notes = [(new NoteCollection(notes)).firstNote()];
-            renderOutline(view, (new NoteCollection(notes)), couchapp, params.solve);
+            context.renderOutline(view, (new NoteCollection(notes)), couchapp, context.params.solve);
           } else {
-            create_object('Note', {outline_id: view.outline_id, first_note: true, text:'', source: getLocationHash()}, {}, function(note){
+            context.create_object('Note', {outline_id: view.outline_id, first_note: true, text:'', source: context.getLocationHash()}, {}, function(note){
               view.notes = [note];
-              renderOutline(view, (new NoteCollection([])), couchapp, params.solve);
+              context.renderOutline(view, (new NoteCollection([])), couchapp, context.params.solve);
             })            
           } 
         } else {
@@ -57,26 +59,27 @@ Outlines = function(sammy, couchapp) { with(sammy) {
       }
     });
     return false;
-  }});
+  });
   
-  get('#/outlines/edit/:id', function() { with(this) {
-    load_object_view('Outline', params['id'], function(outline_view){
-      partial('app/templates/outlines/edit.mustache', outline_view, function(outline_view){
-        app.swap(outline_view);
+  get('#/outlines/edit/:id', function(){
+    context = this;
+    context.load_object_view('Outline', context.params.id, function(outline_view){
+      context.partial('app/templates/outlines/edit.mustache', outline_view, function(outline_view){
+        context.app.swap(outline_view);
         $('#spinner').hide(); 
       });
     });
     return false;
-  }});
+  });
   
-  post('#/outlines', function() { with(this) {
+  post('#/outlines', function(){ with(this){
     create_object('Outline', params, {message: "Here is your new outline"}, function(outline){
       redirect('#/outlines/' + outline._id, flash);
     });
     return false;
   }});
   
-  put('#/outlines/:id', function()  { with(this) {    
+  put('#/outlines/:id', function(){ with(this) {    
     update_object('Outline', params, {}, function(outline){
       trigger('notice', {message: 'Title successfully changed'});
       $('#spinner').hide(); 
@@ -84,26 +87,27 @@ Outlines = function(sammy, couchapp) { with(sammy) {
     return false;
   }});
 
-  route('delete', '#/outlines/:id', function() { with(this) {
-    couchapp.design.view('notes_by_outline', {
-      startkey: [params['id']],
-      endkey: [params['id'], {}],
+  route('delete', '#/outlines/:id', function() {
+    context = this;
+    context.couchapp.design.view('notes_by_outline', {
+      startkey: [context.params.id],
+      endkey: [context.params.id, {}],
       success: function(json) {
         if (json.rows.length > 0) { 
           var outline_and_notes = json.rows.map(function(row) {return row.value}); 
-          couchapp.db.bulkRemove({docs: outline_and_notes}, {
+          context.couchapp.db.bulkRemove({docs: outline_and_notes}, {
             success: function() {
-              flash = {message: 'Outline deleted.', type: 'notice'}
+              context.flash = {message: 'Outline deleted.', type: 'notice'}
               $('#spinner').hide(); 
-              redirect('#/outlines', flash);
+              context.redirect('#/outlines', flash);
             },
             error: function(response_code, json) {
-              flash = {message: 'Error deleting outline: ' + json, type: 'error'};
+              context.flash = {message: 'Error deleting outline: ' + json, type: 'error'};
             }
           });
         }      
       }
     });
     return false;
-  }});
+  });
 }};
