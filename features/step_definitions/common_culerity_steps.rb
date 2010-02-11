@@ -76,6 +76,7 @@ When /^I wait for the AJAX call to finish$/ do
       end
     end
   end
+  # puts '... to finish.'
 end
 
 

@@ -107,7 +107,7 @@ var Resources = function(app, couchapp) {
     update_object: function(name, params, options, callback) {
       options = options || {};
       var context = this;
-      this.load_object_view(name, params['id'], function(object_view){        
+      this.load_object_view(name, params.id, function(object_view){        
         object_view = context.object_view_from_params(object_view, params);
         var object = object_view.object();
         

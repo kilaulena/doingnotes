@@ -6,6 +6,7 @@ $(function() {
   
   sammy = new Sammy.Application(function() { with(this) {
     element_selector = '#content';
+    config = window.Config;
     use(Sammy.Mustache);
     use(Sammy.Cache);
     use(Resources, couchapp);
@@ -14,7 +15,6 @@ $(function() {
     helpers(OutlineConflictHelpers);
     helpers(ReplicationHelpers);
     helpers(KeyEvents);
-    helpers(Config);
     Notes(this, couchapp);
     Outlines(this, couchapp);
     
@@ -23,13 +23,13 @@ $(function() {
       return false;
     }});
 
-    bind('init', function() { with(this) {
+    bind('init', function() {
       var context = this;
-      if(context.onServer()){
+      if(this.onServer()){
         $('#system').append("the server");
       } else {
-        replicateUp();
-        replicateDown();
+        this.replicateUp();
+        this.replicateDown();
         $('#system').append("the client");
       }
             
@@ -44,52 +44,52 @@ $(function() {
         }
       });
       $(window).bind("click", function(e) {
-        if(happenedOnNoteTarget(e)){
+        if(context.happenedOnNoteTarget(e)){
           var note = new NoteElement($(e.target));
           note.setDataText();
           note.focusTextarea();
-        } else if(happenedOnConflictField(e)){
+        } else if(context.happenedOnConflictField(e)){
           var note = new NoteElement($(e.target));
           note.focusTextarea();
         }
       });
       $(window).bind("keydown", function(e) {
-        if(happenedOnNoteTarget(e)){
+        if(context.happenedOnNoteTarget(e)){
           var note = new NoteElement($(e.target));
           note.setDataText();
-          if (enterPressed(e)) {
+          if (context.enterPressed(e)) {
             e.preventDefault();
             note.insertNewNote(context);
-          } else if(keyUpPressed(e)){
+          } else if(context.keyUpPressed(e)){
             e.preventDefault();
             note.focusPreviousTextarea();
             note.submitIfChanged();
-          } else if(keyDownPressed(e)){
+          } else if(context.keyDownPressed(e)){
             e.preventDefault();
             note.focusNextTextarea();
             note.submitIfChanged();
-          } else if(tabPressed(e)){
+          } else if(context.tabPressed(e)){
             e.preventDefault();
             note.indent(context);
-          } else if(tabShiftPressed(e)){
+          } else if(context.tabShiftPressed(e)){
             e.preventDefault();
             note.unindent(context);
           }
-        } else if(happenedOnConflictField(e)){
+        } else if(context.happenedOnConflictField(e)){
           var note = new NoteElement($(e.target));
-          if(keyUpPressed(e)){
+          if(context.keyUpPressed(e)){
             e.preventDefault();
             note.focusPreviousTextarea();
-          } else if(keyDownPressed(e)){
+          } else if(context.keyDownPressed(e)){
             e.preventDefault();
             note.focusNextTextarea();
-          } else if(tabPressed(e) || tabShiftPressed(e)){
+          } else if(context.tabPressed(e) || context.tabShiftPressed(e)){
             e.preventDefault();
             note.focusOtherInlineTextarea();
           }
         }
       });
-    }});
+    });
  
     before(function() {
       OutlineHelpers.displayAndHideFlash(flash);

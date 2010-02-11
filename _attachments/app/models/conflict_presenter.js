@@ -34,7 +34,7 @@ ConflictPresenter.prototype = {
         if (json.rows.length > 0) {
           var notes_with_conflicts = json.rows.map(function(row) {return row.value});
           $.each(notes_with_conflicts, function(i, conflicting_note_json){
-            var url = presenter.context.HOST + '/' + presenter.context.DB + '/' + conflicting_note_json._id + '?rev=' + conflicting_note_json._conflicts[0];
+            var url = config.HOST + '/' + config.DB + '/' + conflicting_note_json._id + '?rev=' + conflicting_note_json._conflicts[0];
             $.getJSON(url, function(overwritten_note_json){
               var note_element = presenter.context.findNoteElementById(overwritten_note_json._id);
               note_element.insertConflictFields(presenter.context, overwritten_note_json, conflicting_note_json);

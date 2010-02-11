@@ -4,7 +4,7 @@ var OutlineConflictHelpers = {
   },
   
   checkForNewUpdatesAndConflictsOrShow: function(couchapp, solve){
-    if(this.ENV == 'production'){
+    if(config.CHECK_FOR_UPDATES){
       this.checkForUpdates(couchapp);
       
       ConflictDetector(this, couchapp);

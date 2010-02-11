@@ -32,7 +32,7 @@ ConflictDetector = function(context, couchapp) {
       checkForNewConflicts: function(){
         if (this.context.onServer()) return;
         var dt  = this;
-        var url = dt.context.HOST + '/' + dt.context.DB + 
+        var url = config.HOST + '/' + config.DB + 
                   '/_changes?filter=doingnotes/conflicted&feed=continuous&heartbeat=5000';
 
         if(dt.context.getOutlineId()){ 
@@ -93,9 +93,9 @@ ConflictDetector = function(context, couchapp) {
 
       getFirstConflictingRevisionOfNote: function(id, callback){
         var dt = this;
-        var url_note = dt.context.HOST + '/' + dt.context.DB + '/' + id + '?conflicts=true';
+        var url_note = config.HOST + '/' + config.DB + '/' + id + '?conflicts=true';
         $.getJSON(url_note, function(note_json){
-          var url_overwritten_note = dt.context.HOST + '/' + dt.context.DB + '/' + id + '?rev=' + note_json._conflicts[0];
+          var url_overwritten_note = config.HOST + '/' + config.DB + '/' + id + '?rev=' + note_json._conflicts[0];
           $.getJSON(url_overwritten_note, function(overwritten_note_json){
             callback(overwritten_note_json, note_json);
           });

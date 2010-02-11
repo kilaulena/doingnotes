@@ -1,4 +1,8 @@
 var OutlineHelpers = {
+  onServer: function(){
+     return (window.location.protocol + '//' + window.location.host == config.SERVER)
+   }, 
+   
   bindSubmitOnBlurAndAutogrow: function(){
     $('textarea.expanding').autogrow();
     $('textarea.expanding').bind('blur', function(e){

@@ -27,7 +27,7 @@ var ReplicationHelpers = {
   checkForUpdates: function(couchapp){
     var context    = this;
     var source     = context.getLocationHash();
-    var url        = context.HOST + '/' + context.DB + 
+    var url        = config.HOST + '/' + config.DB + 
                      '/_changes?filter=doingnotes/changed&source=' + source;   
     
     if(context.getOutlineId()){ 
@@ -57,20 +57,18 @@ var ReplicationHelpers = {
   },
 
   replicateUp: function(){
-    var context = this;   
-    $.post(context.HOST + '/_replicate', 
-      '{"source":"' + context.DB + '", "target":"' + context.SERVER + '/' + context.DB + '", "continuous":true}',
+    $.post(config.HOST + '/_replicate', 
+      '{"source":"' + config.DB + '", "target":"' + config.SERVER + '/' + config.DB + '", "continuous":true}',
       function(){
-        Sammy.log('replicating to ', context.SERVER)
+        Sammy.log('replicating to ', config.SERVER)
       },"json");
   },
   
   replicateDown: function(){
-    var context = this;
-    $.post(context.HOST + '/_replicate', 
-      '{"source":"' + context.SERVER + '/' + context.DB + '", "target":"' + context.DB + '", "continuous":true}',
+    $.post(config.HOST + '/_replicate', 
+      '{"source":"' + config.SERVER + '/' + config.DB + '", "target":"' + config.DB + '", "continuous":true}',
       function(){
-        Sammy.log('replicating from ', context.SERVER)
+        Sammy.log('replicating from ', config.SERVER)
       },"json");
   }
 }

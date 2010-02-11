@@ -42,6 +42,7 @@ ConflictResolver.prototype = {
   },
   
   setTopChildNoteNextIdToBottomChildNote: function(top_child_note, bottom_child_note){
+    var rs = this;
     top_child_note.object().next_id = bottom_child_note._id();
     rs.context.update_object('Note', {
         id: top_child_note._id(), next_id: bottom_child_note._id()

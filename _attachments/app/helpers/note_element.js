@@ -27,7 +27,7 @@ NoteElement.prototype = {
   },
   
   emphasizeBackground: function(context, back_to_white){
-    var color = (back_to_white ? context.LIGHT_GREEN : context.LIGHT_RED);
+    var color = (back_to_white ? config.LIGHT_GREEN : config.LIGHT_RED);
     var form = this.note_target.parents('form');
     form.animate({"backgroundColor": color}, 500)
     
