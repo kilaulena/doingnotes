@@ -97,32 +97,84 @@ When /^I hit "([^\"]*)" in a note textarea with id "([^\"]*)"$/ do |key, id|
   When 'I wait for the AJAX call to finish'
 end
 
+When 'I refresh' do
+  $browser.execute_script('window.location.reload()')
+end
+
 Then /^I should see "([^\"]+)" in a note li$/ do |text|  
   li = $browser.li(:class, "edit-note")
-  # puts li.html
   unless li.html.match(/text/im) 
     raise("#{text} can't be found in a note li") 
   end
- # puts  find_element(kind.to_sym, name).html
- #  find_element(kind.to_sym, name).html should include(text)
 end
 
-
-Then /^the last note li should be blank$/ do 
-  li = $browser.lis().last
+Then /^the new note li should be blank$/ do 
+  lis = $browser.div(:id, 'content').lis()
+  note_lis = []
+  lis.length.times do |i|
+    if(lis[i].attribute_value(:id).match(/edit_note_\w{5}/))      
+      note_lis.push(lis[i])
+    end
+  end
+  li = note_lis.last
   unless li.html.match(/>\s*<\/textarea>/) 
     raise("No blank note li found") 
-    # problem es findet die erste!! TODO
   end  
 end
 
-Then /^I should see a blank text input in a div with id "([^\"]+)"$/ do |id|
-  div = $browser.div(:id, id)
-  unless div.html.match(/<input(.*)type="text"(.*)\/>/) 
-    raise("paragraph #{id} is not blank") 
+def findNoteLiById(id)
+  lis = $browser.div(:id, 'content').lis()
+  note_lis = []
+  lis.length.times do |i|
+    if(lis[i].attribute_value(:id).match(/edit_note_#{id}/))      
+      note_lis.push(lis[i])
+    end
+  end
+  return note_lis.last
+end
+
+Then /^the note li with id "([^\"]+)" should be blank$/ do |id|
+  li = findNoteLiById(id)
+  unless li.html.match(/edit_text_#{id}.*>\s*<\/textarea>/) 
+    raise("No blank note li found") 
   end  
 end
 
 Then /^I should see "([^\"]*)" notes$/ do |number|
-  pending
+  lis = $browser.div(:id, 'content').lis()
+  unless lis.length.to_s == number
+    raise("#{lis.length} note lis found") 
+  end
 end
+
+Then /^"([^\"]*)" should be a child note of "([^\"]*)"$/ do |child_id, parent_id|
+  li = findNoteLiById(parent_id)
+  
+  children =  []
+  li.uls.length.times do |i|
+    children.push(li.uls[i])
+  end
+  
+  child = ""
+  children.length.times do |i|
+    if(children[i].lis.length > 0)
+      children[i].lis.length.times do |j|
+        if(children[i].lis[j].attribute_value(:id).match(/edit_note_#{child_id}/))     
+          child = children[i].lis[j]
+        end
+      end
+    end
+  end
+  
+  if(child == "")
+    raise("Note with ID #{child_id} is not a child of #{parent_id}") 
+  end
+end
+
+Then /^"([^\"]*)" should have no child notes$/ do |id|
+  li = findNoteLiById(id)
+  if(li.uls.length > 0)
+    raise("Note with ID #{id} has at least one child note") 
+  end  
+end
+

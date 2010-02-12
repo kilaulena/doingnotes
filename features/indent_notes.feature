@@ -11,10 +11,17 @@ Feature: indent and unindent notes
       And I save
     When I go to the start page
       And I follow "Songs"
-      And I hit "tab" in a note textarea with id "5678"
+    Then "1234" should have no child notes
+      And "5678" should have no child notes
+    When I hit "tab" in a note textarea with id "5678"
     Then I should see "Misirlou" in a note li
-      And the last note li should be blank
-      And "Ou est la liberte" should be a child note of "Misirlou"
+      And the note li with id "9012" should be blank
+      And "5678" should be a child note of "1234"
+      And I should see "3" notes
+    When I refresh
+    Then I should see "Misirlou" in a note li
+      And the note li with id "9012" should be blank
+      And "5678" should be a child note of "1234"
       And I should see "3" notes
       
   Scenario: unindent a note
@@ -25,6 +32,13 @@ Feature: indent and unindent notes
       And I save
     When I go to the start page
       And I follow "Songs"
-      And I hit "shift+tab" in a note textarea with id "5678"
-    Then "Misirlou" should have no child notes
+    Then "5678" should have no child notes
+      And "5678" should be a child note of "1234"
+    When I hit "shift+tab" in a note textarea with id "5678"
+    Then "1234" should have no child notes
+      And "5678" should have no child notes
+      And I should see "3" notes
+    When I refresh
+    Then "1234" should have no child notes
+      And "5678" should have no child notes
       And I should see "3" notes

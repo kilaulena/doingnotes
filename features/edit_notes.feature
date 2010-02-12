@@ -11,8 +11,14 @@ Feature: add and update notes
     And I follow "Songs" 
     And I hit "enter" in a note textarea with id "1234"
   Then I should see "Misirlou" in a note li
-    And the last note li should be blank
-    And I should see "2" notes 
+    And "1234" should have no child notes
+    And the new note li should be blank
+    And I should see "2" notes
+  When I refresh 
+  Then I should see "Misirlou" in a note li
+    And "1234" should have no child notes
+    And the new note li should be blank
+    And I should see "2" notes
     
   Scenario: update a note
     Given an outline with the title "Songs"
@@ -24,8 +30,13 @@ Feature: add and update notes
       And I fill in "edit_text_5678" with "Waiting"      
       And I hit "up" in a note textarea with id "5678"
     Then I should see "Misirlou" in a note li
+      And "1234" should have no child notes
       And I should see "Waiting" in a note li
       And I should see "2" notes
-
+    When I refresh
+    Then I should see "Misirlou" in a note li
+      And "1234" should have no child notes
+      And I should see "Waiting" in a note li
+      And I should see "2" notes
 
   
