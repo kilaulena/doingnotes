@@ -51,6 +51,14 @@ ul {
   margin-top: 5px;
 }
 
+#all_outlines {
+  float:left;
+}
+#howto {
+  float: right;
+  margin-right: 50px;
+}
+
 /* forms */
 
 input.error {

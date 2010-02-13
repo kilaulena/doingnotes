@@ -2,6 +2,26 @@
 
 This is going to be my diploma thesis. Enjoy. Report bugs. But don't share (yet) or I'll fail ;)
 
+You can try the program on http://184.73.233.128.
+
+The whole fun only starts though when you also "install" it locally (I call that client), and open it and the program on the server in two different browser windows. Then you can see how updates on the server (or on other clients) are autmatically replicated to your client programm.
+
+To see this, make sure you have the right server URL set in /_attachments/app/config/config.js.
+
+## Usage
+
+Create a new outline and start to write.
+
+- Enter: create and jump to a new line
+- Up/down: jump one line up/down
+- Tab: Indent a line
+- Shift+Tab: Unindent a line
+
+When solving a write conflict:
+
+- Tab or Shift+Tab: Jump between versions
+
+
 ## Installation
 
 - Install CouchDB. 
@@ -23,22 +43,10 @@ This is going to be my diploma thesis. Enjoy. Report bugs. But don't share (yet)
 ### Unit tests
 Open the file _attachments/app/spec/index.html and uncomment the specs you want to run. 
 
-## Usage
-
-Create a new outline and start to write.
-
-- Enter: create and jump to a new line
-- Up/down: jump one line up/down
-- Tab: Indent a line
-- Shift+Tab: Unindent a line
-
-When solving a write conflict:
-
-- Tab or Shift+Tab: Jump between versions
-
 ## Testing Replication notifications
 
 - You need to <a href="http://code.google.com/p/couchdb-lounge/wiki/SettingUpTwoCouchInstances">set up two CouchDB instances on your machine</a> first. 
+- Make sure the server URL constant is set to http://localhost:5985 in /_attachments/app/config/config.js
 - Start the second couch instance (on port 5985) in another Browser window. 
 - Open the same outline with both browser windows and type in the window where it says "You are on the server"
 - See a notification in the client window (port 5984)
