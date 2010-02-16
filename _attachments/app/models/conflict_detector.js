@@ -16,7 +16,6 @@ ConflictDetector = function(context, couchapp) {
       notes_with_write_conflict : {},
 		  
 		  checkForOldConflicts: function(){
-		    if (this.context.onServer()) return;
 		    var dt = this;
 		    
         if(dt.context.getOutlineId() && typeof(dt.notes_with_write_conflict[dt.context.getOutlineId()]) != 'undefined'){
@@ -30,7 +29,6 @@ ConflictDetector = function(context, couchapp) {
 		  },
 		  		  
       checkForNewConflicts: function(){
-        if (this.context.onServer()) return;
         var dt  = this;
         var url = config.HOST + '/' + config.DB + 
                   '/_changes?filter=doingnotes/conflicted&feed=continuous&heartbeat=5000';

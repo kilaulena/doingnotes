@@ -4,13 +4,13 @@ var OutlineConflictHelpers = {
   },
   
   checkForNewUpdatesAndConflictsOrShow: function(couchapp, solve){
-    if(config.CHECK_FOR_UPDATES){
+    if(config.CHECK_FOR_UPDATES && !this.onServer()){
+      
       this.checkForUpdates(couchapp);
       
       ConflictDetector(this, couchapp);
       ConflictPresenter(this, couchapp);
-      ConflictResolver(this, couchapp);
-      
+      ConflictResolver(this, couchapp);      
       var conflictDetector = new ConflictDetector(this, couchapp);
 
       if(solve){
