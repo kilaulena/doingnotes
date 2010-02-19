@@ -6,12 +6,11 @@ Feature: CRUD for outlines
   Scenario: create an outline with note
     When I go to the start page 
       And I follow "New Outline" 
-    Then I should see a blank text input in a div with id "new-outline" 
-    When I fill in "title" with "Songs"    
+      And I fill in "title" with "Songs"
       And I press "Save"
     Then I should see "Songs"
       And I should see "Here is your new outline"
-      And the last note li should be blank
+      And the new note li should be blank
       
   Scenario: edit an outline's title
     Given an outline with the title "Songs"
