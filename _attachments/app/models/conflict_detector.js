@@ -93,10 +93,12 @@ ConflictDetector = function(context, couchapp) {
         var dt = this;
         var url_note = config.HOST + '/' + config.DB + '/' + id + '?conflicts=true';
         $.getJSON(url_note, function(note_json){
-          var url_overwritten_note = config.HOST + '/' + config.DB + '/' + id + '?rev=' + note_json._conflicts[0];
-          $.getJSON(url_overwritten_note, function(overwritten_note_json){
-            callback(overwritten_note_json, note_json);
-          });
+          if(note_json._conflicts){
+            var url_overwritten_note = config.HOST + '/' + config.DB + '/' + id + '?rev=' + note_json._conflicts[0];
+            $.getJSON(url_overwritten_note, function(overwritten_note_json){
+              callback(overwritten_note_json, note_json);
+            });
+          }
         });
       },
 

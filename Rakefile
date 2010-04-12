@@ -9,8 +9,8 @@ def host
 end
 
 def server
-  # 'http://localhost:5985'
-  'http://184.73.233.128'
+  'http://localhost:5985'
+  # 'http://184.73.233.128'
 end
 
 def database
