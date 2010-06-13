@@ -60,7 +60,7 @@ describe 'NoteElement'
         }
       };
       first_note.insertUpdateNotePointers(outer_context, {_id:'4', text: 'inserted!'});
-      outer_context.update_object_callback.should.eql function(json){this_note.submitIfChanged();}
+      outer_context.update_object_callback.should.eql function(json, object){this_note.submitIfChanged(json.rev, object.next_id);}
     end
   end
   
