@@ -141,10 +141,10 @@ NoteElement.prototype = {
     };
   },
   
-  submitIfChanged: function() {
+  submitIfChanged: function(rev, new_next) {
     if(this.targetHasChanged()) {      
       this.note_target.removeAttr("data-text");
-      this.submitForm();
+      this.submitForm(rev, new_next);
       this.setDataText();
     }
   },
@@ -153,7 +153,11 @@ NoteElement.prototype = {
     return (this.note_target.attr("data-text") != this.note_target.val());
   },
   
-  submitForm: function(){    
+  submitForm: function(rev, new_next){
+    if(typeof(rev)!="undefined"){
+      this.note_target.parent('form').append($('<textarea style="display:none;" name="revision">'+ rev +'</textarea>'));
+      this.note_target.parent('form').append($('<textarea style="display:none;" name="new_next_id">'+ new_next +'</textarea>'));
+    }
     this.note_target.parent('form').submit();
   },
   
@@ -184,8 +188,8 @@ NoteElement.prototype = {
   
   setNextPointerToNewlyInsertedNote: function(context, inserted_note_object){
     var this_note = this;
-    context.update_object('Note', {id: this_note.id(), next_id: inserted_note_object._id}, {}, function(json){
-      this_note.submitIfChanged();
+    context.update_object('Note', {id: this_note.id(), next_id: inserted_note_object._id}, {}, function(json, object){
+      this_note.submitIfChanged(json.rev, object.next_id);
     });
   },
   

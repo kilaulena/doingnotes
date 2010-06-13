@@ -65,7 +65,7 @@ ConflictResolver.prototype = {
     //bulk post to note._id with the text this version hasn't, to recreate the write conflict.
     rs.couchapp.db.bulkSave({"all_or_nothing": true, "docs" : [note_with_write_conflict.to_json()]}, {
      success: function(res) {
-       console.log('conflict created')
+       // console.log('conflict created')
        rs.presenter.showWriteConflictWarning(note._id);
      }
     });

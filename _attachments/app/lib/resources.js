@@ -80,6 +80,7 @@ var Resources = function(app, couchapp) {
       var context = this;
       couchapp.db.openDoc(id, {
         success: function(doc) {
+          // console.log('in load_object_view ', doc._rev)
           var _prototype = eval(kind);
           var view_prototype = eval(kind + 'View');
           var view = new view_prototype(new _prototype(doc));
@@ -114,6 +115,10 @@ var Resources = function(app, couchapp) {
         object.updated_at = new Date().toJSON();
         if(object.to_json().kind == 'Note'){
           object.source = context.getLocationHash();
+          if(typeof(params.revision)!="undefined"){
+            object._rev = params.revision;
+            object.next_id = params.new_next_id;
+          }
         }
         
         if(object.valid()) {
@@ -124,8 +129,8 @@ var Resources = function(app, couchapp) {
               }
               if(options.success) {
                 options.success(object);
-              }                          
-              callback(res);
+              }           
+              callback(res, object);
             },
             error: function(response_code, res) {
               context.flash = {message: 'Error saving ' + name + ': ' + res, type: 'error'};
