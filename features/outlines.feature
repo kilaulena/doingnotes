@@ -9,7 +9,7 @@ Feature: CRUD for outlines
       And I fill in "title" with "Songs"
       And I press "Save"
     Then I should see "Songs"
-      And I should see "Here is your new outline"
+      # And I should see "Here is your new outline"
       And the new note li should be blank
       
   Scenario: edit an outline's title
