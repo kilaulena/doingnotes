@@ -57,6 +57,7 @@ var ReplicationHelpers = {
   },
 
   replicateUp: function(){
+    $.ajaxSetup({contentType: "application/json"});
     $.post(config.HOST + '/_replicate', 
       '{"source":"' + config.DB + '", "target":"' + config.SERVER + '/' + config.DB + '", "continuous":true}',
       function(){
@@ -65,6 +66,7 @@ var ReplicationHelpers = {
   },
   
   replicateDown: function(){
+    $.ajaxSetup({contentType: "application/json"});
     $.post(config.HOST + '/_replicate', 
       '{"source":"' + config.SERVER + '/' + config.DB + '", "target":"' + config.DB + '", "continuous":true}',
       function(){

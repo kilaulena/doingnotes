@@ -26,11 +26,11 @@ $(function() {
     bind('init', function() {
       var context = this;
       if(this.onServer()){
-        $('#system').append("the server");
+        $('#system').append(config.SERVER);
       } else {
         this.replicateUp();
         this.replicateDown();
-        $('#system').append("the client");
+        $('#system').append(config.HOST);
       }
             
       $(window).bind("beforeunload", function(e){
