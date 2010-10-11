@@ -29,7 +29,8 @@ You can also delete outlines and change their titles.
 - Install <a href="http://couchapp.org/page/index">Couchapp</a>
 - Get a Browser that supports Javascript HTML5. Only <a href="http://getfirefox.com/">Firefox >= 3.5</a> is guaranteed to work, Safari might not work so well with the continuous changes feed.
 - Start CouchDB as instructed. If you installed from source, you can amend the Rakefile with your CouchDB location and use the raketask "rake couch:start4"
-- Do 'couchapp push' in the doingnotes project folder
+- Git clone this repository. Rename .couchapprc_example to .couchapprc.
+- Do 'couchapp push' in the doingnotes project folder to deploy/"install" doingnotes into your local CouchDB.
 - Visit <a href="http://localhost:5984/doingnotes/_design/doingnotes/index.html">http://localhost:5984/doingnotes/_design/doingnotes/index.html</a>
 
 ## Running the tests
@@ -44,9 +45,8 @@ Open the file _attachments/app/spec/index.html and uncomment the specs you want 
 
 ## Replication notifications from remote
 
-- <a href=" http://lena.couchone.com:5984/doingnotes/_design/doingnotes/index.html">The application is running here already</a>. Set the server URL constant in /_attachments/app/config/config.js to http://lena.couchone.com:5984/doingnotes to replicate with this application. 
-- Start your CouchDB instance as instructed.
-- Do 'couchapp push' in the project folder.
+- Install, start and deploy CouchDB, Couchapp and doingnotes as instructed above.
+- <a href=" http://lena.couchone.com:5984/doingnotes/_design/doingnotes/index.html">The application is running here already</a>. Set the server URL constant in /_attachments/app/config/config.js to http://lena.couchone.com:5984/doingnotes to replicate with this application. Make sure to do a 'couchapp push' afterwards.
 - Visit <a href="http://localhost:5984/doingnotes/_design/doingnotes/index.html">http://localhost:5984/doingnotes/_design/doingnotes/index.html</a> and open an outline.
 - Open the same outline on <a href=" http://lena.couchone.com:5984/doingnotes/_design/doingnotes/index.html">the server</a> in another browser window, change something in there, and see the instant changes on your local instance.
 
