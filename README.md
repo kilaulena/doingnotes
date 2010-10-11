@@ -2,7 +2,7 @@
 
 This is my diploma thesis. Enjoy. Read more about the thesis <a href="http://lenaherrmann.net/tag/thesis">in my blog</a>.
 
-<a href="http://lena.couchone.com:5984/doingnotes/_design/doingnotes/index.html#/outlines/">You can try out the outliner here</a>. The whole fun only starts though when you also "install" it on your local CouchDB instance, and open that and the program on the server in two different browser windows. Then you can see how updates on the server (or on other peoples CouchDB instances) are automatically replicated to your computer.
+<a href="http://lena.couchone.com:5984/doingnotes/_design/doingnotes/index.html">You can try out the outliner here</a>. The whole fun only starts though when you also "install" it on your local CouchDB instance, and open that and the program on the server in two different browser windows. Then you can see how updates on the server (or on other peoples CouchDB instances) are automatically replicated to your computer.
 
 To see this, make sure you have the right server URL set in /_attachments/app/config/config.js.
 
@@ -27,7 +27,7 @@ You can also delete outlines and change their titles.
   - The fastest way is to download <a href="http://janl.github.com/couchdbx/">CouchDBX</a>.
   - You can also install CouchDB from source <a href="http://couchdb.apache.org/downloads.html">from the latest release</a> or from the latest SVN version: <a href="http://wiki.apache.org/couchdb/Installing_on_OSX">Scroll down on this page</a> for instructions for Snow Leopard, or <a href="http://wiki.apache.org/couchdb/Installation">look here for other OS</a>.
 - Install <a href="http://couchapp.org/page/index">Couchapp</a>
-- Get a Browser that supports Javascript HTML5. Only <a href="http://google.com/chrome">Chrome</a> and <a href="http://getfirefox.com/">Firefox >= 3.5</a> are guaranteed to work, Safari might not work so well with the continuous changes feed.
+- Get <a href="http://getfirefox.com/">Firefox >= 3.5</a>. That's the only browser all features are guaranteed to work with. Use other browsers at own risk. 
 - Start CouchDB as instructed. If you installed from source, you can amend the Rakefile with your CouchDB location and use the raketask "rake couch:start_host"
 - Git clone this repository. Rename .couchapprc_example to .couchapprc.
 - Do 'couchapp push' in the doingnotes project folder to deploy/"install" doingnotes into your local CouchDB.
@@ -46,9 +46,9 @@ Open the file _attachments/app/spec/index.html and uncomment the specs you want 
 ## Replication notifications from remote
 
 - Install, start and deploy CouchDB, Couchapp and doingnotes as instructed above.
-- <a href="http://lena.couchone.com:5984/doingnotes/_design/doingnotes/index.html#/outlines/">The application is running here already</a>. Set the server URL constant in /_attachments/app/config/config.js to http://lena.couchone.com:5984/doingnotes to replicate with this application. Make sure to do a 'couchapp push' afterwards.
+- <a href="http://lena.couchone.com:5984/doingnotes/_design/doingnotes/index.html">The application is running here already</a>. Set the server URL constant in /_attachments/app/config/config.js to http://lena.couchone.com:5984/doingnotes to replicate with this application. Make sure to do a 'couchapp push' afterwards.
 - Visit <a href="http://localhost:5984/doingnotes/_design/doingnotes/index.html">http://localhost:5984/doingnotes/_design/doingnotes/index.html</a> and open an outline.
-- Open the same outline on <a href="http://lena.couchone.com:5984/doingnotes/_design/doingnotes/index.html#/outlines/">the server</a> in another browser window, change something in there, and see the instant changes on your local instance.
+- Open the same outline on <a href="http://lena.couchone.com:5984/doingnotes/_design/doingnotes/index.html">the server</a> in another browser window, change something in there, and see the instant changes on your local instance.
 
 
 ## Replication notifications on your local machine
