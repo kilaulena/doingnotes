@@ -80,7 +80,6 @@ var Resources = function(app, couchapp) {
       var context = this;
       couchapp.db.openDoc(id, {
         success: function(doc) {
-          // console.log('in load_object_view ', doc._rev)
           var _prototype = eval(kind);
           var view_prototype = eval(kind + 'View');
           var view = new view_prototype(new _prototype(doc));
