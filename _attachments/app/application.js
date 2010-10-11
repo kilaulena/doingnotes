@@ -26,7 +26,7 @@ $(function() {
     bind('init', function() {
       var context = this;
       if(this.onServer()){
-        $('#system').append(config.SERVER);
+        $('#system').append(config.SERVER, '<br/>you won\'t see any changes here');
       } else {
         this.replicateUp();
         this.replicateDown();

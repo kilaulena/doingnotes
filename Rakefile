@@ -13,34 +13,43 @@ def server
   # 'http://lena.couchone.com:5984'
 end
 
+def server_with_credentials
+  # if you have an admin password give it here, so the design documents can be pushed 
+  # and the database can be deleted and created, format:
+  # 'http://username:secretpass@lena.couchone.com:5984'
+  'http://localhost:5985'
+end
+
+def host_with_credentials
+  'http://localhost:5984'
+end
+
 def database
   'doingnotes'
 end
 
+def recreate(url_with_credentials)
+  puts "Deleting and recreating database to #{url_with_credentials} ..."
+  RestClient.delete "#{url_with_credentials}/#{database}" rescue nil
+  RestClient.put "#{url_with_credentials}/#{database}", ""
+  puts '... pushing app ...'
+  system "couchapp push #{url_with_credentials}/#{database}"
+  puts '... ready.'
+end
+
 namespace :couch do
-  desc "deletes and recreates the database and pushes the app to server on #{host}"
+  desc "deletes and recreates the database and pushes the app to server on #{host_with_credentials}"
   task :recreate_host do
-    puts "Deleting and recreating database to #{host} ..."
-    RestClient.delete "#{host}/#{database}" rescue nil
-    RestClient.put "#{host}/#{database}", ""
-    puts '... pushing app ...'
-    system "couchapp push #{host}/#{database}"
-    puts '... ready.'
+    recreate(host_with_credentials)
   end
   
-  desc "deletes and recreates the database and pushes the app to the server on #{server}"
+  desc "deletes and recreates the database and pushes the app to the server on #{server_with_credentials}"
   task :recreate_server do
-    puts "Deleting and recreating database to #{server} ..."
-    RestClient.delete "#{server}/#{database}" rescue nil
-    RestClient.put "#{server}/#{database}", ""
-    puts '... pushing app ...'
-    system "couchapp push #{server}/#{database}"
-    puts '... ready.'
+    recreate(server_with_credentials)
   end
   
   desc "delete, create and push #{host} and #{server}"
     task :recreateboth => [:recreate_host, :recreate_server]
-
 
   desc "wait for two seconds"
   task :wait do
