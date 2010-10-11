@@ -27,7 +27,7 @@ You can also delete outlines and change their titles.
   - The fastest way is to download <a href="http://janl.github.com/couchdbx/">CouchDBX</a>.
   - You can also install CouchDB from source <a href="http://couchdb.apache.org/downloads.html">from the latest release</a> or from the latest SVN version: <a href="http://wiki.apache.org/couchdb/Installing_on_OSX">Scroll down on this page</a> for instructions for Snow Leopard, or <a href="http://wiki.apache.org/couchdb/Installation">look here for other OS</a>.
 - Install <a href="http://couchapp.org/page/index">Couchapp</a>
-- Get a Browser that supports Javascript HTML5. Only <a href="http://getfirefox.com/">Firefox >= 3.5</a> is guaranteed to work, Safari might not work so well with the continuous changes feed.
+- Get a Browser that supports Javascript HTML5. Only <a href="http://google.com/chrome">Chrome</a> and <a href="http://getfirefox.com/">Firefox >= 3.5</a> are guaranteed to work, Safari might not work so well with the continuous changes feed.
 - Start CouchDB as instructed. If you installed from source, you can amend the Rakefile with your CouchDB location and use the raketask "rake couch:start_host"
 - Git clone this repository. Rename .couchapprc_example to .couchapprc.
 - Do 'couchapp push' in the doingnotes project folder to deploy/"install" doingnotes into your local CouchDB.
@@ -78,3 +78,6 @@ As a shortcut for this lengthy procedure, there are a couple of rake tasks to he
 - rake:appendconflict
 - rake:appendandwriteconflict
 
+## Contact
+
+Written 2009/10 by Lena Herrmann, lena[at]zeromail.org or <http://github.com/lenalena>. Released under the MIT license.
