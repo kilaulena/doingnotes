@@ -2,7 +2,7 @@
 
 This is my diploma thesis. Enjoy. Read more about the thesis <a href="http://lenaherrmann.net/tag/thesis">in my blog</a>.
 
-<a href=" http://lena.couchone.com:5984/doingnotes/_design/doingnotes/index.html#/outlines/">You can try out the outliner here</a>. The whole fun only starts though when you also "install" it on your local CouchDB instance, and open that and the program on the server in two different browser windows. Then you can see how updates on the server (or on other peoples CouchDB instances) are automatically replicated to your computer.
+<a href=" http://lena.couchone.com:5984/doingnotes">You can try out the outliner here</a>. The whole fun only starts though when you also "install" it on your local CouchDB instance, and open that and the program on the server in two different browser windows. Then you can see how updates on the server (or on other peoples CouchDB instances) are automatically replicated to your computer.
 
 To see this, make sure you have the right server URL set in /_attachments/app/config/config.js.
 
