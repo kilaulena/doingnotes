@@ -1,6 +1,8 @@
 ## About
 
-This is my diploma thesis. Enjoy. Read more about the thesis <a href="http://lenaherrmann.net/tag/thesis">in my blog</a>.
+This is my diploma thesis. Enjoy. Forgive the bugs, this is just a prototype.
+
+Read more about the thesis <a href="http://lenaherrmann.net/tag/thesis">in my blog</a>.
 
 <a href="http://lena.couchone.com:5984/doingnotes/_design/doingnotes/index.html">You can try out the outliner here</a>. The whole fun only starts though when you also "install" it on your local CouchDB instance, and open that and the program on the server in two different browser windows. Then you can see how updates on the server (or on other peoples CouchDB instances) are automatically replicated to your computer.
 
