@@ -4,9 +4,11 @@ This is my diploma thesis. Enjoy. Forgive the bugs, this is just a prototype.
 
 Read more about the thesis <a href="http://lenaherrmann.net/tag/thesis">in my blog</a>.
 
+If the following instructions aren't detailed enough, make sure to check out chapter 9 in <a href="http://www.scribd.com/doc/40221592/Implementation-of-a-distributed-application-using-the-document-oriented-database-CouchDB">my thesis</a>.
+
 <a href="http://lena.couchone.com:5984/doingnotes/_design/doingnotes/index.html">You can try out the outliner here</a>. The whole fun only starts though when you also "install" it on your local CouchDB instance, and open that and the program on the server in two different browser windows. Then you can see how updates on the server (or on other peoples CouchDB instances) are automatically replicated to your computer.
 
-To see this, make sure you have the right server URL set in /_attachments/app/config/config.js.
+To see this, make sure you have the right server URL set in /_attachments/config/config.js.
 
 ## Outliner usage
 
@@ -33,7 +35,7 @@ You can also delete outlines and change their titles.
 - Start CouchDB as instructed. If you installed from source, you can amend the Rakefile with your CouchDB location and use the raketask "rake couch:start_host"
 - Git clone this repository. Rename .couchapprc_example to .couchapprc.
 - Do 'couchapp push' in the doingnotes project folder to deploy/"install" doingnotes into your local CouchDB.
-- Visit <a href="http://localhost:5984/doingnotes/_design/doingnotes/index.html">http://localhost:5984/doingnotes/_design/doingnotes/index.html</a>
+- In case your CouchDB is running on port 5984 on localhost, visit <a href="http://localhost:5984/doingnotes/_design/doingnotes/index.html">http://localhost:5984/doingnotes/_design/doingnotes/index.html</a>
 
 ## Running the tests
 
@@ -48,7 +50,8 @@ Open the file _attachments/app/spec/index.html and uncomment the specs you want 
 ## Replication notifications from remote
 
 - Install, start and deploy CouchDB, Couchapp and doingnotes as instructed above.
-- <a href="http://lena.couchone.com:5984/doingnotes/_design/doingnotes/index.html">The application is running here already</a>. Set the server URL constant in /_attachments/app/config/config.js to http://lena.couchone.com:5984/doingnotes to replicate with this application. Make sure to do a 'couchapp push' afterwards.
+- <a href="http://lena.couchone.com:5984/doingnotes/_design/doingnotes/index.html">The application is running here already</a>. Set the SERVER constant in /_attachments/config/config.js to http://lena.couchone.com:5984/doingnotes to replicate with this application. Make sure to do a 'couchapp push' afterwards.
+- If your local CouchDB is running on a different host or port than localhost / 5984, amend the HOST constant in /_attachments/config/config.js. 
 - Visit <a href="http://localhost:5984/doingnotes/_design/doingnotes/index.html">http://localhost:5984/doingnotes/_design/doingnotes/index.html</a> and open an outline.
 - Open the same outline on <a href="http://lena.couchone.com:5984/doingnotes/_design/doingnotes/index.html">the server</a> in another browser window, change something in there, and see the instant changes on your local instance.
 
