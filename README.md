@@ -50,7 +50,7 @@ Open the file _attachments/app/spec/index.html and uncomment the specs you want 
 ## Replication notifications from remote
 
 - Install, start and deploy CouchDB, Couchapp and doingnotes as instructed above.
-- <a href="http://lena.couchone.com:5984/doingnotes/_design/doingnotes/index.html">The application is running here already</a>. Set the SERVER constant in /_attachments/config/config.js to http://lena.couchone.com:5984/doingnotes to replicate with this application. Make sure to do a 'couchapp push' afterwards.
+- <a href="http://lena.couchone.com:5984/doingnotes/_design/doingnotes/index.html">The application is running here already</a>. Set the SERVER constant in /_attachments/config/config.js to http://lena.couchone.com:5984 to replicate with this application. Make sure to do a 'couchapp push' afterwards.
 - If your local CouchDB is running on a different host or port than localhost / 5984, amend the HOST constant in /_attachments/config/config.js. 
 - Visit <a href="http://localhost:5984/doingnotes/_design/doingnotes/index.html">http://localhost:5984/doingnotes/_design/doingnotes/index.html</a> and open an outline.
 - Open the same outline on <a href="http://lena.couchone.com:5984/doingnotes/_design/doingnotes/index.html">the server</a> in another browser window, change something in there, and see the instant changes on your local instance.
